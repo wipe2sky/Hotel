@@ -1,4 +1,6 @@
 package com.api.dao;
 
-public interface IRoomDao {
+import com.model.Room;
+
+public interface IRoomDao extends GenericDao<Room>{
 }

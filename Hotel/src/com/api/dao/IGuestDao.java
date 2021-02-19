@@ -1,4 +1,7 @@
 package com.api.dao;
 
-public interface IGuestDao {
+import com.model.Guest;
+
+public interface IGuestDao extends GenericDao<Guest>{
+
 }
