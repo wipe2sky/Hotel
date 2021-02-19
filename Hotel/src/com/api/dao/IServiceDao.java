@@ -1,4 +1,6 @@
 package com.api.dao;
 
-public interface IServiceDao {
+import com.model.Service;
+
+public interface IServiceDao extends GenericDao<Service>{
 }
