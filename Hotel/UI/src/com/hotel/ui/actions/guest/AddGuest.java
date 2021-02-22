@@ -14,6 +14,7 @@ public class AddGuest extends AbstractAction implements IAction {
     public void execute() {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
             System.out.println("Введите фамилию гостя");
             String lastName = reader.readLine();
             System.out.println("Введите Имя гостя");

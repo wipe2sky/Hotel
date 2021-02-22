@@ -13,11 +13,14 @@ public class AddService extends AbstractAction implements IAction {
     public void execute() {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
             System.out.println("Введите название услуги");
             String name = reader.readLine();
             System.out.println("Введите стоимость");
             Float price = Float.parseFloat(reader.readLine());
+
             Service service = facade.addService(name, price);
+
             System.out.println();
             System.out.println("Услуга \"" + service.getName() + "\" успешно добавлена");
             System.out.println();

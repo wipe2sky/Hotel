@@ -12,8 +12,10 @@ public class GetLast3GuestInRoom extends AbstractAction implements IAction {
     public void execute() {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
             System.out.println("Введите id номера:");
             Integer roomId = Integer.parseInt(reader.readLine());
+
             System.out.println();
             facade.getLast3GuestInRoom(roomId).forEach(System.out::println);
             System.out.println();

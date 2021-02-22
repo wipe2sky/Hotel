@@ -13,6 +13,7 @@ public class DeleteGuest extends AbstractAction implements IAction {
     public void execute() {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
             System.out.println("Введите id гостя, которого необходимо удалить:");
             int guestId = Integer.parseInt(reader.readLine());
             Guest guest = facade.getGuestById(guestId);

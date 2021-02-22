@@ -13,9 +13,11 @@ public class DeleteService extends AbstractAction implements IAction {
     public void execute() {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
             System.out.println("Введите id услуги");
             Integer serviceId = Integer.parseInt(reader.readLine());
             Service service = facade.getServiceById(serviceId);
+
             facade.deleteService(serviceId);
 
             System.out.println();

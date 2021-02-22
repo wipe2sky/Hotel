@@ -16,7 +16,6 @@ public class RoomDao extends AbstractDao<Room> implements IRoomDao {
     public static RoomDao getInstance() {
         if(instance == null) instance = new RoomDao();
         return instance;
-//        return Objects.requireNonNullElse(instance, new RoomDao());
     }
 
     @Override

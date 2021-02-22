@@ -13,8 +13,10 @@ public class GetCostOfLiving extends AbstractAction implements IAction {
     public void execute() {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
             System.out.println("Введите id гостя");
-            Integer guestId = Integer.parseInt(reader.readLine());;
+            Integer guestId = Integer.parseInt(reader.readLine());
+
             Float cost = facade.getCostOfLiving(guestId);
             Guest guest = facade.getGuestById(guestId);
 

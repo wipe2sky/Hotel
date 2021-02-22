@@ -22,8 +22,10 @@ public class CheckIn extends AbstractAction implements IAction {
             LocalDate checkInDate = LocalDate.parse( reader.readLine());
             System.out.println("Введите дату для заезда в формате гггг-мм-дд");
             LocalDate checkOutDate = LocalDate.parse( reader.readLine());
+
             facade.checkIn(guestId, roomId, checkInDate, checkOutDate);
             Guest guest = facade.getGuestById(guestId);
+
             System.out.println();
             System.out.println("Гость " + guest.getLastName() + " " + guest.getFirstName()
                     +" заселён в номер " + guest.getRoom().getNumber());

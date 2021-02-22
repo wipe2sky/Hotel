@@ -16,12 +16,13 @@ public class Navigator {
 
     public void printMenu() {
         List<MenuItem> menuItem = currentMenu.getMenuItems();
+        System.out.println("------------------------------------");
         System.out.println(currentMenu.getName());
         System.out.println("____________________________________");
         for (int i = 0; i < menuItem.size(); i++) {
             System.out.println(String.format("%d - %s", i, menuItem.get(i).getTitle()));
         }
-        System.out.println("------------------------------------");
+        System.out.println("____________________________________");
     }
 
     public void navigate(Integer index) {

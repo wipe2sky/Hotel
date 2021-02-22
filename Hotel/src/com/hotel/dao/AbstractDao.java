@@ -16,11 +16,16 @@ public abstract class AbstractDao<T extends AEntity> implements GenericDao<T> {
 
     @Override
     public T getById(Integer id) {
-        for (T entity : repository
-        ) {
-            if (id.equals(entity.getId())) return entity;
-        }
-        return null;
+        return repository.stream()
+                .filter(entity -> id.equals(entity.getId()))
+                .findAny().get();
+
+
+//        for (T entity : repository
+//        ) {
+//            if (id.equals(entity.getId())) return entity;
+//        }
+//        return null;
     }
 
     @Override
@@ -35,9 +40,11 @@ public abstract class AbstractDao<T extends AEntity> implements GenericDao<T> {
 
     @Override
     public void deleteById(Integer id) {
-        for (T entity : repository
-        ) {
-            if (id.equals(entity.getId())) repository.remove(entity);
-        }
+        repository.remove(getById(id));
+//
+//        for (T entity : repository
+//        ) {
+//            if (id.equals(entity.getId())) repository.remove(entity);
+//        }
     }
 }

@@ -85,10 +85,9 @@ public class RoomService implements IRoomService {
 
     @Override
     public Integer getNumberOfFree() {
-        long count = roomDao.getAll().stream()
+        return (int) roomDao.getAll().stream()
                 .filter(room -> room.getStatus().equals(RoomStatus.FREE))
                 .count();
-        return (int) count;
     }
 
     @Override

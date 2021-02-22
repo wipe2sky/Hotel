@@ -13,12 +13,15 @@ public class ChangeServicePrice extends AbstractAction implements IAction {
     public void execute() {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
             System.out.println("Введите id услуги");
             Integer serviceId = Integer.parseInt(reader.readLine());
             System.out.println("Введите новую стоимость");
             Float price = Float.parseFloat(reader.readLine());
+
             facade.changeServicePrice(serviceId, price);
             Service service = facade.getServiceById(serviceId);
+
             System.out.println();
             System.out.println("Цена услуги " + service.getName() + " успешно изменена на " + price);
             System.out.println();

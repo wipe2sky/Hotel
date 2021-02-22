@@ -14,7 +14,6 @@ import com.hotel.util.comparators.HistoryDateOutComparator;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class HistoryService implements IHistoryService {
@@ -31,8 +30,8 @@ public class HistoryService implements IHistoryService {
     public static HistoryService getInstance() {
         if(instance == null) instance = new HistoryService();
         return instance;
-//        return Objects.requireNonNullElse(instance, new HistoryService());
     }
+
     @Override
     public History addHistory(Room room, Guest guest, LocalDate checkInDate, LocalDate checkoutDate) {
         History history = new History(room, guest, checkInDate, checkoutDate);
@@ -107,7 +106,6 @@ public class HistoryService implements IHistoryService {
 
     @Override
     public List<Service> getListOfGuestService(Integer guestId) {
-        Guest guest = guestDao.getById(guestId);
-        return guest.getServices();
+        return guestDao.getById(guestId).getServices();
     }
 }

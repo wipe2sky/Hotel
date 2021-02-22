@@ -13,8 +13,10 @@ public class GetRoomAvailableAfterDate extends AbstractAction implements IAction
     public void execute() {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
             System.out.println("Введите дату для проверки в формате гггг-мм-дд");
             LocalDate date = LocalDate.parse(reader.readLine());
+
             System.out.println();
             facade.getRoomAvailableAfterDate(date).forEach(System.out::println);
             System.out.println();

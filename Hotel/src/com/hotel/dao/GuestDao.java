@@ -15,7 +15,6 @@ public class GuestDao extends AbstractDao<Guest> implements IGuestDao {
     public static GuestDao getInstance() {
         if(instance == null) instance = new GuestDao();
         return instance;
-//        return Objects.requireNonNullElse(instance, new GuestDao());
     }
 
     @Override

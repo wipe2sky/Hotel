@@ -19,10 +19,13 @@ public class SetRoomCleaningStatus extends AbstractAction implements IAction {
     public void execute() {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
             System.out.println("Введите id комнаты");
             Integer roomId = Integer.parseInt(reader.readLine());
             Room room = facade.getRoomInfo(roomId);
+
             facade.setRoomCleaningStatus(roomId, isCleaning);
+
             if (isCleaning) {
                 System.out.println();
                 System.out.println("Комната " + room.getNumber() + " поставлена на уборку");

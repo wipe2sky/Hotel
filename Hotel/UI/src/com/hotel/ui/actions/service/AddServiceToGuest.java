@@ -14,12 +14,15 @@ public class AddServiceToGuest extends AbstractAction implements IAction {
     public void execute() {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
             System.out.println("Введите id услуги");
             Integer serviceId = Integer.parseInt(reader.readLine());
             System.out.println("Введите id гостя");
             Integer guestId = Integer.parseInt(reader.readLine());
+
             Service service = facade.getServiceById(serviceId);
             Guest guest = facade.getGuestById(guestId);
+
             if(guest.isCheckIn()) {
                 facade.addServiceToGuest(serviceId, guestId);
                 System.out.println();

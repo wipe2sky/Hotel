@@ -14,6 +14,7 @@ import com.hotel.util.IdGenerator;
 import com.hotel.util.comparators.ServiceCostComparator;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ServiceForService implements IServiceForService {
     private static ServiceForService instance;
@@ -65,9 +66,12 @@ public class ServiceForService implements IServiceForService {
 
     @Override
     public List<Service> getSortByPrice() {
-        List<Service> services = serviceDao.getAll();
-        services.sort(new ServiceCostComparator());
-        return services;
+        return serviceDao.getAll().stream()
+                .sorted(new ServiceCostComparator())
+                .collect(Collectors.toList());
+//        List<Service> services = serviceDao.getAll();
+//        services.sort(new ServiceCostComparator());
+//        return services;
     }
 
     @Override
