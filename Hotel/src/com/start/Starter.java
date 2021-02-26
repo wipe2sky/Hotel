@@ -25,6 +25,13 @@ public class Starter {
         facade.addService("Массаж", 30F);
 
         facade.checkIn(1, 2,  3);
+        facade.checkOut(1);
+        facade.checkIn(2, 2,  3);
+        facade.checkOut(2);
+        facade.checkIn(3, 2,  3);
+        facade.checkOut(3);
+        facade.checkIn(4, 2,  3);
+        facade.checkOut(4);
 
         facade.addServiceToGuest(3, 1);
 

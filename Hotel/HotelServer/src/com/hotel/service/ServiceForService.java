@@ -16,7 +16,10 @@ import com.hotel.util.IdGenerator;
 import com.hotel.util.comparators.ServiceCostComparator;
 import com.hotel.util.logger.Logger;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.List;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 public class ServiceForService implements IServiceForService {
@@ -35,8 +38,11 @@ public class ServiceForService implements IServiceForService {
     }
 
     public static ServiceForService getInstance() {
-        if (instance == null) instance = new ServiceForService();
+        if (instance == null) {
+            instance = new ServiceForService();
+        }
         return instance;
+
     }
 
     @Override

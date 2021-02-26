@@ -22,3 +22,109 @@ java.lang.NumberFormatException: For input string: "kkk"
 17:44 / 26-02-21 - com.hotel.service.HistoryService - INFO - CheckIn guest №: 1, to the room №: 2 for 3 days
 17:44 / 26-02-21 - com.start.Starter - INFO - The program is running.
 17:44 / 26-02-21 - com.hotel.ui.menu.MenuController - INFO - Program completed.
+22:07 / 26-02-21 - com.hotel.service.RoomService - WARNING - Properties not found.
+22:10 / 26-02-21 - com.hotel.service.RoomService - WARNING - Properties not found.
+22:10 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-in of the guest № 1 to the room № 2 for 3 days
+22:12 / 26-02-21 - com.hotel.service.RoomService - WARNING - Properties not found.
+22:12 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-in of the guest № 1 to the room № 2 for 3 days
+22:14 / 26-02-21 - com.hotel.service.RoomService - WARNING - Properties not found.
+22:14 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-in of the guest № 1 to the room № 2 for 3 days
+22:15 / 26-02-21 - com.hotel.service.RoomService - WARNING - Properties not found.
+22:15 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-in of the guest № 1 to the room № 2 for 3 days
+22:15 / 26-02-21 - com.hotel.service.RoomService - WARNING - Properties not found.
+22:15 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-in of the guest № 1 to the room № 2 for 3 days
+22:15 / 26-02-21 - com.hotel.service.RoomService - WARNING - Properties not found.
+22:15 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-in of the guest № 1 to the room № 2 for 3 days
+22:17 / 26-02-21 - com.hotel.service.RoomService - WARNING - Properties not found.
+22:17 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-in of the guest № 1 to the room № 2 for 3 days
+22:18 / 26-02-21 - com.hotel.service.RoomService - WARNING - Properties not found.
+22:18 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-in of the guest № 1 to the room № 2 for 3 days
+22:18 / 26-02-21 - com.hotel.service.RoomService - WARNING - Properties not found.
+22:18 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-in of the guest № 1 to the room № 2 for 3 days
+22:20 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-in of the guest № 1 to the room № 2 for 3 days
+22:20 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-in of the guest № 1 to the room № 2 for 3 days
+22:20 / 26-02-21 - com.hotel.ui.actions.room.SetRoomCleaningStatus - WARNING - Set room cleaning status failed
+com.hotel.exceptions.ServiceException: Set repair status failed.
+	at hotel.server/com.hotel.service.RoomService.setCleaningStatus(RoomService.java:95)
+	at hotel.server/com.hotel.facade.HotelFacade.setRoomCleaningStatus(HotelFacade.java:90)
+	at hotel.ui/com.hotel.ui.actions.room.SetRoomCleaningStatus.execute(SetRoomCleaningStatus.java:31)
+	at hotel.ui/com.hotel.ui.menu.MenuItem.doAction(MenuItem.java:17)
+	at hotel.ui/com.hotel.ui.menu.Navigator.navigate(Navigator.java:31)
+	at hotel.ui/com.hotel.ui.menu.MenuController.run(MenuController.java:31)
+	at starter/com.start.Starter.main(Starter.java:31)
+22:25 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-in of the guest № 1 to the room № 2 for 3 days
+22:26 / 26-02-21 - com.hotel.ui.actions.room.SetRoomCleaningStatus - WARNING - Set room cleaning status failed
+com.hotel.exceptions.ServiceException: Changed status disable.
+	at hotel.server/com.hotel.service.RoomService.setCleaningStatus(RoomService.java:95)
+	at hotel.server/com.hotel.facade.HotelFacade.setRoomCleaningStatus(HotelFacade.java:90)
+	at hotel.ui/com.hotel.ui.actions.room.SetRoomCleaningStatus.execute(SetRoomCleaningStatus.java:31)
+	at hotel.ui/com.hotel.ui.menu.MenuItem.doAction(MenuItem.java:17)
+	at hotel.ui/com.hotel.ui.menu.Navigator.navigate(Navigator.java:31)
+	at hotel.ui/com.hotel.ui.menu.MenuController.run(MenuController.java:31)
+	at starter/com.start.Starter.main(Starter.java:31)
+23:17 / 26-02-21 - com.hotel.service.RoomService - WARNING - Properties not found.
+23:17 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-in of the guest № 1 to the room № 2 for 3 days
+23:17 / 26-02-21 - com.hotel.service.RoomService - WARNING - Properties not found.
+23:17 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-in of the guest № 1 to the room № 2 for 3 days
+23:17 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-in of the guest № 1 to the room № 2 for 3 days
+23:18 / 26-02-21 - com.hotel.ui.actions.room.SetRoomRepairStatus - WARNING - Set room repair status failed
+com.hotel.exceptions.ServiceException: Changed status disable.
+	at hotel.server/com.hotel.service.RoomService.setRepairStatus(RoomService.java:164)
+	at hotel.server/com.hotel.facade.HotelFacade.setRoomRepairStatus(HotelFacade.java:94)
+	at hotel.ui/com.hotel.ui.actions.room.SetRoomRepairStatus.execute(SetRoomRepairStatus.java:32)
+	at hotel.ui/com.hotel.ui.menu.MenuItem.doAction(MenuItem.java:17)
+	at hotel.ui/com.hotel.ui.menu.Navigator.navigate(Navigator.java:31)
+	at hotel.ui/com.hotel.ui.menu.MenuController.run(MenuController.java:31)
+	at starter/com.start.Starter.main(Starter.java:31)
+23:20 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-in of the guest № 1 to the room № 2 for 3 days
+23:20 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-out of the guest № 1 to the room № 2
+23:20 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-in of the guest № 2 to the room № 2 for 3 days
+23:20 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-out of the guest № 2 to the room № 2
+23:20 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-in of the guest № 3 to the room № 2 for 3 days
+23:20 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-out of the guest № 3 to the room № 2
+23:20 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-in of the guest № 4 to the room № 2 for 3 days
+23:20 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-out of the guest № 4 to the room № 2
+23:25 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-in of the guest № 1 to the room № 2 for 3 days
+23:25 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-out of the guest № 1 to the room № 2
+23:25 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-in of the guest № 2 to the room № 2 for 3 days
+23:25 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-out of the guest № 2 to the room № 2
+23:25 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-in of the guest № 3 to the room № 2 for 3 days
+23:25 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-out of the guest № 3 to the room № 2
+23:25 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-in of the guest № 4 to the room № 2 for 3 days
+23:25 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-out of the guest № 4 to the room № 2
+23:25 / 26-02-21 - com.hotel.ui.actions.room.GetRoomHistory - INFO - Get history room № 2.
+23:27 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-in of the guest № 1 to the room № 2 for 3 days
+23:27 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-out of the guest № 1 to the room № 2
+23:27 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-in of the guest № 2 to the room № 2 for 3 days
+23:27 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-out of the guest № 2 to the room № 2
+23:27 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-in of the guest № 3 to the room № 2 for 3 days
+23:27 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-out of the guest № 3 to the room № 2
+23:27 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-in of the guest № 4 to the room № 2 for 3 days
+23:27 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-out of the guest № 4 to the room № 2
+23:27 / 26-02-21 - com.hotel.ui.actions.room.GetRoomHistory - INFO - Get history room № 2.
+23:32 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-in of the guest № 1 to the room № 2 for 3 days
+23:32 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-out of the guest № 1 to the room № 2
+23:32 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-in of the guest № 2 to the room № 2 for 3 days
+23:32 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-out of the guest № 2 to the room № 2
+23:32 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-in of the guest № 3 to the room № 2 for 3 days
+23:32 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-out of the guest № 3 to the room № 2
+23:32 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-in of the guest № 4 to the room № 2 for 3 days
+23:32 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-out of the guest № 4 to the room № 2
+23:33 / 26-02-21 - com.hotel.ui.actions.room.GetRoomHistory - INFO - History of room № 2.
+23:51 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-in of the guest № 1 to the room № 2 for 3 days
+23:51 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-out of the guest № 1 to the room № 2
+23:51 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-in of the guest № 2 to the room № 2 for 3 days
+23:51 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-out of the guest № 2 to the room № 2
+23:51 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-in of the guest № 3 to the room № 2 for 3 days
+23:51 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-out of the guest № 3 to the room № 2
+23:51 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-in of the guest № 4 to the room № 2 for 3 days
+23:51 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-out of the guest № 4 to the room № 2
+23:52 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-in of the guest № 1 to the room № 2 for 3 days
+23:52 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-out of the guest № 1 to the room № 2
+23:52 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-in of the guest № 2 to the room № 2 for 3 days
+23:52 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-out of the guest № 2 to the room № 2
+23:52 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-in of the guest № 3 to the room № 2 for 3 days
+23:52 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-out of the guest № 3 to the room № 2
+23:52 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-in of the guest № 4 to the room № 2 for 3 days
+23:52 / 26-02-21 - com.hotel.service.HistoryService - INFO - Check-out of the guest № 4 to the room № 2
+23:53 / 26-02-21 - com.hotel.ui.actions.room.GetRoomHistory - INFO - History of room № 2.

@@ -16,6 +16,7 @@ import com.hotel.util.logger.Logger;
 
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -63,6 +64,7 @@ public class HistoryService implements IHistoryService {
                 room.setStatus(RoomStatus.BUSY);
                 room.incrementNumberOfGuests();
                 room.setLastHistory(history);
+                room.getHistories().add(history);
                 roomDao.update(room);
             } else logger.log(Logger.Level.INFO, "Room " + roomId + " busy.");
         } catch (DaoException e) {
@@ -76,18 +78,21 @@ public class HistoryService implements IHistoryService {
         try {
             Guest guest = guestDao.getById(guestId);
             Room room = roomDao.getById(guest.getRoom().getId());
+            History history = historyDao.getById(guest.getLastHistory().getId());
             logger.log(Logger.Level.INFO, String.format("Check-out of the guest № %d to the room № %d", guestId, room.getId()));
 
             room.getGuests().remove(guest);
             room.decrementNumberOfGuests();
             guest.setRoom(null);
             guest.setCheckIn(false);
+            guest.getLastHistory().setCheckOutDate(LocalDate.now());
             if (room.getGuests().isEmpty()) {
                 room.setStatus(RoomStatus.FREE);
             }
 
             guest.getServices().clear();
 
+            historyDao.update(history);
             roomDao.update(room);
             guestDao.update(guest);
         } catch (DaoException e) {
@@ -125,7 +130,9 @@ public class HistoryService implements IHistoryService {
 
     @Override
     public List<History> getAll() {
-        return historyDao.getAll();
+        return historyDao.getAll().stream()
+                .sorted(Comparator.comparing(AEntity::getId).reversed())
+                .collect(Collectors.toList());
     }
 
     @Override

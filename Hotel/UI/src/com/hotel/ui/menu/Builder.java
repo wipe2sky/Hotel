@@ -50,6 +50,7 @@ public class Builder {
         roomMenu.addMenuItems(new MenuItem("Поставить номер на уборку", new SetRoomCleaningStatus(true), roomMenu));
         roomMenu.addMenuItems(new MenuItem("Снять номер с уборки", new SetRoomCleaningStatus(false), roomMenu));
         roomMenu.addMenuItems(new MenuItem("Информация о номере", new GetRoomInfo(), roomMenu));
+        roomMenu.addMenuItems(new MenuItem("История номера", new GetRoomHistory(), roomMenu));
         roomMenu.addMenuItems(new MenuItem("Количество всех свободных комнат", new GetNumberOfFree(), roomMenu));
         roomMenu.addMenuItems(new MenuItem("Получить список всех свободных комнат на дату", new GetRoomAvailableAfterDate(), roomMenu));
         roomMenu.addMenuItems(new MenuItem("Получить список всех комнат", new GetAllRoom(), roomMenu));
@@ -149,6 +150,7 @@ public class Builder {
         historyMenu.addMenuItems(new MenuItem("Получить историю гостя", new GetGuestHistory(), historyMenu));
         historyMenu.addMenuItems(new MenuItem("Показать стомость проживания гостя", new GetCostOfLiving(), historyMenu));
         historyMenu.addMenuItems(new MenuItem("Показать 3-х последних гостей номера", new GetLast3GuestInRoom(), historyMenu));
+        historyMenu.addMenuItems(new MenuItem("Получить историю за всё время", new GetAllHistories(), historyMenu));
         historyMenu.addMenuItems(new MenuItem(COMEBACK, () -> {
         }, rootMenu));
 

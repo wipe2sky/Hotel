@@ -70,6 +70,9 @@ public class HotelFacade {
     public Room getRoomInfo(Integer id) {
         return roomService.getInfo(id);
     }
+    public List<History> GetRoomHistory (Integer id){
+        return roomService.getRoomHistory(id);
+    }
 
     public void changeRoomPrice(Integer id, Float price) {
         roomService.changePrice(id, price);

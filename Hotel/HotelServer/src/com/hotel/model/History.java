@@ -72,8 +72,8 @@ public class History extends AEntity{
     @Override
     public String toString() {
         return "History{" +
-                "Id=" + getId() +
-                "room=" + room +
+                "Id = " + getId() +
+                " room = " + room +
                 ", guest=" + guest +
                 ", checkInDate=" + checkInDate +
                 ", checkOutDate=" + checkOutDate +
