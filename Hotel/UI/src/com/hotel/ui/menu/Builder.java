@@ -19,13 +19,13 @@ public class Builder {
     public static Builder getInstance() {
         return Objects.requireNonNullElse(instance, new Builder());
     }
-    private static final String exit = "Выход";
-    private static final String comeback = "Назад";
+    private static final String EXIT = "Выход";
+    private static final String COMEBACK = "Назад";
 
     public void buildMenu() {
         rootMenu = new Menu("Главное меню");
 
-        rootMenu.addMenuItems(new MenuItem(exit, () -> {
+        rootMenu.addMenuItems(new MenuItem(EXIT, () -> {
         }, null));
         rootMenu.addMenuItems(new MenuItem("Управление номерами", () -> {
         }, createRoomMenu()));
@@ -44,7 +44,7 @@ public class Builder {
     private Menu createRoomMenu() {
         Menu roomMenu = new Menu("Меню управления номерами");
 
-        roomMenu.addMenuItems(new MenuItem(exit, () -> {
+        roomMenu.addMenuItems(new MenuItem(EXIT, () -> {
         }, null));
         roomMenu.addMenuItems(new MenuItem("Добавить номер", new AddRoom(), roomMenu));
         roomMenu.addMenuItems(new MenuItem("Поставить номер на уборку", new SetRoomCleaningStatus(true), roomMenu));
@@ -59,7 +59,7 @@ public class Builder {
         roomMenu.addMenuItems(new MenuItem("Поставить номер в ремонт", new SetRoomRepairStatus(true), roomMenu));
         roomMenu.addMenuItems(new MenuItem("Снять номер с ремонта", new SetRoomRepairStatus(false), roomMenu));
         roomMenu.addMenuItems(new MenuItem("Удалить номер", new DeleteRoom(), roomMenu));
-        roomMenu.addMenuItems(new MenuItem(comeback, () -> {
+        roomMenu.addMenuItems(new MenuItem(COMEBACK, () -> {
         }, rootMenu));
 
         return roomMenu;
@@ -68,7 +68,7 @@ public class Builder {
     private Menu createRoomSortMenu() {
         Menu roomSortMenu = new Menu("Сортировать номера по:");
 
-        roomSortMenu.addMenuItems(new MenuItem(exit, () -> {
+        roomSortMenu.addMenuItems(new MenuItem(EXIT, () -> {
         }, null));
         roomSortMenu.addMenuItems(new MenuItem("Сободные номера по цене", new GetSortRoomBy(ComparatorStatus.PRICE, RoomStatus.FREE), roomSortMenu));
         roomSortMenu.addMenuItems(new MenuItem("Сободные номера по вместимости", new GetSortRoomBy(ComparatorStatus.CAPACITY, RoomStatus.FREE), roomSortMenu));
@@ -76,7 +76,7 @@ public class Builder {
         roomSortMenu.addMenuItems(new MenuItem("Сободные номера по цене", new GetSortRoomBy(ComparatorStatus.PRICE, null), roomSortMenu));
         roomSortMenu.addMenuItems(new MenuItem("Сободные номера по вместимости", new GetSortRoomBy(ComparatorStatus.CAPACITY, null), roomSortMenu));
         roomSortMenu.addMenuItems(new MenuItem("Сободные номера по звёздности", new GetSortRoomBy(ComparatorStatus.STARS, null), roomSortMenu));
-        roomSortMenu.addMenuItems(new MenuItem(comeback, () -> {
+        roomSortMenu.addMenuItems(new MenuItem(COMEBACK, () -> {
         }, rootMenu));
 
         return roomSortMenu;
@@ -85,7 +85,7 @@ public class Builder {
     private Menu createGuestMenu() {
         Menu guestMenu = new Menu("Меню управления гостями");
 
-        guestMenu.addMenuItems(new MenuItem(exit, () -> {
+        guestMenu.addMenuItems(new MenuItem(EXIT, () -> {
         }, null));
         guestMenu.addMenuItems(new MenuItem("Добавить гостя", new AddGuest(), guestMenu));
         guestMenu.addMenuItems(new MenuItem("Удалить гостя", new DeleteGuest(), guestMenu));
@@ -94,7 +94,7 @@ public class Builder {
         guestMenu.addMenuItems(new MenuItem("Получить количество постояльцев в отеле", new GetCountGuestInHotel(), guestMenu));
         guestMenu.addMenuItems(new MenuItem("Сортировать постояльцев", () -> {
         }, createGuestSortMenu()));
-        guestMenu.addMenuItems(new MenuItem(comeback, () -> {
+        guestMenu.addMenuItems(new MenuItem(COMEBACK, () -> {
         }, rootMenu));
 
         return guestMenu;
@@ -103,11 +103,11 @@ public class Builder {
     private Menu createGuestSortMenu() {
         Menu guestSortMenu = new Menu("Сортировать гостей по:");
 
-        guestSortMenu.addMenuItems(new MenuItem(exit, () -> {
+        guestSortMenu.addMenuItems(new MenuItem(EXIT, () -> {
         }, null));
         guestSortMenu.addMenuItems(new MenuItem("Сортировать по фамилии", new GetGuestSortBy(ComparatorStatus.LAST_NAME), guestSortMenu));
         guestSortMenu.addMenuItems(new MenuItem("Сортировать по дате выезда", new GetGuestSortBy(ComparatorStatus.DATE_CHECK_OUT), guestSortMenu));
-        guestSortMenu.addMenuItems(new MenuItem(comeback, () -> {
+        guestSortMenu.addMenuItems(new MenuItem(COMEBACK, () -> {
         }, rootMenu));
         return guestSortMenu;
     }
@@ -115,7 +115,7 @@ public class Builder {
     private Menu createServiceMenu() {
         Menu serviceMenu = new Menu("Меню управления услугами");
 
-        serviceMenu.addMenuItems(new MenuItem(exit, () -> {
+        serviceMenu.addMenuItems(new MenuItem(EXIT, () -> {
         }, null));
         serviceMenu.addMenuItems(new MenuItem("Добавить гостю услугу", new AddServiceToGuest(), serviceMenu));
         serviceMenu.addMenuItems(new MenuItem("Получить список услуг", new GetAllService(), serviceMenu));
@@ -123,7 +123,7 @@ public class Builder {
         serviceMenu.addMenuItems(new MenuItem("Добавить услугу", new AddService(), serviceMenu));
         serviceMenu.addMenuItems(new MenuItem("Изменить стоимость услуги", new ChangeServicePrice(), serviceMenu));
         serviceMenu.addMenuItems(new MenuItem("Удалить услугу", new DeleteService(), serviceMenu));
-        serviceMenu.addMenuItems(new MenuItem(comeback, () -> {
+        serviceMenu.addMenuItems(new MenuItem(COMEBACK, () -> {
         }, rootMenu));
 
         return serviceMenu;
@@ -141,14 +141,15 @@ public class Builder {
     private Menu createHistoryMenu() {
         Menu historyMenu = new Menu("Меню управления бронированием");
 
-        historyMenu.addMenuItems(new MenuItem(exit, () -> {
+        historyMenu.addMenuItems(new MenuItem(EXIT, () -> {
         }, null));
         historyMenu.addMenuItems(new MenuItem("Check-In", new CheckIn(), historyMenu));
         historyMenu.addMenuItems(new MenuItem("Check-Out", new CheckOut(), historyMenu));
         historyMenu.addMenuItems(new MenuItem("Показать список услуг гостя", new GetListOfGuestService(), historyMenu));
+        historyMenu.addMenuItems(new MenuItem("Получить историю гостя", new GetGuestHistory(), historyMenu));
         historyMenu.addMenuItems(new MenuItem("Показать стомость проживания гостя", new GetCostOfLiving(), historyMenu));
         historyMenu.addMenuItems(new MenuItem("Показать 3-х последних гостей номера", new GetLast3GuestInRoom(), historyMenu));
-        historyMenu.addMenuItems(new MenuItem(comeback, () -> {
+        historyMenu.addMenuItems(new MenuItem(COMEBACK, () -> {
         }, rootMenu));
 
         return historyMenu;

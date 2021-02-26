@@ -1,0 +1,24 @@
+16:53 / 26-02-21 - com.start.Starter - INFO - The program is running.
+16:54 / 26-02-21 - com.start.Starter - INFO - The program is running.
+16:54 / 26-02-21 - com.hotel.ui.actions.guest.GetCountGuestInHotel - INFO - In Hotel stay 0 guests, at this moment.
+16:57 / 26-02-21 - com.hotel.service.HistoryService - INFO - CheckIn guest №: 1, to the room №: 2 for 3 days
+16:57 / 26-02-21 - com.start.Starter - INFO - The program is running.
+17:01 / 26-02-21 - com.hotel.service.HistoryService - INFO - CheckIn guest №: 1, to the room №: 2 for 3 days
+17:01 / 26-02-21 - com.start.Starter - INFO - The program is running.
+17:01 / 26-02-21 - com.hotel.ui.actions.history.CheckOut - INFO - Guest{id= 1, lastName='Имя1', firstName='Фамилия1' check-out from room №22
+17:28 / 26-02-21 - com.hotel.service.HistoryService - INFO - CheckIn guest №: 1, to the room №: 2 for 3 days
+17:28 / 26-02-21 - com.start.Starter - INFO - The program is running.
+17:28 / 26-02-21 - com.hotel.ui.actions.room.ChangeRoomPrice - WARNING -  failed
+java.lang.NumberFormatException: For input string: "kkk"
+	at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:68)
+	at java.base/java.lang.Integer.parseInt(Integer.java:652)
+	at java.base/java.lang.Integer.parseInt(Integer.java:770)
+	at hotel.ui/com.hotel.ui.actions.room.ChangeRoomPrice.execute(ChangeRoomPrice.java:23)
+	at hotel.ui/com.hotel.ui.menu.MenuItem.doAction(MenuItem.java:17)
+	at hotel.ui/com.hotel.ui.menu.Navigator.navigate(Navigator.java:31)
+	at hotel.ui/com.hotel.ui.menu.MenuController.run(MenuController.java:51)
+	at starter/com.start.Starter.main(Starter.java:34)
+17:29 / 26-02-21 - com.hotel.ui.menu.MenuController - INFO - Program completed.
+17:44 / 26-02-21 - com.hotel.service.HistoryService - INFO - CheckIn guest №: 1, to the room №: 2 for 3 days
+17:44 / 26-02-21 - com.start.Starter - INFO - The program is running.
+17:44 / 26-02-21 - com.hotel.ui.menu.MenuController - INFO - Program completed.

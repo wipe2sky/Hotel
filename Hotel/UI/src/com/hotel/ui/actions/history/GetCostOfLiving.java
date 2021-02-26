@@ -4,7 +4,6 @@ import com.hotel.exceptions.ServiceException;
 import com.hotel.model.Guest;
 import com.hotel.ui.actions.AbstractAction;
 import com.hotel.ui.actions.IAction;
-import com.hotel.ui.actions.guest.GetCountGuestInHotel;
 import com.hotel.util.logger.Logger;
 
 import java.io.BufferedReader;

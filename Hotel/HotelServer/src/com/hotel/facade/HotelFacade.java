@@ -1,4 +1,4 @@
-package com.hotel.ui;
+package com.hotel.facade;
 
 import com.hotel.model.*;
 import com.hotel.service.GuestService;
@@ -95,8 +95,8 @@ public class HotelFacade {
         return roomService.getAll();
     }
 
-    public void checkIn(Integer guestId, Integer roomId, LocalDate checkInDate, LocalDate checkoutDate) {
-        historyService.checkIn(guestId, roomId, checkInDate, checkoutDate);
+    public void checkIn(Integer guestId, Integer roomId, Integer daysStay) {
+        historyService.checkIn(guestId, roomId, daysStay);
     }
 
     public void checkOut(Integer guestId) {
@@ -105,6 +105,10 @@ public class HotelFacade {
 
     public Float getCostOfLiving(Integer roomId) {
         return historyService.getCostOfLiving(roomId);
+    }
+
+    public List<History> getGuestHistory (Integer id){
+        return historyService.getGuestHistory(id);
     }
 
     public List<History> getLast3GuestInRoom(Integer roomId) {

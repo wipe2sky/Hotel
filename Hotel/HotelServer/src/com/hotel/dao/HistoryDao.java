@@ -3,11 +3,6 @@ package com.hotel.dao;
 import com.hotel.api.dao.IHistoryDao;
 import com.hotel.model.History;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
 public class HistoryDao extends AbstractDao<History> implements IHistoryDao {
     private static HistoryDao instance;
 

@@ -2,7 +2,6 @@ package com.hotel.ui.actions.room;
 
 import com.hotel.ui.actions.AbstractAction;
 import com.hotel.ui.actions.IAction;
-import com.hotel.ui.actions.guest.GetCountGuestInHotel;
 import com.hotel.util.logger.Logger;
 
 public class GetNumberOfFree extends AbstractAction implements IAction {

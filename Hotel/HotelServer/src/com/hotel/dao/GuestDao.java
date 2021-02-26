@@ -3,7 +3,6 @@ package com.hotel.dao;
 import com.hotel.api.dao.IGuestDao;
 import com.hotel.model.Guest;
 
-import java.util.Objects;
 
 
 public class GuestDao extends AbstractDao<Guest> implements IGuestDao {

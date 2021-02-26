@@ -3,8 +3,6 @@ package com.hotel.dao;
 import com.hotel.api.dao.IServiceDao;
 import com.hotel.model.Service;
 
-import java.util.Objects;
-
 public class ServiceDao extends AbstractDao<Service> implements IServiceDao {
     private static ServiceDao instance;
 

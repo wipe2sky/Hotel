@@ -5,15 +5,14 @@ import com.hotel.model.History;
 import com.hotel.model.Room;
 import com.hotel.model.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public interface IHistoryService {
-    History addHistory(Room room, Guest guest, LocalDate checkInDate, LocalDate checkoutDate);
-    void checkIn(Integer guestId, Integer roomId, LocalDate checkInDate, LocalDate checkoutDate);
+    History addHistory(Room room, Guest guest, Integer daysStay);
+    void checkIn(Integer guestId, Integer roomId, Integer daysStay);
     void checkOut(Integer guestId);
     Float getCostOfLiving(Integer guestId);
-
+    List<History> getGuestHistory (Integer id);
     List<History> getLast3GuestInRoom(Integer roomId);
 
     List<History> getAll();

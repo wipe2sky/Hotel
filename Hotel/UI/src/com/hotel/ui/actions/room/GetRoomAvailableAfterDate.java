@@ -1,6 +1,5 @@
 package com.hotel.ui.actions.room;
 
-import com.hotel.exceptions.ServiceException;
 import com.hotel.ui.actions.AbstractAction;
 import com.hotel.ui.actions.IAction;
 import com.hotel.util.logger.Logger;
@@ -23,7 +22,7 @@ public class GetRoomAvailableAfterDate extends AbstractAction implements IAction
 
             facade.getRoomAvailableAfterDate(date).forEach(System.out::println);
         }catch (NumberFormatException |IOException e){
-            logger.log(Logger.Level.WARNING, " failed", e);
+            logger.log(Logger.Level.WARNING, "Get room available after date failed", e);
         }
     }
 }

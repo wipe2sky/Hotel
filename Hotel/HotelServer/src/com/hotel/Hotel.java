@@ -17,13 +17,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Hotel {
-    private static final IGuestService guestService = GuestService.getInstance();
-
-    private static final IRoomService roomService = RoomService.getInstance();
-
-    private static final IHistoryService historyService = HistoryService.getInstance();
-
-    private static final IServiceForService serviceForService = ServiceForService.getInstance();
+//    private static final IGuestService guestService = GuestService.getInstance();
+//
+//    private static final IRoomService roomService = RoomService.getInstance();
+//
+//    private static final IHistoryService historyService = HistoryService.getInstance();
+//
+//    private static final IServiceForService serviceForService = ServiceForService.getInstance();
 
     public static void main(String[] args) {
 

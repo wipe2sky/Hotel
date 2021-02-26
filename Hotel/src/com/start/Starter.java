@@ -1,8 +1,8 @@
-package com.hotel.ui;
+package com.start;
 
+
+import com.hotel.facade.HotelFacade;
 import com.hotel.ui.menu.MenuController;
-
-import java.time.LocalDate;
 
 public class Starter {
     public static void main(String[] args) {
@@ -24,7 +24,7 @@ public class Starter {
         facade.addService("Обед в номер", 5F);
         facade.addService("Массаж", 30F);
 
-        facade.checkIn(1, 2,  LocalDate.of(2021, 02, 22), LocalDate.of(2021, 02, 25));
+        facade.checkIn(1, 2,  3);
 
         facade.addServiceToGuest(3, 1);
 

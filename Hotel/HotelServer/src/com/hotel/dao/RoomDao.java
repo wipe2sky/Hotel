@@ -3,9 +3,6 @@ package com.hotel.dao;
 import com.hotel.api.dao.IRoomDao;
 import com.hotel.model.Room;
 
-import java.util.Objects;
-
-
 public class RoomDao extends AbstractDao<Room> implements IRoomDao {
 
     private static RoomDao instance;

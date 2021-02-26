@@ -3,19 +3,26 @@ package com.hotel.service;
 import com.hotel.api.dao.IGuestDao;
 import com.hotel.api.service.IGuestService;
 import com.hotel.dao.GuestDao;
+import com.hotel.exceptions.DaoException;
+import com.hotel.exceptions.ServiceException;
 import com.hotel.model.Guest;
 import com.hotel.util.IdGenerator;
 import com.hotel.util.comparators.ComparatorStatus;
 import com.hotel.util.comparators.GuestDateComparator;
 import com.hotel.util.comparators.GuestLastNameComparator;
+import com.hotel.util.logger.Logger;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.EnumMap;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class GuestService implements IGuestService {
+    private static final Logger logger = new Logger(GuestService.class.getName());
+
     private static GuestService instance;
     private final IGuestDao guestDao;
-    private final Map<ComparatorStatus, Comparator<Guest>> comparatorMap = new HashMap<>();
+    private final EnumMap<ComparatorStatus, Comparator<Guest>> comparatorMap = new EnumMap<>(ComparatorStatus.class);
 
     private void initMap() {
         comparatorMap.put(ComparatorStatus.DATE_CHECK_OUT, new GuestDateComparator());
@@ -24,11 +31,11 @@ public class GuestService implements IGuestService {
 
     private GuestService() {
         this.guestDao = GuestDao.getInstance();
-        initMap();
     }
 
     public static GuestService getInstance() {
-        if(instance == null) instance = new GuestService();
+        if (instance == null) instance = new GuestService();
+        instance.initMap();
         return instance;
     }
 
@@ -42,12 +49,22 @@ public class GuestService implements IGuestService {
 
     @Override
     public Guest getById(Integer id) {
-        return guestDao.getById(id);
+        try {
+            return guestDao.getById(id);
+        } catch (DaoException e) {
+            logger.log(Logger.Level.WARNING, "Couldn't find entity by id: " + id);
+            throw new ServiceException("Couldn't find entity by id: " + id);
+        }
     }
 
     @Override
     public void deleteGuest(Integer id) {
-        guestDao.delete(guestDao.getById(id));
+        try {
+            guestDao.delete(guestDao.getById(id));
+        } catch (DaoException e) {
+            logger.log(Logger.Level.WARNING, "Delete guest failed.");
+            throw new ServiceException("Delete guest failed.");
+        }
     }
 
     @Override
@@ -58,12 +75,12 @@ public class GuestService implements IGuestService {
                 .collect(Collectors.toList());
     }
 
-        @Override
-        public Integer getCountGuestInHotel() {
-            List<Guest> guestsInHotel = guestDao.getAll().stream()
-                    .filter(Guest::isCheckIn)
-                    .collect(Collectors.toList());
-            return guestsInHotel.size();
+    @Override
+    public Integer getCountGuestInHotel() {
+        List<Guest> guestsInHotel = guestDao.getAll().stream()
+                .filter(Guest::isCheckIn)
+                .collect(Collectors.toList());
+        return guestsInHotel.size();
     }
 
     @Override
