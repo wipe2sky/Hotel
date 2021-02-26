@@ -3,12 +3,14 @@ package com.hotel.ui.actions.guest;
 import com.hotel.model.Guest;
 import com.hotel.ui.actions.AbstractAction;
 import com.hotel.ui.actions.IAction;
+import com.hotel.util.logger.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class AddGuest extends AbstractAction implements IAction {
+    private static final Logger logger = new Logger(AddGuest.class.getName());
 
     @Override
     public void execute() {
@@ -21,12 +23,10 @@ public class AddGuest extends AbstractAction implements IAction {
             String firstName = reader.readLine();
             Guest guest = facade.addGuest(lastName, firstName);
 
-            System.out.println();
-            System.out.println("Гость " + guest.getLastName() + " " + guest.getFirstName() + " успешно добавлен." + " Id - " + guest.getId());
-            System.out.println();
+            logger.log(Logger.Level.INFO, "Guest " + guest.getLastName() + " " + guest.getFirstName() + " added." + " Id - " + guest.getId());
 
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.log(Logger.Level.WARNING, "Add guest failed", e);
         }
     }
 }

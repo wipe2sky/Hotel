@@ -1,14 +1,18 @@
 package com.hotel.ui.actions.room;
 
+import com.hotel.exceptions.ServiceException;
 import com.hotel.model.Room;
 import com.hotel.ui.actions.AbstractAction;
 import com.hotel.ui.actions.IAction;
+import com.hotel.util.logger.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class ChangeRoomPrice extends AbstractAction implements IAction {
+    private static final Logger logger = new Logger(ChangeRoomPrice.class.getName());
+
     @Override
     public void execute() {
         try {
@@ -21,13 +25,10 @@ public class ChangeRoomPrice extends AbstractAction implements IAction {
 
             facade.changeRoomPrice(roomId, price);
             Room room = facade.getRoomInfo(roomId);
+            logger.log(Logger.Level.INFO, "Cost of living per day in the room " + room.getNumber() + " has been changed to " + room.getPrice());
 
-            System.out.println();
-            System.out.println("Стоимость проживания за сутки в комнате " + room.getNumber() + " успешно изменена на " + room.getPrice());
-            System.out.println();
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (ServiceException | NumberFormatException | IOException e) {
+            logger.log(Logger.Level.WARNING, "Change room price failed", e);
         }
     }
 }

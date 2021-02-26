@@ -78,11 +78,8 @@ public class Guest extends AEntity {
     @Override
     public String toString() {
         return "Guest{" +
-                "id= " + getId() +
-                ", lastName='" + lastName + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", room=" + room +
-                ", services=" + services +
-                '}' + "\n";
+                "id = " + getId() +
+                ", lastName = '" + lastName + '\'' +
+                ", firstName = '" + firstName + '\'';
     }
 }

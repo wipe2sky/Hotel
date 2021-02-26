@@ -1,14 +1,19 @@
 package com.hotel.ui.actions.room;
 
+import com.hotel.exceptions.ServiceException;
 import com.hotel.model.Room;
 import com.hotel.ui.actions.AbstractAction;
 import com.hotel.ui.actions.IAction;
+import com.hotel.ui.actions.guest.GetCountGuestInHotel;
+import com.hotel.util.logger.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class AddRoom extends AbstractAction implements IAction {
+    private static final Logger logger = new Logger(AddRoom.class.getName());
+
     @Override
     public void execute() {
         try {
@@ -25,11 +30,9 @@ public class AddRoom extends AbstractAction implements IAction {
 
             Room room = facade.addRoom(number, capacity, stars, price);
 
-            System.out.println();
-            System.out.println("Комната успешно добавлена " + room);
-            System.out.println();
-        } catch (IOException e) {
-            e.printStackTrace();
+            logger.log(Logger.Level.INFO, "Room added " + room);
+        } catch (NumberFormatException |IOException e) {
+            logger.log(Logger.Level.WARNING, "Added room failed", e);
         }
     }
 }

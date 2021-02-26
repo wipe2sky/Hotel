@@ -1,14 +1,19 @@
 package com.hotel.ui.actions.history;
 
+import com.hotel.exceptions.ServiceException;
 import com.hotel.model.Guest;
 import com.hotel.ui.actions.AbstractAction;
 import com.hotel.ui.actions.IAction;
+import com.hotel.ui.actions.guest.GetCountGuestInHotel;
+import com.hotel.util.logger.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class GetCostOfLiving extends AbstractAction implements IAction {
+    private static final Logger logger = new Logger(GetCostOfLiving.class.getName());
+
     @Override
     public void execute() {
         try {
@@ -20,11 +25,9 @@ public class GetCostOfLiving extends AbstractAction implements IAction {
             Float cost = facade.getCostOfLiving(guestId);
             Guest guest = facade.getGuestById(guestId);
 
-            System.out.println();
-            System.out.println("Стоимость проживания гостя " + guest.getLastName() + " " + guest.getFirstName() +" равна: " + cost);
-            System.out.println();
-        }catch (IOException e){
-            e.printStackTrace();
+            logger.log(Logger.Level.INFO, "Cost of accommodation for Guest " + guest.getLastName() + " " + guest.getFirstName() +" = " + cost);
+        }catch (ServiceException | NumberFormatException |IOException e) {
+            logger.log(Logger.Level.WARNING, "Get cost of living failed", e);
         }
 
     }

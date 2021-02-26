@@ -14,8 +14,8 @@ public class ServiceDao extends AbstractDao<Service> implements IServiceDao {
     public static ServiceDao getInstance() {
         if(instance == null) instance = new ServiceDao();
         return instance;
-//        return Objects.requireNonNullElse(instance, new ServiceDao());
     }
+
     @Override
     public Service update(Service entity) {
         Service service = getById(entity.getId());

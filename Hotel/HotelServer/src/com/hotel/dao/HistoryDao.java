@@ -19,19 +19,6 @@ public class HistoryDao extends AbstractDao<History> implements IHistoryDao {
         return instance;
     }
 
-    public List<History> getGuestHistory(Integer guestId) {
-        return getAll().stream()
-                .filter(history ->  history.getGuest().getId().equals(guestId))
-                .collect(Collectors.toList());
-//        List<History> guestHistory = new ArrayList<>();
-//
-//        for (History history :
-//                getAll()) {
-//            if (history.getGuest().getId().equals(guestId)) guestHistory.add(history);
-//        }
-//        return guestHistory;
-    }
-
     @Override
     public History update(History entity) {
         History history = getById(entity.getId());

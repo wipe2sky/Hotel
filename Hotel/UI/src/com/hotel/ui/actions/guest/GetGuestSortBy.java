@@ -13,8 +13,6 @@ public class GetGuestSortBy extends AbstractAction implements IAction {
 
     @Override
     public void execute() {
-        System.out.println();
         facade.getGuestSortBy(comparatorStatus).forEach(System.out::println);
-        System.out.println();
     }
 }

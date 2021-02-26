@@ -27,36 +27,36 @@ public class Hotel {
 
     public static void main(String[] args) {
 
-        Guest guest1 = guestService.add("G1", "g1");
-        Guest guest2 = guestService.add("G2", "g2");
-        Guest guest3 = guestService.add("G3", "g3");
-        Guest guest4 = guestService.add("G4", "g4");
-
-        Room room1 = roomService.addRoom(12, 3, 3, 20F);
-        Room room2 = roomService.addRoom(22, 1, 5, 10F);
-        Room room3 = roomService.addRoom(33, 1, 5, 100F);
-        Room room4 = roomService.addRoom(13, 5, 4, 50F);
-        Room room5 = roomService.addRoom(6, 2, 2, 40F);
-
-        historyService.checkIn(guest1.getId(), room3.getId(), LocalDate.of(2021, 04, 17), LocalDate.of(2021, 04, 23));
-        historyService.checkOut(1);
-        historyService.checkIn(guest2.getId(), room3.getId(), LocalDate.of(2021, 02, 17), LocalDate.of(2021, 02, 19));
-        historyService.checkOut(2);
-        historyService.checkIn(guest3.getId(), room3.getId(), LocalDate.of(2021, 05, 17), LocalDate.of(2021, 05, 25));
-        historyService.checkOut(3);
-        historyService.checkIn(guest4.getId(), room3.getId(), LocalDate.of(2021, 03, 17), LocalDate.of(2021, 03, 21));
-        historyService.checkOut(4);
+//        Guest guest1 = guestService.add("G1", "g1");
+//        Guest guest2 = guestService.add("G2", "g2");
+//        Guest guest3 = guestService.add("G3", "g3");
+//        Guest guest4 = guestService.add("G4", "g4");
+//
+//        Room room1 = roomService.addRoom(12, 3, 3, 20F);
+//        Room room2 = roomService.addRoom(22, 1, 5, 10F);
+//        Room room3 = roomService.addRoom(33, 1, 5, 100F);
+//        Room room4 = roomService.addRoom(13, 5, 4, 50F);
+//        Room room5 = roomService.addRoom(6, 2, 2, 40F);
+//
+//        historyService.checkIn(guest1.getId(), room3.getId(), LocalDate.of(2021, 04, 17), LocalDate.of(2021, 04, 23));
+//        historyService.checkOut(1);
+//        historyService.checkIn(guest2.getId(), room3.getId(), LocalDate.of(2021, 02, 17), LocalDate.of(2021, 02, 19));
+//        historyService.checkOut(2);
+//        historyService.checkIn(guest3.getId(), room3.getId(), LocalDate.of(2021, 05, 17), LocalDate.of(2021, 05, 25));
+//        historyService.checkOut(3);
+//        historyService.checkIn(guest4.getId(), room3.getId(), LocalDate.of(2021, 03, 17), LocalDate.of(2021, 03, 21));
+//        historyService.checkOut(4);
 
 //        System.out.println(serviceForService.getAll());
 //        System.out.println("----------------");
 //        System.out.println(serviceForService.getSortByPrice());
 //        System.out.println(historyService.getAll());
-        List<History> histories = new ArrayList<>(historyService.getLast3GuestInRoom(3));
-        histories.forEach(history -> {
-            System.out.print(history.getGuest());
-            System.out.println(history.getCheckInDate());
-            System.out.println(history.getCheckOutDate());
-        });
+//        List<History> histories = new ArrayList<>(historyService.getLast3GuestInRoom(3));
+//        histories.forEach(history -> {
+//            System.out.print(history.getGuest());
+//            System.out.println(history.getCheckInDate());
+//            System.out.println(history.getCheckOutDate());
+//        });
 
         //        System.out.println(room1.getGuests());
 //        System.out.println(room2.getGuests());
