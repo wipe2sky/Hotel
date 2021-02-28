@@ -3,6 +3,7 @@
 #
 
 tomcat
+.gradle
 
 #
 # Default excludes
@@ -19,8 +20,11 @@ tomcat
 *.zip
 *.war
 *.ear
-*.sar
+*.ser
 *.class
+log*.txt
+*log.txt
+log.txt
 
 # Maven
 target/

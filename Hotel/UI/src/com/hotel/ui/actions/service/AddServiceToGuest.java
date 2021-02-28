@@ -5,7 +5,7 @@ import com.hotel.model.Guest;
 import com.hotel.model.Service;
 import com.hotel.ui.actions.AbstractAction;
 import com.hotel.ui.actions.IAction;
-import com.hotel.util.logger.Logger;
+import com.hotel.util.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,11 +27,11 @@ public class AddServiceToGuest extends AbstractAction implements IAction {
             Service service = facade.getServiceById(serviceId);
             Guest guest = facade.getGuestById(guestId);
 
-            if(guest.isCheckIn()) {
+//            if(guest.isCheckIn()) {
                 facade.addServiceToGuest(serviceId, guestId);
                 logger.log(Logger.Level.INFO, "Service " + service.getName()
                         + " added to guest " + guest.getLastName() + " " + guest.getFirstName());
-            } else                 logger.log(Logger.Level.INFO, "Guest id "+ guest.getId()+ " not found.");
+//            } else                 logger.log(Logger.Level.INFO, "Guest id "+ guest.getId()+ " not found.");
         } catch (ServiceException | NumberFormatException |IOException e) {
             logger.log(Logger.Level.WARNING, "Add service to guest failed", e);
         }

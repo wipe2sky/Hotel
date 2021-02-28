@@ -3,7 +3,7 @@ package com.hotel.ui.actions.guest;
 import com.hotel.model.Guest;
 import com.hotel.ui.actions.AbstractAction;
 import com.hotel.ui.actions.IAction;
-import com.hotel.util.logger.Logger;
+import com.hotel.util.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;

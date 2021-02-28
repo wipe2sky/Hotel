@@ -7,20 +7,20 @@ import com.hotel.ui.actions.room.*;
 import com.hotel.ui.actions.service.*;
 import com.hotel.util.comparators.ComparatorStatus;
 
-import java.util.Objects;
-
 public class Builder {
     private static Builder instance;
     private Menu rootMenu;
+    private static final String EXIT = "Выход";
+    private static final String COMEBACK = "Назад";
 
     private Builder() {
     }
 
     public static Builder getInstance() {
-        return Objects.requireNonNullElse(instance, new Builder());
+        if(instance == null) instance = new Builder();
+        return instance;
     }
-    private static final String EXIT = "Выход";
-    private static final String COMEBACK = "Назад";
+
 
     public void buildMenu() {
         rootMenu = new Menu("Главное меню");
@@ -46,7 +46,6 @@ public class Builder {
 
         roomMenu.addMenuItems(new MenuItem(EXIT, () -> {
         }, null));
-        roomMenu.addMenuItems(new MenuItem("Добавить номер", new AddRoom(), roomMenu));
         roomMenu.addMenuItems(new MenuItem("Поставить номер на уборку", new SetRoomCleaningStatus(true), roomMenu));
         roomMenu.addMenuItems(new MenuItem("Снять номер с уборки", new SetRoomCleaningStatus(false), roomMenu));
         roomMenu.addMenuItems(new MenuItem("Информация о номере", new GetRoomInfo(), roomMenu));
@@ -59,6 +58,7 @@ public class Builder {
         roomMenu.addMenuItems(new MenuItem("Изменить цену номера", new ChangeRoomPrice(), roomMenu));
         roomMenu.addMenuItems(new MenuItem("Поставить номер в ремонт", new SetRoomRepairStatus(true), roomMenu));
         roomMenu.addMenuItems(new MenuItem("Снять номер с ремонта", new SetRoomRepairStatus(false), roomMenu));
+        roomMenu.addMenuItems(new MenuItem("Добавить номер", new AddRoom(), roomMenu));
         roomMenu.addMenuItems(new MenuItem("Удалить номер", new DeleteRoom(), roomMenu));
         roomMenu.addMenuItems(new MenuItem(COMEBACK, () -> {
         }, rootMenu));

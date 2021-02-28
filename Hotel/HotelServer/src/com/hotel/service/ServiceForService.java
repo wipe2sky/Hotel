@@ -14,12 +14,9 @@ import com.hotel.model.History;
 import com.hotel.model.Service;
 import com.hotel.util.IdGenerator;
 import com.hotel.util.comparators.ServiceCostComparator;
-import com.hotel.util.logger.Logger;
+import com.hotel.util.Logger;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.List;
-import java.util.Properties;
 import java.util.stream.Collectors;
 
 public class ServiceForService implements IServiceForService {
@@ -48,7 +45,7 @@ public class ServiceForService implements IServiceForService {
     @Override
     public Service addService(String name, Float price) {
         Service service = new Service(name, price);
-        service.setId(IdGenerator.generateServiceId());
+        service.setId(IdGenerator.getInstance().generateServiceId());
         serviceDao.save(service);
         return service;
     }
@@ -56,8 +53,8 @@ public class ServiceForService implements IServiceForService {
     @Override
     public void deleteService(Integer serviceId) {
         try {
-            serviceDao.delete(serviceDao.getById(serviceId));
-        } catch (DaoException e) {
+            serviceDao.delete(getById(serviceId));
+        } catch (ServiceException e) {
             logger.log(Logger.Level.WARNING, "Delete service failed.");
             throw new ServiceException("Delete service failed.");
         }
@@ -79,11 +76,14 @@ public class ServiceForService implements IServiceForService {
             Service service = serviceDao.getById(serviceId);
             Guest guest = guestDao.getById(guestId);
             History history = historyDao.getById(guestId);
-            guest.getServices().add(service);
-            history.setCost(history.getCost() + service.getPrice());
-            history.getServices().add(service);
-            guestDao.update(guest);
-            historyDao.update(history);
+            if(guest.isCheckIn()) {
+                guest.getServices().add(service);
+                history.setCostOfService(history.getCostOfService() + service.getPrice());
+                history.getServices().add(service);
+                guestDao.update(guest);
+                historyDao.update(history);
+            } else throw new ServiceException("Add service to the guest failed. Guest doesn't stay in hotel.");
+
         } catch (DaoException e) {
             logger.log(Logger.Level.WARNING, "Add service to the guest failed.");
             throw new ServiceException("Add service to the guest failed.");
@@ -92,7 +92,7 @@ public class ServiceForService implements IServiceForService {
 
     @Override
     public List<Service> getSortByPrice() {
-        return serviceDao.getAll().stream()
+        return getAll().stream()
                 .sorted(new ServiceCostComparator())
                 .collect(Collectors.toList());
     }
@@ -105,10 +105,10 @@ public class ServiceForService implements IServiceForService {
     @Override
     public void changeServicePrice(Integer id, Float price) {
         try {
-            Service service = serviceDao.getById(id);
+            Service service = getById(id);
             service.setPrice(price);
             serviceDao.update(service);
-        } catch (DaoException e) {
+        } catch (ServiceException e) {
             logger.log(Logger.Level.WARNING, "Change service price failed.");
             throw new ServiceException("Change service price failed.");
         }

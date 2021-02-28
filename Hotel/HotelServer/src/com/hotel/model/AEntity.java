@@ -1,6 +1,8 @@
 package com.hotel.model;
 
-public abstract class AEntity {
+import java.io.Serializable;
+
+public abstract class AEntity implements Serializable {
     private Integer id;
 
     public Integer getId() {
