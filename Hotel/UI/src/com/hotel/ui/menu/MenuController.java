@@ -1,9 +1,10 @@
 package com.hotel.ui.menu;
 
+import com.hotel.util.generator.IdGenerator;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Objects;
 
 public class MenuController {
     private static MenuController instance;
@@ -16,13 +17,15 @@ public class MenuController {
     }
 
     public static MenuController getInstance() {
-        return Objects.requireNonNullElse(instance, new MenuController());
+        if(instance == null) instance = new MenuController();
+        return instance;
     }
 
     public void run() {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))
         ) {
             builder.buildMenu();
+            IdGenerator.getInstance();
             navigator.setCurrentMenu(builder.getRootMenu());
             navigator.printMenu();
             Integer index = Integer.parseInt(reader.readLine());

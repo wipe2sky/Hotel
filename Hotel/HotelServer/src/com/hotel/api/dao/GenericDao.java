@@ -8,11 +8,11 @@ public interface GenericDao<T extends AEntity> {
 
     void save(T entity);
 
-    T getById (Integer id);
+    T getById(Integer id);
 
     List<T> getAll();
 
-    void delete (T entity);
+    void delete(T entity);
 
     void deleteById(Integer id);
 

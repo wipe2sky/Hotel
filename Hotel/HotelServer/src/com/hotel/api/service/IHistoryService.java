@@ -16,6 +16,7 @@ public interface IHistoryService {
     List<History> getLast3GuestInRoom(Integer roomId);
 
     List<History> getAll();
+
     List<Service> getListOfGuestService(Integer guestId);
 
 }

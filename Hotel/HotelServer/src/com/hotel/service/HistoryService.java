@@ -10,11 +10,12 @@ import com.hotel.dao.RoomDao;
 import com.hotel.exceptions.DaoException;
 import com.hotel.exceptions.ServiceException;
 import com.hotel.model.*;
-import com.hotel.util.IdGenerator;
+import com.hotel.util.generator.IdGenerator;
 import com.hotel.util.comparators.HistoryDateOutComparator;
-import com.hotel.util.logger.Logger;
+import com.hotel.util.Logger;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -41,7 +42,7 @@ public class HistoryService implements IHistoryService {
     @Override
     public History addHistory(Room room, Guest guest, Integer daysStay) {
         History history = new History(room, guest, LocalDate.now(), LocalDate.now().plusDays(daysStay));
-        history.setId(IdGenerator.generateHistoryId());
+        history.setId(IdGenerator.getInstance().generateHistoryId());
         historyDao.save(history);
         return history;
     }
@@ -79,13 +80,19 @@ public class HistoryService implements IHistoryService {
             Guest guest = guestDao.getById(guestId);
             Room room = roomDao.getById(guest.getRoom().getId());
             History history = historyDao.getById(guest.getLastHistory().getId());
+
             logger.log(Logger.Level.INFO, String.format("Check-out of the guest № %d to the room № %d", guestId, room.getId()));
 
+            history.setCostOfLiving(ChronoUnit.DAYS.between(history.getCheckInDate(),
+                    LocalDate.now()) > 1
+                    ?  ChronoUnit.DAYS.between(history.getCheckInDate(), LocalDate.now()) * room.getPrice()
+                    : room.getPrice());
             room.getGuests().remove(guest);
             room.decrementNumberOfGuests();
             guest.setRoom(null);
             guest.setCheckIn(false);
             guest.getLastHistory().setCheckOutDate(LocalDate.now());
+
             if (room.getGuests().isEmpty()) {
                 room.setStatus(RoomStatus.FREE);
             }
@@ -105,7 +112,7 @@ public class HistoryService implements IHistoryService {
     public Float getCostOfLiving(Integer guestId) {
         try {
             Guest guest = guestDao.getById(guestId);
-            return guest.getLastHistory().getCost();
+            return guest.getLastHistory().getCostOfLiving() + guest.getLastHistory().getCostOfService();
         } catch (DaoException e) {
             logger.log(Logger.Level.WARNING, "Get cost of living failed.");
             throw new ServiceException("Get cost of living failed.");
@@ -134,6 +141,7 @@ public class HistoryService implements IHistoryService {
                 .sorted(Comparator.comparing(AEntity::getId).reversed())
                 .collect(Collectors.toList());
     }
+
 
     @Override
     public List<Service> getListOfGuestService(Integer guestId) {

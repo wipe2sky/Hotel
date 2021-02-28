@@ -1,7 +1,6 @@
 package com.hotel.ui.menu;
 
 import java.util.List;
-import java.util.Objects;
 
 public class Navigator {
     private static Navigator instance;
@@ -11,7 +10,8 @@ public class Navigator {
     }
 
     public static Navigator getInstance() {
-        return Objects.requireNonNullElse(instance, new Navigator());
+        if(instance == null) instance = new Navigator() ;
+        return instance;
     }
 
     public void printMenu() {

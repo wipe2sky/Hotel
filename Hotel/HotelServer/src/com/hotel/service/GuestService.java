@@ -6,18 +6,18 @@ import com.hotel.dao.GuestDao;
 import com.hotel.exceptions.DaoException;
 import com.hotel.exceptions.ServiceException;
 import com.hotel.model.Guest;
-import com.hotel.util.IdGenerator;
+import com.hotel.util.generator.IdGenerator;
 import com.hotel.util.comparators.ComparatorStatus;
 import com.hotel.util.comparators.GuestDateComparator;
 import com.hotel.util.comparators.GuestLastNameComparator;
-import com.hotel.util.logger.Logger;
+import com.hotel.util.Logger;
 
 import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class GuestService implements IGuestService {
+public class GuestService implements IGuestService{
     private static final Logger logger = new Logger(GuestService.class.getName());
 
     private static GuestService instance;
@@ -34,15 +34,17 @@ public class GuestService implements IGuestService {
     }
 
     public static GuestService getInstance() {
-        if (instance == null) instance = new GuestService();
-        instance.initMap();
+        if (instance == null) {
+            instance = new GuestService();
+            instance.initMap();
+        }
         return instance;
     }
 
     @Override
     public Guest add(String firstName, String lastName) {
         Guest guest = new Guest(firstName, lastName);
-        guest.setId(IdGenerator.generateGuestId());
+        guest.setId(IdGenerator.getInstance().generateGuestId());
         guestDao.save(guest);
         return guest;
     }
@@ -60,8 +62,8 @@ public class GuestService implements IGuestService {
     @Override
     public void deleteGuest(Integer id) {
         try {
-            guestDao.delete(guestDao.getById(id));
-        } catch (DaoException e) {
+            guestDao.delete(getById(id));
+        } catch (ServiceException e) {
             logger.log(Logger.Level.WARNING, "Delete guest failed.");
             throw new ServiceException("Delete guest failed.");
         }
@@ -69,7 +71,7 @@ public class GuestService implements IGuestService {
 
     @Override
     public List<Guest> getShortBy(ComparatorStatus comparatorStatus) {
-        return guestDao.getAll().stream()
+        return getAll().stream()
                 .filter(Guest::isCheckIn)
                 .sorted(comparatorMap.get(comparatorStatus))
                 .collect(Collectors.toList());
@@ -77,10 +79,9 @@ public class GuestService implements IGuestService {
 
     @Override
     public Integer getCountGuestInHotel() {
-        List<Guest> guestsInHotel = guestDao.getAll().stream()
+        return getAll().stream()
                 .filter(Guest::isCheckIn)
-                .collect(Collectors.toList());
-        return guestsInHotel.size();
+                .collect(Collectors.toList()).size();
     }
 
     @Override
@@ -88,9 +89,10 @@ public class GuestService implements IGuestService {
         return guestDao.getAll();
     }
 
+
     @Override
     public List<Guest> getAllGuestInHotel() {
-        return guestDao.getAll().stream()
+        return getAll().stream()
                 .filter(Guest::isCheckIn)
                 .collect(Collectors.toList());
     }

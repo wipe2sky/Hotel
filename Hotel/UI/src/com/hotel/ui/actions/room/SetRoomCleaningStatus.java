@@ -4,7 +4,7 @@ import com.hotel.exceptions.ServiceException;
 import com.hotel.model.Room;
 import com.hotel.ui.actions.AbstractAction;
 import com.hotel.ui.actions.IAction;
-import com.hotel.util.logger.Logger;
+import com.hotel.util.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -38,7 +38,7 @@ public class SetRoomCleaningStatus extends AbstractAction implements IAction {
             }
 
         } catch (ServiceException | NumberFormatException |IOException e) {
-            logger.log(Logger.Level.WARNING, "Set room cleaning status failed", e);
+            logger.log(Logger.Level.WARNING, e.getMessage(), e);
         }
     }
 }
