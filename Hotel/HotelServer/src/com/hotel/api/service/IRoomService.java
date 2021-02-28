@@ -7,7 +7,6 @@ import com.hotel.util.comparators.ComparatorStatus;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Properties;
 
 public interface IRoomService {
 
@@ -33,5 +32,7 @@ public interface IRoomService {
     void setRepairStatus(Integer roomId, boolean bol);
 
     List<Room> getAll();
+
+
 }
 

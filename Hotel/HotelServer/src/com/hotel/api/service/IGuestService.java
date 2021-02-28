@@ -18,6 +18,7 @@ public interface IGuestService {
 
     List<Guest> getAll();
 
+
     List<Guest> getAllGuestInHotel();
 
 }

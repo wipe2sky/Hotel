@@ -3,19 +3,23 @@ package com.hotel.dao;
 import com.hotel.api.dao.GenericDao;
 import com.hotel.exceptions.DaoException;
 import com.hotel.model.AEntity;
-import com.hotel.util.logger.Logger;
+import com.hotel.util.Logger;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractDao<T extends AEntity> implements GenericDao<T> {
+public abstract class AbstractDao<T extends AEntity> implements GenericDao<T>, Serializable {
     protected final Logger logger = new Logger(this.getClass().getName());
-    private List<T> repository = new ArrayList<>();
+    protected List<T> repository = new ArrayList<>();
+
+
 
     @Override
     public void save(T entity) {
         repository.add(entity);
     }
+
 
     @Override
     public T getById(Integer id) {

@@ -10,7 +10,8 @@ public class History extends AEntity{
     private Guest guest;
     private LocalDate checkInDate;
     private LocalDate checkOutDate;
-    private Float cost;
+    private Float costOfLiving;
+    private Float costOfService = 0F;
     private List<Service> services = new ArrayList<>();
 
     public History(Room room, Guest guest, LocalDate checkInDate, LocalDate checkOutDate) {
@@ -18,7 +19,7 @@ public class History extends AEntity{
         setGuest(guest);
         setCheckInDate(checkInDate);
         setCheckOutDate(checkOutDate);
-        setCost(ChronoUnit.DAYS.between(getCheckInDate(), getCheckOutDate()) * room.getPrice());
+        setCostOfLiving(ChronoUnit.DAYS.between(getCheckInDate(), getCheckOutDate()) * room.getPrice());
     }
 
     public Room getRoom() {
@@ -53,12 +54,20 @@ public class History extends AEntity{
         this.checkOutDate = checkOutDate;
     }
 
-    public Float getCost() {
-        return cost;
+    public Float getCostOfLiving() {
+        return costOfLiving;
     }
 
-    public void setCost(Float cost) {
-        this.cost = cost;
+    public void setCostOfLiving(Float costOfLiving) {
+        this.costOfLiving = costOfLiving;
+    }
+
+    public Float getCostOfService() {
+        return costOfService;
+    }
+
+    public void setCostOfService(Float costOfService) {
+        this.costOfService = costOfService;
     }
 
     public List<Service> getServices() {

@@ -1,13 +1,10 @@
-package com.hotel.util.logger;
+package com.hotel.util;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class Logger {
+public class Logger implements Serializable {
 
     private String name;
     private static final String PATTERN_DATE_AND_TIME = "HH:mm / dd-MM-yy";
