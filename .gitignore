@@ -20,7 +20,6 @@ tomcat
 *.zip
 *.war
 *.ear
-*.ser
 *.class
 log*.txt
 *log.txt

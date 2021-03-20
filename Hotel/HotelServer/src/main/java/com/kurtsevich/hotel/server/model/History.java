@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class History extends AEntity{
     private Room room;
@@ -88,5 +89,18 @@ public class History extends AEntity{
                 ", checkOutDate=" + checkOutDate +
                 ", services=" + services +
                 '}' + "\n";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        History history = (History) o;
+        return Objects.equals(room, history.room) && Objects.equals(getId(), history.getId())&& Objects.equals(guest, history.guest) && Objects.equals(checkInDate, history.checkInDate) && Objects.equals(checkOutDate, history.checkOutDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(room, getId(), guest, checkInDate, checkOutDate);
     }
 }

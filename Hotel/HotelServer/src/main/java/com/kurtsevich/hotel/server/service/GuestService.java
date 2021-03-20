@@ -46,8 +46,8 @@ public class GuestService implements IGuestService {
         try {
             return guestDao.getById(id);
         } catch (DaoException e) {
-            logger.log(Logger.Level.WARNING, "Couldn't find entity by id: " + id);
-            throw new ServiceException("Couldn't find entity by id: " + id);
+            logger.log(Logger.Level.WARNING, "Couldn't find entity by id: " + id, e);
+            throw new ServiceException("Couldn't find entity by id: " + id, e);
         }
     }
 
@@ -56,8 +56,8 @@ public class GuestService implements IGuestService {
         try {
             guestDao.delete(getById(id));
         } catch (ServiceException e) {
-            logger.log(Logger.Level.WARNING, "Delete guest failed.");
-            throw new ServiceException("Delete guest failed.");
+            logger.log(Logger.Level.WARNING, "Delete guest failed.", e);
+            throw new ServiceException("Delete guest failed.", e);
         }
     }
 

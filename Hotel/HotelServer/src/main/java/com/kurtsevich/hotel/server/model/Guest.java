@@ -2,6 +2,7 @@ package com.kurtsevich.hotel.server.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Guest extends AEntity {
     private String firstName;
@@ -75,11 +76,25 @@ public class Guest extends AEntity {
         this.histories = histories;
     }
 
+
     @Override
     public String toString() {
         return "Guest{" +
                 "id = " + getId() +
                 ", lastName = '" + lastName + '\'' +
                 ", firstName = '" + firstName + '\'';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Guest)) return false;
+        Guest guest = (Guest) o;
+        return Objects.equals(firstName, guest.firstName) && Objects.equals(lastName, guest.lastName) && Objects.equals(getId(), guest.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(firstName, lastName, getId());
     }
 }

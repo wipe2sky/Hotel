@@ -17,7 +17,7 @@ public class GuestDao extends AbstractDao<Guest> implements IGuestDao {
         try {
             repository.addAll(serializationHandler.deserialize(Guest.class));
         } catch (ServiceException e) {
-            logger.log(Logger.Level.WARNING, "Deserialization failed");
+            logger.log(Logger.Level.WARNING, "Deserialization failed",e);
         }
     }
 
@@ -35,7 +35,7 @@ public class GuestDao extends AbstractDao<Guest> implements IGuestDao {
             guest.setHistories(entity.getHistories());
             return guest;
         } catch (DaoException e) {
-            logger.log(Logger.Level.WARNING, "Guest update failed");
+            logger.log(Logger.Level.WARNING, "Guest update failed",e);
             throw new DaoException("Guest update failed", e);
         }
     }

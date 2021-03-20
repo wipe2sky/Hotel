@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.lang.reflect.Field;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -57,7 +58,7 @@ public class ConfigPropertyAnnotationObjectConfigurator implements ObjectConfigu
                 }
 
                 String propertyName = annotation.propertyName().isEmpty()
-                        ? propertiesMap.get(t.getClass().getSimpleName() + "." + field.getName())
+                        ? propertiesMap.get(t.getClass().getSimpleName().toLowerCase(Locale.ROOT) + "." + field.getName().toLowerCase(Locale.ROOT))
                         : propertiesMap.get(annotation.propertyName());
                 field.setAccessible(true);
                 String type;

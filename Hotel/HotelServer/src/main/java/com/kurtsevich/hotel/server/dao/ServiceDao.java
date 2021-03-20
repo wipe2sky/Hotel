@@ -17,7 +17,7 @@ public class ServiceDao extends AbstractDao<Service> implements IServiceDao {
         try {
             repository.addAll(serializationHandler.deserialize(Service.class));
         } catch (ServiceException e) {
-            logger.log(Logger.Level.WARNING, "Deserialization failed");
+            logger.log(Logger.Level.WARNING, "Deserialization failed",e);
         }
     }
 
@@ -30,7 +30,7 @@ public class ServiceDao extends AbstractDao<Service> implements IServiceDao {
             service.setPrice(entity.getPrice());
             return service;
         } catch (DaoException e) {
-            logger.log(Logger.Level.WARNING, "Service update failed");
+            logger.log(Logger.Level.WARNING, "Service update failed",e);
             throw new DaoException("Service update failed", e);
         }
     }

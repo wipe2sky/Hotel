@@ -25,37 +25,9 @@ public class IdGenerator implements Serializable {
             this.serviceId = idGenerator.serviceId;
             this.historyId = idGenerator.historyId;
         } catch (ServiceException e) {
-            logger.log(Logger.Level.WARNING, "Deserialization failed");
+            logger.log(Logger.Level.WARNING, "Deserialization failed", e);
         }
     }
-
-//    @PostConstruct
-//    public void init(){
-//        try {
-//            idGenerator = SerializationHandler.deserialize();
-//            this.guestId = idGenerator.guestId;
-//            this.roomId = idGenerator.roomId;
-//            this.serviceId = idGenerator.serviceId;
-//            this.historyId = idGenerator.historyId;
-//        } catch (ServiceException e) {
-//            logger.log(Logger.Level.WARNING, "Deserialization failed");
-//        }
-//    }
-//    private IdGenerator() {
-//
-//    }
-
-//    public static IdGenerator getInstance() {
-//        if(instance == null) {
-//            try {
-//                instance = SerializationHandler.deserialize();
-//            } catch (ServiceException e) {
-//                logger.log(Logger.Level.WARNING, "Deserialization failed");
-//                instance = new IdGenerator();
-//            }
-//        }
-//        return instance;
-//    }
 
     public Integer generateGuestId() {
         return guestId++;
