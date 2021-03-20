@@ -2,6 +2,7 @@ package com.kurtsevich.hotel.ui.menu;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Menu {
     private String name;
@@ -21,5 +22,18 @@ public class Menu {
 
     public void addMenuItems(MenuItem item) {
         menuItems.add(item);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Menu menu = (Menu) o;
+        return Objects.equals(name, menu.name) && Objects.equals(menuItems, menu.menuItems);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, menuItems);
     }
 }

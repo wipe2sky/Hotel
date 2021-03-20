@@ -35,20 +35,10 @@ public class HistoryService implements IHistoryService {
         this.idGenerator = idGenerator;
     }
 
-    //    private HistoryService() {
-////        this.guestDao = GuestDao.getInstance();
-//        this.roomDao = RoomDao.getInstance();
-//        this.historyDao = HistoryDao.getInstance();
-//    }
-//    public static HistoryService getInstance() {
-//        if(instance == null) instance = new HistoryService();
-//        return instance;
-//    }
 
     @Override
     public History addHistory(Room room, Guest guest, Integer daysStay) {
         History history = new History(room, guest, LocalDate.now(), LocalDate.now().plusDays(daysStay));
-//        history.setId(IdGenerator.getInstance().generateHistoryId());
         history.setId(idGenerator.generateHistoryId());
         historyDao.save(history);
         return history;
@@ -76,8 +66,8 @@ public class HistoryService implements IHistoryService {
                 roomDao.update(room);
             } else logger.log(Logger.Level.INFO, "Room " + roomId + " busy.");
         } catch (DaoException e) {
-            logger.log(Logger.Level.WARNING, "Chek-in failed.");
-            throw new ServiceException("Chek-in failed.");
+            logger.log(Logger.Level.WARNING, "Chek-in failed.", e);
+            throw new ServiceException("Chek-in failed.", e);
         }
     }
 
@@ -110,8 +100,8 @@ public class HistoryService implements IHistoryService {
             roomDao.update(room);
             guestDao.update(guest);
         } catch (DaoException e) {
-            logger.log(Logger.Level.WARNING, "Chek-out failed.");
-            throw new ServiceException("Chek-out failed.");
+            logger.log(Logger.Level.WARNING, "Chek-out failed.", e);
+            throw new ServiceException("Chek-out failed.", e);
         }
     }
 
@@ -121,8 +111,8 @@ public class HistoryService implements IHistoryService {
             Guest guest = guestDao.getById(guestId);
             return guest.getLastHistory().getCostOfLiving() + guest.getLastHistory().getCostOfService();
         } catch (DaoException e) {
-            logger.log(Logger.Level.WARNING, "Get cost of living failed.");
-            throw new ServiceException("Get cost of living failed.");
+            logger.log(Logger.Level.WARNING, "Get cost of living failed.", e);
+            throw new ServiceException("Get cost of living failed.", e);
         }
     }
 
@@ -155,8 +145,8 @@ public class HistoryService implements IHistoryService {
         try {
             return guestDao.getById(guestId).getServices();
         } catch (DaoException e) {
-            logger.log(Logger.Level.WARNING, "Get list of guest service failed.");
-            throw new ServiceException("Get list of guest service failed.");
+            logger.log(Logger.Level.WARNING, "Get list of guest service failed.", e);
+            throw new ServiceException("Get list of guest service failed.", e);
         }
     }
 }

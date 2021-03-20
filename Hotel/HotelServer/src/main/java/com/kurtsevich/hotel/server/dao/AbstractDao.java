@@ -24,8 +24,9 @@ public abstract class AbstractDao<T extends AEntity> implements GenericDao<T> {
     public T getById(Integer id) {
         for (T entity :
                 repository) {
-            if (id.equals(entity.getId()))
+            if (id.equals(entity.getId())) {
                 return entity;
+            }
         }
         logger.log(Logger.Level.WARNING, "Couldn't find entity by id: " + id);
         throw new DaoException("Couldn't find entity by id: " + id);

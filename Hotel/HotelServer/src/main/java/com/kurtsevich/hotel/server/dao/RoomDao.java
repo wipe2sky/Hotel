@@ -17,7 +17,7 @@ public class RoomDao extends AbstractDao<Room> implements IRoomDao {
         try {
             repository.addAll(serializationHandler.deserialize(Room.class));
         } catch (ServiceException e) {
-            logger.log(Logger.Level.WARNING, "Deserialization failed");
+            logger.log(Logger.Level.WARNING, "Deserialization failed",e);
         }
     }
 
@@ -37,7 +37,7 @@ public class RoomDao extends AbstractDao<Room> implements IRoomDao {
             room.setHistories(entity.getHistories());
             return room;
         } catch (DaoException e) {
-            logger.log(Logger.Level.WARNING, "Room update failed");
+            logger.log(Logger.Level.WARNING, "Room update failed",e);
             throw new DaoException("Room update failed", e);
         }
     }

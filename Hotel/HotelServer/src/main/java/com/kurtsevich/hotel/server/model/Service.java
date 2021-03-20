@@ -31,13 +31,13 @@ private Float price;
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Service that = (Service) o;
-        return Objects.equals(getId(), that.getId()) && Objects.equals(name, that.name) && Objects.equals(price, that.price);
+        Service service = (Service) o;
+        return Objects.equals(getId(), service.getId()) && Objects.equals(name, service.name) && Objects.equals(price, service.price);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId());
+        return Objects.hash(getId(), name, price);
     }
 
     @Override

@@ -2,6 +2,8 @@ package com.kurtsevich.hotel.ui.menu;
 
 import com.kurtsevich.hotel.ui.actions.IAction;
 
+import java.util.Objects;
+
 public class MenuItem {
     private String title;
     private IAction action;
@@ -23,5 +25,18 @@ public class MenuItem {
 
     public Menu getNextMenu() {
         return nextMenu;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MenuItem menuItem = (MenuItem) o;
+        return Objects.equals(title, menuItem.title) && Objects.equals(action, menuItem.action) && Objects.equals(nextMenu, menuItem.nextMenu);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, action, nextMenu);
     }
 }

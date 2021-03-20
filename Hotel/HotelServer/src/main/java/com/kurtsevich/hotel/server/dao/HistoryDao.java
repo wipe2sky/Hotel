@@ -17,7 +17,7 @@ public class HistoryDao extends AbstractDao<History> implements IHistoryDao {
         try {
             repository.addAll(serializationHandler.deserialize(History.class));
         } catch (ServiceException e) {
-            logger.log(Logger.Level.WARNING, "Deserialization failed");
+            logger.log(Logger.Level.WARNING, "Deserialization failed", e);
         }
     }
 
@@ -33,7 +33,7 @@ public class HistoryDao extends AbstractDao<History> implements IHistoryDao {
             history.setServices(entity.getServices());
             return history;
         } catch (DaoException e) {
-            logger.log(Logger.Level.WARNING, "History update failed");
+            logger.log(Logger.Level.WARNING, "History update failed", e);
             throw new DaoException("History update failed", e);
         }
     }

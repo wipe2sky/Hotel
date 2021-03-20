@@ -118,12 +118,12 @@ public class Room extends AEntity{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Room room = (Room) o;
-        return number.equals(room.number) && capacity.equals(room.capacity);
+        return Objects.equals(getId(), room.getId()) && Objects.equals(number, room.number) && Objects.equals(capacity, room.capacity) && Objects.equals(stars, room.stars) && Objects.equals(price, room.price);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(number);
+        return Objects.hash(getId(), number, capacity, stars, price);
     }
 
     @Override

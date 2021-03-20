@@ -45,28 +45,6 @@ public class RoomService implements IRoomService {
     }
 
 
-//    @PostConstruct
-//    private void init() {
-//
-//        comparatorMap.put(ComparatorStatus.PRICE, new RoomPriceComparator());
-//        comparatorMap.put(ComparatorStatus.CAPACITY, new RoomCapacityComparator());
-//        comparatorMap.put(ComparatorStatus.STARS, new RoomStarsComparator());
-//    }
-
-//
-//    public RoomService() {
-//        this.roomDao = RoomDao.getInstance();
-//    }
-
-//    public static RoomService getInstance() {
-//        if (instance == null) {
-//            instance = new RoomService();
-//            instance.initMap();
-//        }
-//
-//        return instance;
-//    }
-
     @Override
     public Room addRoom(Integer number, Integer capacity, Integer stars, Float price) {
         Room room = new Room(number, capacity, stars, price);
@@ -80,8 +58,8 @@ public class RoomService implements IRoomService {
         try {
             roomDao.delete(getInfo(id));
         } catch (ServiceException e) {
-            logger.log(Logger.Level.WARNING, "Delete room failed.");
-            throw new ServiceException("Delete room failed.");
+            logger.log(Logger.Level.WARNING, "Delete room failed.", e);
+            throw new ServiceException("Delete room failed.", e);
         }
     }
 
@@ -91,8 +69,8 @@ public class RoomService implements IRoomService {
         try {
             room = getInfo(roomId);
         } catch (ServiceException e) {
-            logger.log(Logger.Level.WARNING, "Set cleaning status failed.");
-            throw new ServiceException("Set cleaning status failed.");
+            logger.log(Logger.Level.WARNING, "Set cleaning status failed.", e);
+            throw new ServiceException("Set cleaning status failed.", e);
         }
         if (!allowRoomStatus) throw new ServiceException("Changed status disable.");
         if (status.equals(room.getIsCleaning())) {
@@ -112,8 +90,8 @@ public class RoomService implements IRoomService {
             room.setPrice(price);
             roomDao.update(room);
         } catch (ServiceException e) {
-            logger.log(Logger.Level.WARNING, "Change room price failed.");
-            throw new ServiceException("Change room price failed.");
+            logger.log(Logger.Level.WARNING, "Change room price failed.", e);
+            throw new ServiceException("Change room price failed.", e);
         }
     }
 
@@ -145,8 +123,8 @@ public class RoomService implements IRoomService {
         try {
             return roomDao.getById(roomId);
         } catch (DaoException e) {
-            logger.log(Logger.Level.WARNING, "Get room info failed.");
-            throw new ServiceException("Get room info failed.");
+            logger.log(Logger.Level.WARNING, "Get room info failed.", e);
+            throw new ServiceException("Get room info failed.", e);
         }
     }
 
@@ -158,8 +136,8 @@ public class RoomService implements IRoomService {
                     .limit(countOfHistories)
                     .collect(Collectors.toList());
         } catch (ServiceException e) {
-            logger.log(Logger.Level.WARNING, "Get room history failed.");
-            throw new ServiceException("Get room History failed.");
+            logger.log(Logger.Level.WARNING, "Get room history failed.",e);
+            throw new ServiceException("Get room History failed.",e);
         }
     }
 
@@ -169,8 +147,8 @@ public class RoomService implements IRoomService {
         try {
             room = getInfo(roomId);
         } catch (ServiceException e) {
-            logger.log(Logger.Level.WARNING, "Set repair status failed.");
-            throw new ServiceException("Set repair status failed.");
+            logger.log(Logger.Level.WARNING, "Set repair status failed.", e);
+            throw new ServiceException("Set repair status failed.",e);
         }
         if (!allowRoomStatus) throw new ServiceException("Changed status disable.");
 
