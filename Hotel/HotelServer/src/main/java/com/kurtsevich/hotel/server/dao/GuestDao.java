@@ -14,10 +14,16 @@ public class GuestDao extends AbstractDao<Guest> implements IGuestDao {
 
     @InjectByType
     public GuestDao(SerializationHandler serializationHandler) {
+        deserialize(serializationHandler);
+
+    }
+
+    private void deserialize(SerializationHandler serializationHandler) {
         try {
             repository.addAll(serializationHandler.deserialize(Guest.class));
         } catch (ServiceException e) {
             logger.log(Logger.Level.WARNING, "Deserialization failed",e);
+            throw new RuntimeException("Deserialization failed", e);
         }
     }
 

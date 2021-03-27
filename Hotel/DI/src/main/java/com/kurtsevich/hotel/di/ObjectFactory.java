@@ -17,6 +17,10 @@ public class ObjectFactory {
 
     public ObjectFactory(ApplicationContext context) {
         this.context = context;
+        contextFiling(context);
+    }
+
+    private void contextFiling(ApplicationContext context) {
         for (Class<? extends ObjectConfigurator> aClass : context.getConfig().getScanner().getSubTypesOf(ObjectConfigurator.class)) {
             //Проверка является ли класс абстрактным, не факт что работает
             try {
@@ -27,7 +31,10 @@ public class ObjectFactory {
                 e.printStackTrace();
             }
         }
+
     }
+
+
     public <T> T createObject(Class<T> implClass) {
 
         T t = create(implClass);
@@ -59,13 +66,9 @@ public class ObjectFactory {
         T t = null;
         for (Constructor<?> constructor : implClass.getDeclaredConstructors()) {
             if (constructor.isAnnotationPresent(InjectByType.class)) {
-                List<Object> params = new ArrayList<>();
                 constructor.setAccessible(true);
-                for (Class<?> parameterType : constructor.getParameterTypes()) {
-                    params.add(context.getObject(parameterType));
-                }
                 try {
-                    t = (T) constructor.newInstance(params.toArray());
+                    t = (T) constructor.newInstance(getParams(constructor).toArray());
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();
                 }
@@ -80,5 +83,13 @@ public class ObjectFactory {
             }
         }
         return t;
+    }
+
+    private List<Object> getParams(Constructor<?> constructor) {
+        List<Object> params = new ArrayList<>();
+        for (Class<?> parameterType : constructor.getParameterTypes()) {
+            params.add(context.getObject(parameterType));
+        }
+        return params;
     }
 }

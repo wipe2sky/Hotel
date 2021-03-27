@@ -14,10 +14,16 @@ public class RoomDao extends AbstractDao<Room> implements IRoomDao {
 
     @InjectByType
     public RoomDao(SerializationHandler serializationHandler) {
+        deserialize(serializationHandler);
+
+    }
+
+    private void deserialize(SerializationHandler serializationHandler) {
         try {
             repository.addAll(serializationHandler.deserialize(Room.class));
         } catch (ServiceException e) {
             logger.log(Logger.Level.WARNING, "Deserialization failed",e);
+            throw new RuntimeException("Deserialization failed", e);
         }
     }
 

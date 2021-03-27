@@ -14,10 +14,16 @@ public class HistoryDao extends AbstractDao<History> implements IHistoryDao {
 
     @InjectByType
     public HistoryDao(SerializationHandler serializationHandler) {
+        deserialize(serializationHandler);
+
+    }
+
+    private void deserialize(SerializationHandler serializationHandler) {
         try {
             repository.addAll(serializationHandler.deserialize(History.class));
         } catch (ServiceException e) {
             logger.log(Logger.Level.WARNING, "Deserialization failed", e);
+            throw new RuntimeException("Deserialization failed", e);
         }
     }
 

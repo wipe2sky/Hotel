@@ -14,10 +14,16 @@ public class ServiceDao extends AbstractDao<Service> implements IServiceDao {
 
     @InjectByType
     public ServiceDao(SerializationHandler serializationHandler) {
+        deserialize(serializationHandler);
+
+    }
+
+    private void deserialize(SerializationHandler serializationHandler) {
         try {
             repository.addAll(serializationHandler.deserialize(Service.class));
         } catch (ServiceException e) {
-            logger.log(Logger.Level.WARNING, "Deserialization failed",e);
+            logger.log(Logger.Level.WARNING, "Deserialization failed", e);
+            throw new RuntimeException("Deserialization failed", e);
         }
     }
 
