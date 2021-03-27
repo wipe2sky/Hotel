@@ -3,7 +3,7 @@
 #
 
 tomcat
-.gradle
+
 
 #
 # Default excludes
@@ -20,7 +20,6 @@ tomcat
 *.zip
 *.war
 *.ear
-*.ser
 *.class
 log*.txt
 *log.txt
@@ -28,6 +27,22 @@ log.txt
 
 # Maven
 target/
+
+# Gradle
+.gradle
+
+**/build/
+!src/**/build/
+
+# Ignore Gradle GUI config
+gradle-app.setting
+
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
+
+# Cache of project
+.gradletasknamecache
+
 
 # IntelliJ project files
 *.iml
