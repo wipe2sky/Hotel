@@ -20,7 +20,6 @@ public class SerializationHandler {
     private  List<List<? extends AEntity>> deserializeList;
     private  IdGenerator idGenerator;
 
-    @InjectByType
     public SerializationHandler() {
     }
 
