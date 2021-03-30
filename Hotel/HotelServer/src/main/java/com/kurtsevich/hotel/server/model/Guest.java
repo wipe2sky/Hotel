@@ -1,80 +1,46 @@
 package com.kurtsevich.hotel.server.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class Guest extends AEntity {
+    @Getter
+    @Setter
     private String firstName;
+    @Getter
+    @Setter
     private String lastName;
+    @Getter
+    @Setter
     private Room room;
+    @Getter
+    @Setter
     private History lastHistory;
+    @Getter
+    @Setter
     private boolean isCheckIn;
+    @Getter
+    @Setter
     private List<Service> services = new ArrayList<>();
+    @Getter
+    @Setter
     private List<History> histories = new ArrayList<>();
 
 
     public Guest(String lastName, String firstName) {
         setLastName(lastName);
         setFirstName(firstName);
-    }
 
-    public String getFirstName() {
-        return firstName;
     }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-
-    public Room getRoom() {
-        return room;
-    }
-
-    public void setRoom(Room room) {
-        this.room = room;
-    }
-
-    public History getLastHistory() {
-        return lastHistory;
-    }
-
-    public void setLastHistory(History lastHistory) {
-        this.lastHistory = lastHistory;
-    }
-
-    public boolean isCheckIn() {
-        return isCheckIn;
-    }
-
-    public void setCheckIn(boolean checkIn) {
-        isCheckIn = checkIn;
-    }
-
-    public List<Service> getServices() {
-        return services;
-    }
-
-    public void setServices(List<Service> services) {
-        this.services = services;
-    }
-
-    public List<History> getHistories() {
-        return histories;
-    }
-
-    public void setHistories(List<History> histories) {
-        this.histories = histories;
-    }
+//    public Guest(Integer id, String lastName, String firstName) {
+//        setId(id);
+//        setLastName(lastName);
+//        setFirstName(firstName);
+//    }
 
 
     @Override

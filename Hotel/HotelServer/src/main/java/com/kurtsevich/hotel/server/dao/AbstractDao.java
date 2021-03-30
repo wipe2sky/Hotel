@@ -19,7 +19,6 @@ public abstract class AbstractDao<T extends AEntity> implements GenericDao<T> {
         repository.add(entity);
     }
 
-
     @Override
     public T getById(Integer id) {
         for (T entity :
@@ -37,13 +36,10 @@ public abstract class AbstractDao<T extends AEntity> implements GenericDao<T> {
         return new ArrayList<>(repository);
     }
 
+
     @Override
     public void delete(T entity) {
         repository.remove(entity);
     }
 
-    @Override
-    public void deleteById(Integer id) {
-        repository.remove(getById(id));
-    }
 }

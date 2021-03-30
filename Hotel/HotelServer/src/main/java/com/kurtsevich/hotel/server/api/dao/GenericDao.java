@@ -5,7 +5,6 @@ import com.kurtsevich.hotel.server.model.AEntity;
 import java.util.List;
 
 public interface GenericDao<T extends AEntity> {
-
     void save(T entity);
 
     T getById(Integer id);
@@ -13,8 +12,6 @@ public interface GenericDao<T extends AEntity> {
     List<T> getAll();
 
     void delete(T entity);
-
-    void deleteById(Integer id);
 
     T update(T entity);
 }
