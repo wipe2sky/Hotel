@@ -3,48 +3,87 @@ package com.kurtsevich.hotel.server.dao;
 import com.kurtsevich.hotel.di.annotation.InjectByType;
 import com.kurtsevich.hotel.di.annotation.Singleton;
 import com.kurtsevich.hotel.server.api.dao.IRoomDao;
-import com.kurtsevich.hotel.server.exceptions.DaoException;
-import com.kurtsevich.hotel.server.exceptions.ServiceException;
 import com.kurtsevich.hotel.server.model.Room;
-import com.kurtsevich.hotel.server.util.Logger;
-import com.kurtsevich.hotel.server.util.SerializationHandler;
+import com.kurtsevich.hotel.server.model.RoomStatus;
+import com.kurtsevich.hotel.server.util.DBConnection;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Singleton
 public class RoomDao extends AbstractDao<Room> implements IRoomDao {
 
     @InjectByType
-    public RoomDao(SerializationHandler serializationHandler) {
-        deserialize(serializationHandler);
-
+    public RoomDao(DBConnection connection) {
+        this.connection = connection;
+        insertNew = "INSERT INTO room(number, capacity, stars, price) VALUES(?,?,?,?)";
+        updateString = "UPDATE room SET number=?,capacity=?,stars=?,price=?,status=?,guests_in_room=?,is_cleaning=? WHERE id=?";
     }
 
-    private void deserialize(SerializationHandler serializationHandler) {
+    @Override
+    protected List<Room> parseFromResultSet(ResultSet resultSet) {
+        List<Room> rooms = new ArrayList<>();
         try {
-            repository.addAll(serializationHandler.deserialize(Room.class));
-        } catch (ServiceException e) {
-            logger.log(Logger.Level.WARNING, "Deserialization failed",e);
-            throw new RuntimeException("Deserialization failed", e);
+            while (resultSet.next()) {
+                Integer id = resultSet.getInt("id");
+                Integer number = resultSet.getInt("number");
+                Integer capacity = resultSet.getInt("capacity");
+                Integer stars = resultSet.getInt("stars");
+                Double price = resultSet.getDouble("price");
+                RoomStatus status = RoomStatus.valueOf(resultSet.getString("status"));
+                Integer guestsInRoom = resultSet.getInt("guests_in_room");
+                Boolean isCleaning = resultSet.getBoolean("is_cleaning");
+                rooms.add(new Room(id, number, capacity, stars, price, status, guestsInRoom, isCleaning));
+            }
+        } catch (SQLException e) {
+            //TODo
+            e.printStackTrace();
+        }
+        return rooms;
+    }
+
+    @Override
+    protected void fillPreparedStatement(PreparedStatement preparedStatement, Room entity) {
+        Integer number = entity.getNumber();
+        Integer capacity = entity.getCapacity();
+        Integer stars = entity.getStars();
+        Double price = entity.getPrice();
+        try {
+            preparedStatement.setInt(1, number);
+            preparedStatement.setInt(2, capacity);
+            preparedStatement.setInt(3, stars);
+            preparedStatement.setDouble(4, price);
+        } catch (SQLException e) {
+            //TODO
+            e.printStackTrace();
         }
     }
 
     @Override
-    public Room update(Room entity) {
+    protected void fillAllPreparedStatement(PreparedStatement preparedStatement, Room entity) {
         try {
-            Room room = getById(entity.getId());
+            preparedStatement.setInt(1, entity.getNumber());
+            preparedStatement.setInt(2, entity.getCapacity());
+            preparedStatement.setInt(3, entity.getStars());
+            preparedStatement.setDouble(4, entity.getPrice());
+            preparedStatement.setString(5, entity.getStatus().toString());
+            preparedStatement.setInt(6, entity.getGuestsInRoom());
+            preparedStatement.setBoolean(7, entity.getIsCleaning());
+            preparedStatement.setInt(8, entity.getId());
 
-            room.setNumber(entity.getNumber());
-            room.setCapacity(entity.getCapacity());
-            room.setStars(entity.getStars());
-            room.setGuestsInRoom(entity.getGuestsInRoom());
-            room.setPrice(entity.getPrice());
-            room.setStatus(entity.getStatus());
-            room.setIsCleaning(entity.getIsCleaning());
-            room.setGuests(entity.getGuests());
-            room.setHistories(entity.getHistories());
-            return room;
-        } catch (DaoException e) {
-            logger.log(Logger.Level.WARNING, "Room update failed",e);
-            throw new DaoException("Room update failed", e);
+        } catch (SQLException e) {
+            //TODO
+            e.printStackTrace();
         }
     }
+
+    @Override
+    protected String getTableName() {
+        return "room";
+    }
+
+
 }

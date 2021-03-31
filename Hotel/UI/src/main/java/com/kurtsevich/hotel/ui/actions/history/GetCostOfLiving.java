@@ -26,7 +26,7 @@ public class GetCostOfLiving extends AbstractAction implements IAction {
             System.out.println("Введите id гостя");
             Integer guestId = Integer.parseInt(reader.readLine());
 
-            Float cost = facade.getCostOfLiving(guestId);
+            Double cost = facade.getCostOfLiving(guestId);
             Guest guest = facade.getGuestById(guestId);
 
             logger.log(Logger.Level.INFO, "Cost of accommodation for Guest " + guest.getLastName() + " " + guest.getFirstName() +" = " + cost);

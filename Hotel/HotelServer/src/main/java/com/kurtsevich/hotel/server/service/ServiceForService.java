@@ -8,10 +8,8 @@ import com.kurtsevich.hotel.server.api.dao.IServiceDao;
 import com.kurtsevich.hotel.server.api.service.IServiceForService;
 import com.kurtsevich.hotel.server.exceptions.DaoException;
 import com.kurtsevich.hotel.server.exceptions.ServiceException;
-import com.kurtsevich.hotel.server.model.Guest;
 import com.kurtsevich.hotel.server.model.History;
 import com.kurtsevich.hotel.server.model.Service;
-import com.kurtsevich.hotel.server.util.IdGenerator;
 import com.kurtsevich.hotel.server.util.Logger;
 import com.kurtsevich.hotel.server.util.comparators.ServiceCostComparator;
 
@@ -24,21 +22,18 @@ public class ServiceForService implements IServiceForService {
     private final IServiceDao serviceDao;
     private final IGuestDao guestDao;
     private final IHistoryDao historyDao;
-    private final IdGenerator idGenerator;
 
     @InjectByType
-    public ServiceForService(IServiceDao serviceDao, IGuestDao guestDao, IHistoryDao historyDao, IdGenerator idGenerator) {
+    public ServiceForService(IServiceDao serviceDao, IGuestDao guestDao, IHistoryDao historyDao) {
         this.serviceDao = serviceDao;
         this.guestDao = guestDao;
         this.historyDao = historyDao;
-        this.idGenerator = idGenerator;
     }
 
 
     @Override
-    public Service addService(String name, Float price) {
+    public Service addService(String name, Double price) {
         Service service = new Service(name, price);
-        service.setId(idGenerator.generateServiceId());
         serviceDao.save(service);
         return service;
     }
@@ -46,7 +41,7 @@ public class ServiceForService implements IServiceForService {
     @Override
     public void deleteService(Integer serviceId) {
         try {
-            serviceDao.delete(getById(serviceId));
+            serviceDao.delete(serviceDao.getById(serviceId));
         } catch (ServiceException e) {
             logger.log(Logger.Level.WARNING, "Delete service failed.", e);
             throw new ServiceException("Delete service failed.", e);
@@ -67,13 +62,11 @@ public class ServiceForService implements IServiceForService {
     public void addServiceToGuest(Integer serviceId, Integer guestId) {
         try {
             Service service = serviceDao.getById(serviceId);
-            Guest guest = guestDao.getById(guestId);
-            History history = historyDao.getById(guestId);
-            if(guest.isCheckIn()) {
-                guest.getServices().add(service);
-                history.setCostOfService(history.getCostOfService() + service.getPrice());
+            History history = historyDao.getByGuest(guestDao.getById(guestId)).get(0);
+            if(history.getGuest().isCheckIn()) {
                 history.getServices().add(service);
-                guestDao.update(guest);
+                history.setCostOfService(history.getCostOfService() + service.getPrice());
+                history.setCostOfLiving(history.getCostOfLiving() + service.getPrice());
                 historyDao.update(history);
             } else throw new ServiceException("Add service to the guest failed. Guest doesn't stay in hotel.");
 
@@ -96,7 +89,7 @@ public class ServiceForService implements IServiceForService {
     }
 
     @Override
-    public void changeServicePrice(Integer id, Float price) {
+    public void changeServicePrice(Integer id, Double price) {
         try {
             Service service = getById(id);
             service.setPrice(price);

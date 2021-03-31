@@ -3,16 +3,19 @@ package com.kurtsevich.hotel.server.service;
 import com.kurtsevich.hotel.di.annotation.InjectByType;
 import com.kurtsevich.hotel.di.annotation.Singleton;
 import com.kurtsevich.hotel.server.api.dao.IGuestDao;
+import com.kurtsevich.hotel.server.api.dao.IHistoryDao;
 import com.kurtsevich.hotel.server.api.service.IGuestService;
 import com.kurtsevich.hotel.server.exceptions.DaoException;
 import com.kurtsevich.hotel.server.exceptions.ServiceException;
 import com.kurtsevich.hotel.server.model.Guest;
-import com.kurtsevich.hotel.server.util.IdGenerator;
+import com.kurtsevich.hotel.server.model.History;
 import com.kurtsevich.hotel.server.util.Logger;
 import com.kurtsevich.hotel.server.util.comparators.ComparatorStatus;
 import com.kurtsevich.hotel.server.util.comparators.GuestDateComparator;
 import com.kurtsevich.hotel.server.util.comparators.GuestLastNameComparator;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.List;
@@ -22,14 +25,16 @@ import java.util.stream.Collectors;
 public class GuestService implements IGuestService {
     private static final Logger logger = new Logger(GuestService.class.getName());
     private final IGuestDao guestDao;
-    private final EnumMap<ComparatorStatus, Comparator<Guest>> comparatorMap = new EnumMap<>(ComparatorStatus.class);
-    private final IdGenerator idGenerator;
+    private final IHistoryDao historyDao;
+
+
+    private final EnumMap<ComparatorStatus, Comparator<History>> comparatorMap = new EnumMap<>(ComparatorStatus.class);
 
 
     @InjectByType
-    public GuestService(IGuestDao guestDao, IdGenerator idGenerator) {
+    public GuestService(IGuestDao guestDao, IHistoryDao historyDao) {
         this.guestDao = guestDao;
-        this.idGenerator = idGenerator;
+        this.historyDao = historyDao;
         comparatorMap.put(ComparatorStatus.DATE_CHECK_OUT, new GuestDateComparator());
         comparatorMap.put(ComparatorStatus.LAST_NAME, new GuestLastNameComparator());
     }
@@ -37,7 +42,6 @@ public class GuestService implements IGuestService {
     @Override
     public Guest add(String lastName, String firstName) {
         Guest guest = new Guest(lastName, firstName);
-        guest.setId(idGenerator.generateGuestId());
         guestDao.save(guest);
         return guest;
     }
@@ -64,9 +68,12 @@ public class GuestService implements IGuestService {
 
     @Override
     public List<Guest> getShortBy(ComparatorStatus comparatorStatus) {
-        return getAll().stream()
-                .filter(Guest::isCheckIn)
+        return historyDao.getAll().stream()
+                .filter(history -> ChronoUnit.DAYS.between(history.getCheckInDate(),
+                        LocalDate.now()) > 1)
+                .filter(history ->  history.getGuest().isCheckIn())
                 .sorted(comparatorMap.get(comparatorStatus))
+                .map(History::getGuest)
                 .collect(Collectors.toList());
     }
 

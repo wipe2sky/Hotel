@@ -26,7 +26,7 @@ public class ChangeRoomPrice extends AbstractAction implements IAction {
             System.out.println("Введите id комнаты");
             Integer roomId = Integer.parseInt(reader.readLine());
             System.out.println("Введите новую цену");
-            Float price = Float.parseFloat(reader.readLine());
+            Double price = Double.parseDouble(reader.readLine());
 
             facade.changeRoomPrice(roomId, price);
             Room room = facade.getRoomInfo(roomId);

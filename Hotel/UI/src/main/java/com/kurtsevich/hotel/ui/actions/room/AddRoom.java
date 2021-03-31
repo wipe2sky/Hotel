@@ -29,7 +29,7 @@ public class AddRoom extends AbstractAction implements IAction {
             System.out.println("Введите звёздность комнаты");
             Integer stars = Integer.parseInt(reader.readLine());
             System.out.println("Введите стоимость");
-            Float price = Float.parseFloat(reader.readLine());
+            Double price = Double.parseDouble(reader.readLine());
 
             Room room = facade.addRoom(number, capacity, stars, price);
 

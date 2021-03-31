@@ -6,21 +6,22 @@ import com.kurtsevich.hotel.server.model.RoomStatus;
 import com.kurtsevich.hotel.server.util.comparators.ComparatorStatus;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface IRoomService {
 
-    Room addRoom(Integer number, Integer capacity, Integer stars, Float price);
+    Room addRoom(Integer number, Integer capacity, Integer stars, Double price);
 
     void deleteRoom(Integer id);
 
     void setCleaningStatus(Integer roomId, Boolean status);
 
-    void changePrice(Integer roomId, Float price);
+    void changePrice(Integer roomId, Double price);
 
     List<Room> getSortBy(ComparatorStatus comparatorStatus, RoomStatus roomStatus);
 
-    List<Room> getAvailableAfterDate(LocalDate date);
+    List<Room> getAvailableAfterDate(LocalDateTime date);
 
 
     Integer getNumberOfFree();

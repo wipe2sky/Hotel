@@ -1,106 +1,37 @@
 package com.kurtsevich.hotel.server.model;
 
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import lombok.Data;
 
-public class History extends AEntity{
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Data
+public class History extends AEntity {
+    private LocalDateTime checkInDate;
+    private LocalDateTime checkOutDate;
+    private Double costOfLiving;
+    private Double costOfService;
     private Room room;
     private Guest guest;
-    private LocalDate checkInDate;
-    private LocalDate checkOutDate;
-    private Float costOfLiving;
-    private Float costOfService = 0F;
-    private List<Service> services = new ArrayList<>();
+    private List<Service> services;
 
-    public History(Room room, Guest guest, LocalDate checkInDate, LocalDate checkOutDate) {
-        setRoom(room);
-        setGuest(guest);
-        setCheckInDate(checkInDate);
-        setCheckOutDate(checkOutDate);
-        setCostOfLiving(ChronoUnit.DAYS.between(getCheckInDate(), getCheckOutDate()) * room.getPrice());
-    }
-
-    public Room getRoom() {
-        return room;
-    }
-
-    public void setRoom(Room room) {
+    public History(LocalDateTime checkInDate, LocalDateTime checkOutDate, Double costOfLiving, Room room, Guest guest) {
+        this.checkInDate = checkInDate;
+        this.checkOutDate = checkOutDate;
+        this.costOfLiving = costOfLiving;
         this.room = room;
-    }
-
-    public Guest getGuest() {
-        return guest;
-    }
-
-    public void setGuest(Guest guest) {
         this.guest = guest;
     }
 
-    public LocalDate getCheckInDate() {
-        return checkInDate;
-    }
-
-    public void setCheckInDate(LocalDate checkInDate) {
+    public History(Integer id, LocalDateTime checkInDate, LocalDateTime checkOutDate, Double costOfLiving, Double costOfService, Room room, Guest guest, List<Service> services) {
+        setId(id);
         this.checkInDate = checkInDate;
-    }
-
-    public LocalDate getCheckOutDate() {
-        return checkOutDate;
-    }
-
-    public void setCheckOutDate(LocalDate checkOutDate) {
         this.checkOutDate = checkOutDate;
-    }
-
-    public Float getCostOfLiving() {
-        return costOfLiving;
-    }
-
-    public void setCostOfLiving(Float costOfLiving) {
         this.costOfLiving = costOfLiving;
-    }
-
-    public Float getCostOfService() {
-        return costOfService;
-    }
-
-    public void setCostOfService(Float costOfService) {
         this.costOfService = costOfService;
-    }
-
-    public List<Service> getServices() {
-        return services;
-    }
-
-    public void setServices(List<Service> services) {
+        this.room = room;
+        this.guest = guest;
         this.services = services;
-    }
-
-    @Override
-    public String toString() {
-        return "History{" +
-                "Id = " + getId() +
-                " room = " + room +
-                ", guest=" + guest +
-                ", checkInDate=" + checkInDate +
-                ", checkOutDate=" + checkOutDate +
-                ", services=" + services +
-                '}' + "\n";
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        History history = (History) o;
-        return Objects.equals(room, history.room) && Objects.equals(getId(), history.getId())&& Objects.equals(guest, history.guest) && Objects.equals(checkInDate, history.checkInDate) && Objects.equals(checkOutDate, history.checkOutDate);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(room, getId(), guest, checkInDate, checkOutDate);
     }
 }

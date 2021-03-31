@@ -26,7 +26,7 @@ public class AddService extends AbstractAction implements IAction {
             System.out.println("Введите название услуги");
             String name = reader.readLine();
             System.out.println("Введите стоимость");
-            Float price = Float.parseFloat(reader.readLine());
+            Double price = Double.parseDouble(reader.readLine());
 
             Service service = facade.addService(name, price);
 

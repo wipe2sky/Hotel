@@ -1,4 +1,4 @@
-package com.kurtsevich.hotel.server.db_dao;
+package com.kurtsevich.hotel.server.util;
 
 
 import com.kurtsevich.hotel.di.annotation.ConfigProperty;
@@ -9,20 +9,19 @@ import java.sql.*;
 
 @Singleton
 public class DBConnection {
-//    @ConfigProperty
-//    private String userName;
-//    @ConfigProperty
-//    private String password;
-//    @ConfigProperty
-//    private String url;
-private static final String userName = "root";
-    private static final String password = "6250e208";
-    private static final String url = "jdbc:mysql://localhost:3306/hoteldb";
+    @ConfigProperty
+    private String userName;
+    @ConfigProperty
+    private String password;
+    @ConfigProperty
+    private String url;
+//private static final String userName = "root";
+//    private static final String password = "6250e208";
+//    private static final String url = "jdbc:mysql://localhost:3306/hoteldb";
     @Getter
     private Connection connection;
 
     public DBConnection() {
-        open();
     }
 
     public void open() {

@@ -26,7 +26,7 @@ public class ChangeServicePrice extends AbstractAction implements IAction {
             System.out.println("Введите id услуги");
             Integer serviceId = Integer.parseInt(reader.readLine());
             System.out.println("Введите новую стоимость");
-            Float price = Float.parseFloat(reader.readLine());
+            Double price = Double.parseDouble(reader.readLine());
 
             facade.changeServicePrice(serviceId, price);
             Service service = facade.getServiceById(serviceId);

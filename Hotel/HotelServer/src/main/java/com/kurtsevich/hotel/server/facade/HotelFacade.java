@@ -10,6 +10,7 @@ import com.kurtsevich.hotel.server.service.ServiceForService;
 import com.kurtsevich.hotel.server.util.comparators.ComparatorStatus;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 @Singleton
 public class HotelFacade {
@@ -56,7 +57,7 @@ public class HotelFacade {
 
     }
 
-    public Room addRoom(Integer number, Integer capacity, Integer stars, Float price) {
+    public Room addRoom(Integer number, Integer capacity, Integer stars, Double price) {
         return roomService.addRoom(number, capacity, stars, price);
     }
 
@@ -64,7 +65,7 @@ public class HotelFacade {
         roomService.deleteRoom(id);
     }
 
-    public List<Room> getRoomAvailableAfterDate(LocalDate date) {
+    public List<Room> getRoomAvailableAfterDate(LocalDateTime date) {
         return roomService.getAvailableAfterDate(date);
     }
 
@@ -75,7 +76,7 @@ public class HotelFacade {
         return roomService.getRoomHistory(id);
     }
 
-    public void changeRoomPrice(Integer id, Float price) {
+    public void changeRoomPrice(Integer id, Double price) {
         roomService.changePrice(id, price);
     }
 
@@ -107,12 +108,12 @@ public class HotelFacade {
         historyService.checkOut(guestId);
     }
 
-    public Float getCostOfLiving(Integer roomId) {
+    public Double getCostOfLiving(Integer roomId) {
         return historyService.getCostOfLiving(roomId);
     }
 
     public List<History> getGuestHistory (Integer id){
-        return historyService.getGuestHistory(id);
+        return historyService.getByGuestId(id);
     }
 
     public List<History> getLast3GuestInRoom(Integer roomId) {
@@ -127,7 +128,7 @@ public class HotelFacade {
         return historyService.getListOfGuestService(guestId);
     }
 
-    public Service addService(String name, Float price) {
+    public Service addService(String name, Double price) {
         return serviceForService.addService(name, price);
     }
 
@@ -151,7 +152,7 @@ public class HotelFacade {
         return serviceForService.getAll();
     }
 
-    public void changeServicePrice(Integer id, Float price) {
+    public void changeServicePrice(Integer id, Double price) {
         serviceForService.changeServicePrice(id, price);
     }
 }

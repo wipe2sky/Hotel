@@ -3,6 +3,7 @@ package com.kurtsevich.hotel.ui.actions.history;
 import com.kurtsevich.hotel.server.exceptions.ServiceException;
 import com.kurtsevich.hotel.server.facade.HotelFacade;
 import com.kurtsevich.hotel.server.model.Guest;
+import com.kurtsevich.hotel.server.model.History;
 import com.kurtsevich.hotel.server.model.Room;
 import com.kurtsevich.hotel.server.util.Logger;
 import com.kurtsevich.hotel.ui.actions.AbstractAction;
@@ -26,8 +27,9 @@ public class CheckOut extends AbstractAction implements IAction {
 
             System.out.println("Введите id гостя:");
             Integer guestId = Integer.parseInt(reader.readLine());
-            Guest guest = facade.getGuestById(guestId);
-            Room room = guest.getRoom();
+            History history = facade.getGuestHistory(guestId).get(0);
+            Guest guest = history.getGuest();
+            Room room = history.getRoom();
 
             facade.checkOut(guestId);
             logger.log(Logger.Level.INFO, "Guest " + guest.getLastName() + " " + guest.getFirstName()

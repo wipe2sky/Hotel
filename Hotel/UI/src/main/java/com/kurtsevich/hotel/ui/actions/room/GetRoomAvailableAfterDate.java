@@ -9,6 +9,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class GetRoomAvailableAfterDate extends AbstractAction implements IAction {
     private static final Logger logger = new Logger(GetRoomAvailableAfterDate.class.getName());
@@ -23,7 +25,8 @@ public class GetRoomAvailableAfterDate extends AbstractAction implements IAction
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
             System.out.println("Введите дату для проверки в формате гггг-мм-дд");
-            LocalDate date = LocalDate.parse(reader.readLine());
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            LocalDateTime date = LocalDateTime.parse(reader.readLine() + " 00:00", formatter);
 
             facade.getRoomAvailableAfterDate(date).forEach(System.out::println);
         }catch (NumberFormatException |IOException e){

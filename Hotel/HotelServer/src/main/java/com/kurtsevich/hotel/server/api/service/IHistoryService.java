@@ -11,12 +11,13 @@ public interface IHistoryService {
     History addHistory(Room room, Guest guest, Integer daysStay);
     void checkIn(Integer guestId, Integer roomId, Integer daysStay);
     void checkOut(Integer guestId);
-    Float getCostOfLiving(Integer guestId);
+    Double getCostOfLiving(Integer guestId);
     List<History> getGuestHistory (Integer id);
     List<History> getLast3GuestInRoom(Integer roomId);
 
     List<History> getAll();
 
     List<Service> getListOfGuestService(Integer guestId);
-
+    public List<History> getByGuestId(Integer guestId);
+    public List<History> getByRoomId(Integer roomId);
 }

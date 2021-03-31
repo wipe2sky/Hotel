@@ -34,7 +34,7 @@ public class CheckIn extends AbstractAction implements IAction {
             Guest guest = facade.getGuestById(guestId);
 
             logger.log(Logger.Level.INFO, "Guest " + guest.getLastName() + " " + guest.getFirstName()
-                    + " check-in " + guest.getRoom().getNumber());
+                    + " check-in " + facade.getRoomInfo(roomId).getNumber());
         } catch (ServiceException | NumberFormatException |IOException e) {
             logger.log(Logger.Level.WARNING, "CheckIn Failed", e);
         }

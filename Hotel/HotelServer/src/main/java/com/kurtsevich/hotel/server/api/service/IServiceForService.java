@@ -5,7 +5,7 @@ import com.kurtsevich.hotel.server.model.Service;
 import java.util.List;
 
 public interface IServiceForService {
-    Service addService(String name, Float price);
+    Service addService(String name, Double price);
     void deleteService(Integer serviceId);
 
     Service getById(Integer serviceId);
@@ -16,6 +16,6 @@ public interface IServiceForService {
 
     List<Service> getAll();
 
-    void changeServicePrice(Integer id, Float price);
+    void changeServicePrice(Integer id, Double price);
 
 }

@@ -1,12 +1,12 @@
 package com.kurtsevich.hotel.server.util.comparators;
 
-import com.kurtsevich.hotel.server.model.Guest;
+import com.kurtsevich.hotel.server.model.History;
 
 import java.util.Comparator;
 
-public class GuestDateComparator implements Comparator<Guest> {
+public class GuestDateComparator implements Comparator<History> {
     @Override
-    public int compare(Guest o1, Guest o2) {
-        return o1.getLastHistory().getCheckOutDate().compareTo(o2.getLastHistory().getCheckOutDate());
+    public int compare(History o1, History o2) {
+        return o1.getCheckOutDate().compareTo(o2.getCheckOutDate());
     }
 }

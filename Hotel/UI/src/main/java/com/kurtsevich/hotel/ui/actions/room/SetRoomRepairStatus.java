@@ -35,7 +35,7 @@ public class SetRoomRepairStatus extends AbstractAction implements IAction {
 
             if (isRepair) {
                 logger.log(Logger.Level.INFO, "Room " + room.getId() + " is repaired.");
-            } else if(room.getStatus().equals(RoomStatus.ON_REPAIR)){
+            } else if(room.getStatus().equals(RoomStatus.REPAIR)){
                 logger.log(Logger.Level.INFO, "Room " + room.getId() + " repaired.");
             } else {
                 logger.log(Logger.Level.INFO, "Room " + room.getId() + " is not repaired.");
