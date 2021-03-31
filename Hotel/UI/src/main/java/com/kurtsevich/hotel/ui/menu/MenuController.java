@@ -2,14 +2,15 @@ package com.kurtsevich.hotel.ui.menu;
 
 import com.kurtsevich.hotel.di.annotation.InjectByType;
 import com.kurtsevich.hotel.di.annotation.Singleton;
-import com.kurtsevich.hotel.server.util.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 @Singleton
 public class MenuController {
-    private static final Logger logger = new Logger(MenuController.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(MenuController.class);
 
     private final Builder builder;
     private final Navigator navigator;
@@ -33,11 +34,11 @@ public class MenuController {
                     index = Integer.parseInt(reader.readLine());
                     navigator.navigate(index);
                 } catch (NumberFormatException| IndexOutOfBoundsException e) {
-                    logger.log(Logger.Level.WARNING, "Menu Controller error", e);
+                    logger.warn("Menu Controller error", e);
                 }
             } while (index != 0);
         } catch (IOException e) {
-            logger.log(Logger.Level.ERROR, "Menu Controller error", e);
+            logger.error("Menu Controller error", e);
         }
     }
 

@@ -2,6 +2,8 @@ package com.kurtsevich.hotel.di.configurator;
 
 import com.kurtsevich.hotel.di.ApplicationContext;
 import com.kurtsevich.hotel.di.annotation.ConfigProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -15,6 +17,7 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.toMap;
 
 public class ConfigPropertyAnnotationObjectConfigurator implements ObjectConfigurator {
+    private final Logger logger = LoggerFactory.getLogger(ConfigPropertyAnnotationObjectConfigurator.class);
     private static final String DELIMITER = " *= *";
     private Map<String, String> propertiesMap;
 
@@ -24,7 +27,7 @@ public class ConfigPropertyAnnotationObjectConfigurator implements ObjectConfigu
         try {
             propertyPath = getDefaultPropertyPath();
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            logger.warn("Not found field in property" , e);
         }
 
         Stream<String> lines = null;
@@ -33,7 +36,7 @@ public class ConfigPropertyAnnotationObjectConfigurator implements ObjectConfigu
             lines = reader.lines();
             reader.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.warn("File Reader Exception", e);
         }
         try {
             propertiesMap = lines.map(line -> line.split(DELIMITER))
@@ -63,7 +66,7 @@ public class ConfigPropertyAnnotationObjectConfigurator implements ObjectConfigu
                                 .map(line -> line.split(DELIMITER))
                                 .collect(toMap(arr -> arr[0], arr -> arr[1]));
                     } catch (FileNotFoundException e) {
-                        e.printStackTrace();
+                        logger.warn("File not found", e);
                     }
                 }
                 String propertyName = getPropertyName(annotation, field, t);
@@ -82,8 +85,7 @@ public class ConfigPropertyAnnotationObjectConfigurator implements ObjectConfigu
     }
 
     private void setField(String type, Field field, Object t, String propertyName) {
-        // Проверить на массив и коллекцию
-//                if(field.getType().isArray())
+
         try {
             switch (type) {
                 case "Byte" -> field.set(t, Byte.parseByte(propertyName));
@@ -107,13 +109,6 @@ public class ConfigPropertyAnnotationObjectConfigurator implements ObjectConfigu
             }
         } catch (IllegalAccessException ignore) {
         }
-//                }else {
-//                    try {
-//                        field.set(t, propertyName);
-//                    } catch (IllegalAccessException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
     }
 
     private String getPropertyName(ConfigProperty annotation, Field field, Object t) {

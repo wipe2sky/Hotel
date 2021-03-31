@@ -2,16 +2,17 @@ package com.kurtsevich.hotel.ui.actions.room;
 
 import com.kurtsevich.hotel.server.facade.HotelFacade;
 import com.kurtsevich.hotel.server.model.Room;
-import com.kurtsevich.hotel.server.util.Logger;
 import com.kurtsevich.hotel.ui.actions.AbstractAction;
 import com.kurtsevich.hotel.ui.actions.IAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class AddRoom extends AbstractAction implements IAction {
-    private static final Logger logger = new Logger(AddRoom.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(AddRoom.class);
 
     public AddRoom(HotelFacade facade) {
         this.facade = facade;
@@ -33,9 +34,9 @@ public class AddRoom extends AbstractAction implements IAction {
 
             Room room = facade.addRoom(number, capacity, stars, price);
 
-            logger.log(Logger.Level.INFO, "Room added " + room);
+            logger.info("Room added " + room);
         } catch (NumberFormatException |IOException e) {
-            logger.log(Logger.Level.WARNING, "Added room failed", e);
+            logger.warn("Added room failed", e);
         }
     }
 }

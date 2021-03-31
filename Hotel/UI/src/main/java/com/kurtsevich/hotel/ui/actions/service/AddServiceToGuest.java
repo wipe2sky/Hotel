@@ -4,16 +4,17 @@ import com.kurtsevich.hotel.server.exceptions.ServiceException;
 import com.kurtsevich.hotel.server.facade.HotelFacade;
 import com.kurtsevich.hotel.server.model.Guest;
 import com.kurtsevich.hotel.server.model.Service;
-import com.kurtsevich.hotel.server.util.Logger;
 import com.kurtsevich.hotel.ui.actions.AbstractAction;
 import com.kurtsevich.hotel.ui.actions.IAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class AddServiceToGuest extends AbstractAction implements IAction {
-    private static final Logger logger = new Logger(AddServiceToGuest.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(AddServiceToGuest.class);
 
     public AddServiceToGuest(HotelFacade facade) {
         this.facade = facade;
@@ -32,13 +33,15 @@ public class AddServiceToGuest extends AbstractAction implements IAction {
             Service service = facade.getServiceById(serviceId);
             Guest guest = facade.getGuestById(guestId);
 
-            if(guest.isCheckIn()) {
+            if (guest.isCheckIn()) {
                 facade.addServiceToGuest(serviceId, guestId);
-                logger.log(Logger.Level.INFO, "Service " + service.getName()
+                logger.info("Service " + service.getName()
                         + " added to guest " + guest.getLastName() + " " + guest.getFirstName());
-            } else                 logger.log(Logger.Level.WARNING, "Guest id "+ guest.getId()+ " not stay in the hotel.");
+            } else {
+                logger.warn("Guest id " + guest.getId() + " not stay in the hotel.");
+            }
         } catch (ServiceException | NumberFormatException |IOException e) {
-            logger.log(Logger.Level.WARNING, "Add service to guest failed", e);
+            logger.warn("Add service to guest failed", e);
         }
     }
 }

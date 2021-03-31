@@ -11,11 +11,12 @@ import com.kurtsevich.hotel.server.model.AEntity;
 import com.kurtsevich.hotel.server.model.History;
 import com.kurtsevich.hotel.server.model.Room;
 import com.kurtsevich.hotel.server.model.RoomStatus;
-import com.kurtsevich.hotel.server.util.Logger;
 import com.kurtsevich.hotel.server.util.comparators.ComparatorStatus;
 import com.kurtsevich.hotel.server.util.comparators.RoomCapacityComparator;
 import com.kurtsevich.hotel.server.util.comparators.RoomPriceComparator;
 import com.kurtsevich.hotel.server.util.comparators.RoomStarsComparator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -27,7 +28,7 @@ import java.util.stream.Collectors;
 
 @Singleton
 public class RoomService implements IRoomService {
-    private static final Logger logger = new Logger(RoomService.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(RoomService.class);
     @ConfigProperty
     private Integer countOfHistories;
     @ConfigProperty
@@ -59,7 +60,7 @@ public class RoomService implements IRoomService {
         try {
             roomDao.delete(roomDao.getById(id));
         } catch (ServiceException e) {
-            logger.log(Logger.Level.WARNING, "Delete room failed.", e);
+            logger.warn("Delete room failed.", e);
             throw new ServiceException("Delete room failed.", e);
         }
     }
@@ -70,12 +71,12 @@ public class RoomService implements IRoomService {
         try {
             room = roomDao.getById(roomId);
         } catch (ServiceException e) {
-            logger.log(Logger.Level.WARNING, "Set cleaning status failed.", e);
+            logger.warn("Set cleaning status failed.", e);
             throw new ServiceException("Set cleaning status failed.", e);
         }
         if (!allowRoomStatus) throw new ServiceException("Changed status disable.");
         if (status.equals(room.getIsCleaning())) {
-            logger.log(Logger.Level.WARNING, "Change of status to the same.");
+            logger.warn("Set cleaning status failed");
             throw new ServiceException("Set cleaning status failed.");
         }
 
@@ -91,7 +92,7 @@ public class RoomService implements IRoomService {
             room.setPrice(price);
             roomDao.update(room);
         } catch (ServiceException e) {
-            logger.log(Logger.Level.WARNING, "Change room price failed.", e);
+            logger.warn("Change room price failed.", e);
             throw new ServiceException("Change room price failed.", e);
         }
     }
@@ -118,10 +119,6 @@ public class RoomService implements IRoomService {
                 .filter(room -> room.getStatus().equals(RoomStatus.BUSY))
                 .filter(room -> historyDao.getByRoom(room).get(0).getCheckOutDate().minusDays(1).isBefore(date))
                 .collect(Collectors.toList()));
-//        rooms.addAll(historyDao.getAll().stream()
-//                .filter(history -> history.getCheckOutDate().minusDays(1).isBefore(date))
-//                .map(History::getRoom)
-//                .collect(Collectors.toList()));
         return rooms;
     }
 
@@ -141,7 +138,7 @@ public class RoomService implements IRoomService {
                     .limit(countOfHistories)
                     .collect(Collectors.toList());
         } catch (ServiceException e) {
-            logger.log(Logger.Level.WARNING, "Get room history failed.",e);
+            logger.warn("Get room history failed.",e);
             throw new ServiceException("Get room History failed.",e);
         }
     }
@@ -152,7 +149,7 @@ public class RoomService implements IRoomService {
         try {
             room = roomDao.getById(roomId);
         } catch (ServiceException e) {
-            logger.log(Logger.Level.WARNING, "Set repair status failed.", e);
+            logger.warn("Set repair status failed.", e);
             throw new ServiceException("Set repair status failed.",e);
         }
         if (!allowRoomStatus) throw new ServiceException("Changed status disable.");

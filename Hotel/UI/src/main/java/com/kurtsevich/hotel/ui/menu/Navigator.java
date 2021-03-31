@@ -2,12 +2,13 @@ package com.kurtsevich.hotel.ui.menu;
 
 import com.kurtsevich.hotel.di.annotation.InjectByType;
 import com.kurtsevich.hotel.di.annotation.Singleton;
-import com.kurtsevich.hotel.server.util.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 @Singleton
 public class Navigator {
-    private static final Logger logger = new Logger(MenuController.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(MenuController.class.getName());
 
     private Menu currentMenu;
 
@@ -35,7 +36,7 @@ public class Navigator {
                 menuItem.doAction();
                 currentMenu = menuItem.getNextMenu();
             } catch (IndexOutOfBoundsException e) {
-                logger.log(Logger.Level.WARNING, "Menu item with index " + index + " does not exist");
+                logger.warn("Menu item with index " + index + " does not exist");
             }
         }
     }

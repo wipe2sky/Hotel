@@ -4,16 +4,17 @@ import com.kurtsevich.hotel.server.exceptions.ServiceException;
 import com.kurtsevich.hotel.server.facade.HotelFacade;
 import com.kurtsevich.hotel.server.model.Room;
 import com.kurtsevich.hotel.server.model.RoomStatus;
-import com.kurtsevich.hotel.server.util.Logger;
 import com.kurtsevich.hotel.ui.actions.AbstractAction;
 import com.kurtsevich.hotel.ui.actions.IAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class SetRoomRepairStatus extends AbstractAction implements IAction {
-    private static final Logger logger = new Logger(SetRoomRepairStatus.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(SetRoomRepairStatus.class);
     private Boolean isRepair;
 
 
@@ -34,14 +35,14 @@ public class SetRoomRepairStatus extends AbstractAction implements IAction {
             facade.setRoomRepairStatus(roomId, isRepair);
 
             if (isRepair) {
-                logger.log(Logger.Level.INFO, "Room " + room.getId() + " is repaired.");
+                logger.info("Room " + room.getId() + " is repaired.");
             } else if(room.getStatus().equals(RoomStatus.REPAIR)){
-                logger.log(Logger.Level.INFO, "Room " + room.getId() + " repaired.");
+                logger.info("Room " + room.getId() + " repaired.");
             } else {
-                logger.log(Logger.Level.INFO, "Room " + room.getId() + " is not repaired.");
+                logger.info("Room " + room.getId() + " is not repaired.");
             }
         } catch (ServiceException | NumberFormatException |IOException e) {
-            logger.log(Logger.Level.WARNING, "Set room repair status failed", e);
+            logger.warn("Set room repair status failed", e);
         }
     }
 }

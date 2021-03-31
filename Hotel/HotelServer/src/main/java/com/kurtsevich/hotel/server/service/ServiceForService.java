@@ -10,15 +10,16 @@ import com.kurtsevich.hotel.server.exceptions.DaoException;
 import com.kurtsevich.hotel.server.exceptions.ServiceException;
 import com.kurtsevich.hotel.server.model.History;
 import com.kurtsevich.hotel.server.model.Service;
-import com.kurtsevich.hotel.server.util.Logger;
 import com.kurtsevich.hotel.server.util.comparators.ServiceCostComparator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Singleton
 public class ServiceForService implements IServiceForService {
-    private static final Logger logger = new Logger(ServiceForService.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(ServiceForService.class);
     private final IServiceDao serviceDao;
     private final IGuestDao guestDao;
     private final IHistoryDao historyDao;
@@ -43,7 +44,7 @@ public class ServiceForService implements IServiceForService {
         try {
             serviceDao.delete(serviceDao.getById(serviceId));
         } catch (ServiceException e) {
-            logger.log(Logger.Level.WARNING, "Delete service failed.", e);
+            logger.warn("Delete service failed.", e);
             throw new ServiceException("Delete service failed.", e);
         }
     }
@@ -53,7 +54,7 @@ public class ServiceForService implements IServiceForService {
         try {
             return serviceDao.getById(serviceId);
         } catch (DaoException e) {
-            logger.log(Logger.Level.WARNING, "Get by id failed.", e);
+            logger.warn("Get by id failed.", e);
             throw new ServiceException("Get by id failed.", e);
         }
     }
@@ -71,7 +72,7 @@ public class ServiceForService implements IServiceForService {
             } else throw new ServiceException("Add service to the guest failed. Guest doesn't stay in hotel.");
 
         } catch (DaoException e) {
-            logger.log(Logger.Level.WARNING, "Add service to the guest failed.", e);
+            logger.warn("Add service to the guest failed.", e);
             throw new ServiceException("Add service to the guest failed.", e);
         }
     }
@@ -95,7 +96,7 @@ public class ServiceForService implements IServiceForService {
             service.setPrice(price);
             serviceDao.update(service);
         } catch (ServiceException e) {
-            logger.log(Logger.Level.WARNING, "Change service price failed.", e);
+            logger.warn("Change service price failed.", e);
             throw new ServiceException("Change service price failed.", e);
         }
     }

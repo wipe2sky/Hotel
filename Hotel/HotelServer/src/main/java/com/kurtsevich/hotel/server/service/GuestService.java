@@ -9,10 +9,11 @@ import com.kurtsevich.hotel.server.exceptions.DaoException;
 import com.kurtsevich.hotel.server.exceptions.ServiceException;
 import com.kurtsevich.hotel.server.model.Guest;
 import com.kurtsevich.hotel.server.model.History;
-import com.kurtsevich.hotel.server.util.Logger;
 import com.kurtsevich.hotel.server.util.comparators.ComparatorStatus;
 import com.kurtsevich.hotel.server.util.comparators.GuestDateComparator;
 import com.kurtsevich.hotel.server.util.comparators.GuestLastNameComparator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
 
 @Singleton
 public class GuestService implements IGuestService {
-    private static final Logger logger = new Logger(GuestService.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(GuestService.class);
     private final IGuestDao guestDao;
     private final IHistoryDao historyDao;
 
@@ -51,7 +52,7 @@ public class GuestService implements IGuestService {
         try {
             return guestDao.getById(id);
         } catch (DaoException e) {
-            logger.log(Logger.Level.WARNING, "Couldn't find entity by id: " + id, e);
+            logger.warn("Couldn't find entity by id: " + id, e);
             throw new ServiceException("Couldn't find entity by id: " + id, e);
         }
     }
@@ -61,7 +62,7 @@ public class GuestService implements IGuestService {
         try {
             guestDao.delete(getById(id));
         } catch (ServiceException e) {
-            logger.log(Logger.Level.WARNING, "Delete guest failed.", e);
+            logger.warn("Delete guest failed.", e);
             throw new ServiceException("Delete guest failed.", e);
         }
     }

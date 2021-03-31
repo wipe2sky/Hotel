@@ -9,8 +9,9 @@ import com.kurtsevich.hotel.server.api.service.IHistoryService;
 import com.kurtsevich.hotel.server.exceptions.DaoException;
 import com.kurtsevich.hotel.server.exceptions.ServiceException;
 import com.kurtsevich.hotel.server.model.*;
-import com.kurtsevich.hotel.server.util.Logger;
 import com.kurtsevich.hotel.server.util.comparators.HistoryDateOutComparator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
 
 @Singleton
 public class HistoryService implements IHistoryService {
-    private static final Logger logger = new Logger(HistoryService.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(HistoryService.class);
     private final IGuestDao guestDao;
     private final IRoomDao roomDao;
     private final IHistoryDao historyDao;
@@ -49,16 +50,16 @@ public class HistoryService implements IHistoryService {
             Room room = roomDao.getById(roomId);
             Guest guest = guestDao.getById(guestId);
             if (room.getGuestsInRoom() < room.getCapacity()) {
-                logger.log(Logger.Level.INFO, String.format("Check-in of the guest № %d to the room № %d for %d days", guestId, roomId, daysStay));
+                logger.info(String.format("Check-in of the guest № %d to the room № %d for %d days", guestId, roomId, daysStay));
                 guest.setCheckIn(true);
                 guestDao.update(guest);
                 room.setStatus(RoomStatus.BUSY);
                 room.setGuestsInRoom(room.getGuestsInRoom() + 1);
                 roomDao.update(room);
                 addHistory(room, guest, daysStay);
-            } else logger.log(Logger.Level.INFO, "Room " + roomId + " busy.");
+            } else logger.info("Room " + roomId + " busy.");
         } catch (DaoException e) {
-            logger.log(Logger.Level.WARNING, "Chek-in failed.", e);
+            logger.warn("Chek-in failed.", e);
             throw new ServiceException("Chek-in failed.", e);
         }
     }
@@ -70,7 +71,7 @@ public class HistoryService implements IHistoryService {
             History history = historyDao.getByGuest(guest).get(0);
             Room room = history.getRoom();
 
-            logger.log(Logger.Level.INFO, String.format("Check-out of the guest № %d to the room № %d", guestId, room.getId()));
+            logger.info(String.format("Check-out of the guest № %d to the room № %d", guestId, room.getId()));
 
             history.setCostOfLiving(ChronoUnit.DAYS.between(history.getCheckInDate(),
                     LocalDateTime.now()) > 1
@@ -87,7 +88,7 @@ public class HistoryService implements IHistoryService {
             roomDao.update(room);
             guestDao.update(guest);
         } catch (DaoException e) {
-            logger.log(Logger.Level.WARNING, "Chek-out failed.", e);
+            logger.warn("Chek-out failed.", e);
             throw new ServiceException("Chek-out failed.", e);
         }
     }
@@ -100,7 +101,7 @@ public class HistoryService implements IHistoryService {
 
             return history.getCostOfLiving();
         } catch (DaoException e) {
-            logger.log(Logger.Level.WARNING, "Get cost of living failed.", e);
+            logger.warn("Get cost of living failed.", e);
             throw new ServiceException("Get cost of living failed.", e);
         }
     }
@@ -136,7 +137,7 @@ public class HistoryService implements IHistoryService {
             History history = historyDao.getByGuest(guest).get(0);
             return history.getServices();
         } catch (DaoException e) {
-            logger.log(Logger.Level.WARNING, "Get list of guest service failed.", e);
+            logger.warn("Get list of guest service failed.", e);
             throw new ServiceException("Get list of guest service failed.", e);
         }
     }

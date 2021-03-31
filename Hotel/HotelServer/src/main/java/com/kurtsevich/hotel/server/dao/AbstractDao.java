@@ -1,10 +1,11 @@
 package com.kurtsevich.hotel.server.dao;
 
 import com.kurtsevich.hotel.server.api.dao.GenericDao;
-import com.kurtsevich.hotel.server.model.AEntity;
 import com.kurtsevich.hotel.server.exceptions.DaoException;
+import com.kurtsevich.hotel.server.model.AEntity;
 import com.kurtsevich.hotel.server.util.DBConnection;
-import com.kurtsevich.hotel.server.util.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,8 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractDao<T extends AEntity> implements GenericDao<T> {
-    //TODO Logger
-    protected final Logger logger = new Logger(this.getClass().getName());
+    protected final Logger logger = LoggerFactory.getLogger(AbstractDao.class);
     protected DBConnection connection;
 
     protected abstract List<T> parseFromResultSet(ResultSet resultSet);
@@ -36,16 +36,13 @@ public abstract class AbstractDao<T extends AEntity> implements GenericDao<T> {
             ResultSet resultSet = statement.executeQuery(String.format(GET_BY_ID, getTableName(), id));
             entity = parseFromResultSet(resultSet).get(0);
         } catch (SQLException e) {
-            //TODO
-            logger.log(Logger.Level.WARNING, "Couldn't find entity by id: ");
-            throw new DaoException("Couldn't find entity by id: ", e);
+            logger.warn("Couldn't get entity from DB ", e);
+            throw new DaoException("Couldn't get entity from DB", e);
         }
         return entity;
     }
 
     protected abstract String getTableName();
-
-//    protected abstract String getTableValues(T entity);
 
     @Override
     public void save(T entity) {
@@ -53,9 +50,8 @@ public abstract class AbstractDao<T extends AEntity> implements GenericDao<T> {
             fillPreparedStatement(preparedStatement, entity);
             preparedStatement.execute();
         } catch (SQLException e) {
-            //TODO
-            logger.log(Logger.Level.WARNING, "Couldn't find entity by id: ");
-            throw new DaoException("Couldn't find entity by id: ", e);
+            logger.warn("Couldn't write entity to DB", e);
+            throw new DaoException("Couldn't write entity to DB", e);
         }
     }
 
@@ -67,9 +63,8 @@ public abstract class AbstractDao<T extends AEntity> implements GenericDao<T> {
             ResultSet resultSet = statement.executeQuery(String.format(GET_ALL, getTableName()));
             entities.addAll(parseFromResultSet(resultSet));
         } catch (SQLException e) {
-            //TODO
-            logger.log(Logger.Level.WARNING, "Couldn't find entity by id: ");
-            throw new DaoException("Couldn't find entity by id: ", e);
+            logger.warn("Couldn't read from DB ", e);
+            throw new DaoException("Couldn't read from DB", e);
         }
         return entities;
     }
@@ -81,8 +76,8 @@ public abstract class AbstractDao<T extends AEntity> implements GenericDao<T> {
             preparedStatement.execute();
         } catch (SQLException e) {
             //TODO
-            logger.log(Logger.Level.WARNING, "Couldn't find entity by id: ");
-            throw new DaoException("Couldn't find entity by id: ", e);
+            logger.warn("Couldn't delete entity from DB", e);
+            throw new DaoException("Couldn't delete entity from DB", e);
         }
     }
 
@@ -92,9 +87,8 @@ public abstract class AbstractDao<T extends AEntity> implements GenericDao<T> {
             fillAllPreparedStatement(preparedStatement, entity);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            //TODO
-            logger.log(Logger.Level.WARNING, "Couldn't find entity by id: ");
-            throw new DaoException("Couldn't find entity by id: ", e);
+            logger.warn("Couldn't update entity", e);
+            throw new DaoException("Couldn't update entity", e);
         }
     }
 

@@ -3,16 +3,17 @@ package com.kurtsevich.hotel.ui.actions.history;
 import com.kurtsevich.hotel.server.exceptions.ServiceException;
 import com.kurtsevich.hotel.server.facade.HotelFacade;
 import com.kurtsevich.hotel.server.model.Guest;
-import com.kurtsevich.hotel.server.util.Logger;
 import com.kurtsevich.hotel.ui.actions.AbstractAction;
 import com.kurtsevich.hotel.ui.actions.IAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class CheckIn extends AbstractAction implements IAction {
-    private static final Logger logger = new Logger(CheckIn.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(CheckIn.class);
 
     public CheckIn(HotelFacade facade) {
         this.facade = facade;
@@ -33,10 +34,10 @@ public class CheckIn extends AbstractAction implements IAction {
 
             Guest guest = facade.getGuestById(guestId);
 
-            logger.log(Logger.Level.INFO, "Guest " + guest.getLastName() + " " + guest.getFirstName()
+            logger.info("Guest " + guest.getLastName() + " " + guest.getFirstName()
                     + " check-in " + facade.getRoomInfo(roomId).getNumber());
         } catch (ServiceException | NumberFormatException |IOException e) {
-            logger.log(Logger.Level.WARNING, "CheckIn Failed", e);
+            logger.warn("CheckIn Failed", e);
         }
     }
 }

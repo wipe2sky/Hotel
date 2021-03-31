@@ -3,9 +3,12 @@ package com.kurtsevich.hotel.server.dao;
 import com.kurtsevich.hotel.di.annotation.InjectByType;
 import com.kurtsevich.hotel.di.annotation.Singleton;
 import com.kurtsevich.hotel.server.api.dao.IRoomDao;
+import com.kurtsevich.hotel.server.exceptions.DaoException;
 import com.kurtsevich.hotel.server.model.Room;
 import com.kurtsevich.hotel.server.model.RoomStatus;
 import com.kurtsevich.hotel.server.util.DBConnection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,6 +18,7 @@ import java.util.List;
 
 @Singleton
 public class RoomDao extends AbstractDao<Room> implements IRoomDao {
+    private final Logger logger = LoggerFactory.getLogger(RoomDao.class);
 
     @InjectByType
     public RoomDao(DBConnection connection) {
@@ -39,8 +43,8 @@ public class RoomDao extends AbstractDao<Room> implements IRoomDao {
                 rooms.add(new Room(id, number, capacity, stars, price, status, guestsInRoom, isCleaning));
             }
         } catch (SQLException e) {
-            //TODo
-            e.printStackTrace();
+            logger.warn("Couldn't parse from result", e);
+            throw new DaoException("Couldn't parse from result", e);
         }
         return rooms;
     }
@@ -57,8 +61,8 @@ public class RoomDao extends AbstractDao<Room> implements IRoomDao {
             preparedStatement.setInt(3, stars);
             preparedStatement.setDouble(4, price);
         } catch (SQLException e) {
-            //TODO
-            e.printStackTrace();
+            logger.warn("Couldn't fill prepared statement", e);
+            throw new DaoException("Couldn't fill prepared statement", e);
         }
     }
 
@@ -75,8 +79,8 @@ public class RoomDao extends AbstractDao<Room> implements IRoomDao {
             preparedStatement.setInt(8, entity.getId());
 
         } catch (SQLException e) {
-            //TODO
-            e.printStackTrace();
+            logger.warn("Couldn't set prepared statement", e);
+            throw new DaoException("Couldn't set prepared statement", e);
         }
     }
 

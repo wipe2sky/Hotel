@@ -4,12 +4,15 @@ import com.kurtsevich.hotel.di.annotation.InjectByType;
 import com.kurtsevich.hotel.di.annotation.Singleton;
 import com.kurtsevich.hotel.server.api.dao.IHistoryDao;
 import com.kurtsevich.hotel.server.exceptions.DaoException;
-import com.kurtsevich.hotel.server.model.*;
+import com.kurtsevich.hotel.server.model.Guest;
+import com.kurtsevich.hotel.server.model.History;
+import com.kurtsevich.hotel.server.model.Room;
+import com.kurtsevich.hotel.server.model.Service;
 import com.kurtsevich.hotel.server.util.DBConnection;
-import com.kurtsevich.hotel.server.util.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -18,6 +21,7 @@ import java.util.stream.Collectors;
 
 @Singleton
 public class HistoryDao extends AbstractDao<History> implements IHistoryDao {
+    private final Logger logger = LoggerFactory.getLogger(HistoryDao.class);
     private RoomDao roomDaoDB;
     private GuestDao guestDaoDB;
     private ServiceDao serviceDaoDB;
@@ -50,8 +54,8 @@ public class HistoryDao extends AbstractDao<History> implements IHistoryDao {
                 histories.add(new History(id, checkInDate, checkOutDate, costOfLiving, costOfService, room, guest, services));
             }
         } catch (SQLException e) {
-            //TODo
-            e.printStackTrace();
+            logger.warn("Couldn't parse from result", e);
+            throw new DaoException("Couldn't parse from result", e);
         }
 
 
@@ -67,9 +71,8 @@ public class HistoryDao extends AbstractDao<History> implements IHistoryDao {
 
             }
         } catch (SQLException e) {
-            //TODO
-            logger.log(Logger.Level.WARNING, "Couldn't find entity by id: ");
-            throw new DaoException("Couldn't find entity by id: ", e);
+            logger.warn("Couldn't get services by id", e);
+            throw new DaoException("Couldn't get services by id ", e);
         }
         return entities;
     }
@@ -83,8 +86,8 @@ public class HistoryDao extends AbstractDao<History> implements IHistoryDao {
             preparedStatement.setInt(4, entity.getRoom().getId());
             preparedStatement.setInt(5, entity.getGuest().getId());
         } catch (SQLException e) {
-            //TODO
-            e.printStackTrace();
+            logger.warn("Couldn't fill prepared statement", e);
+            throw new DaoException("Couldn't fill prepared statement", e);
         }
     }
 
@@ -102,8 +105,8 @@ public class HistoryDao extends AbstractDao<History> implements IHistoryDao {
                 updateServiceToGuest(entity);
             }
         } catch (SQLException e) {
-            //TODO
-            e.printStackTrace();
+            logger.warn("Couldn't set prepared statement", e);
+            throw new DaoException("Couldn't set prepared statement", e);
         }
     }
 
@@ -114,9 +117,8 @@ public class HistoryDao extends AbstractDao<History> implements IHistoryDao {
             preparedStatement.setInt(1, historyId);
             preparedStatement.execute();
         } catch (SQLException e) {
-            //TODO
-            logger.log(Logger.Level.WARNING, "Couldn't find entity by id: ");
-            throw new DaoException("Couldn't find entity by id: ", e);
+            logger.warn("Couldn't delete value from history_service table", e);
+            throw new DaoException("Couldn't delete value from history_service table", e);
         }
     }
 
@@ -133,8 +135,8 @@ public class HistoryDao extends AbstractDao<History> implements IHistoryDao {
             }
         } catch (SQLException e) {
             //TODO
-            logger.log(Logger.Level.WARNING, "Couldn't find entity by id: ");
-            throw new DaoException("Couldn't find entity by id: ", e);
+            logger.warn("Couldn't set value to history_service table", e);
+            throw new DaoException("Couldn't set value to history_service table", e);
         }
     }
 
@@ -154,9 +156,8 @@ public class HistoryDao extends AbstractDao<History> implements IHistoryDao {
                     .sorted(Comparator.comparing(History::getCheckOutDate).reversed())
                     .collect(Collectors.toList());
         } catch (SQLException e) {
-            //TODO
-            logger.log(Logger.Level.WARNING, "Couldn't find entity by id: ");
-            throw new DaoException("Couldn't find entity by id: ", e);
+            logger.warn("Couldn't get value from history table by guest id", e);
+            throw new DaoException("Couldn't get value from history table by guest id", e);
         }
         return histories;
     }
@@ -171,9 +172,8 @@ public class HistoryDao extends AbstractDao<History> implements IHistoryDao {
                     .sorted(Comparator.comparing(History::getCheckOutDate).reversed())
                     .collect(Collectors.toList());
         } catch (SQLException e) {
-            //TODO
-            logger.log(Logger.Level.WARNING, "Couldn't find entity by id: ");
-            throw new DaoException("Couldn't find entity by id: ", e);
+            logger.warn("Couldn't get value from history table by room id", e);
+            throw new DaoException("Couldn't get value from history table by room id", e);
         }
         return histories;
     }

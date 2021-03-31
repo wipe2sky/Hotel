@@ -2,16 +2,17 @@ package com.kurtsevich.hotel.ui.actions.history;
 
 import com.kurtsevich.hotel.server.exceptions.ServiceException;
 import com.kurtsevich.hotel.server.facade.HotelFacade;
-import com.kurtsevich.hotel.server.util.Logger;
 import com.kurtsevich.hotel.ui.actions.AbstractAction;
 import com.kurtsevich.hotel.ui.actions.IAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class GetGuestHistory extends AbstractAction implements IAction {
-    private static final Logger logger = new Logger(GetGuestHistory.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(GetGuestHistory.class);
 
     public GetGuestHistory(HotelFacade facade) {
         this.facade = facade;
@@ -28,7 +29,7 @@ public class GetGuestHistory extends AbstractAction implements IAction {
             facade.getGuestHistory(guestId).forEach(System.out::println);
             System.out.println();
         } catch (ServiceException | NumberFormatException |IOException e) {
-            logger.log(Logger.Level.WARNING, "Get guest history failed", e);
+            logger.warn("Get guest history failed", e);
         }
     }
 }
