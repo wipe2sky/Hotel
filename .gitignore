@@ -24,6 +24,7 @@ tomcat
 log*.txt
 *log.txt
 log.txt
+*.log
 
 # Maven
 target/

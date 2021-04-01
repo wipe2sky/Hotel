@@ -29,7 +29,7 @@ public class AddGuest extends AbstractAction implements IAction {
             String firstName = reader.readLine();
             Guest guest = facade.addGuest(lastName, firstName);
 
-            logger.info("Guest " + guest.getLastName() + " " + guest.getFirstName() + " added." + " Id - " + guest.getId());
+            logger.info("Guest " + guest.getLastName() + " " + guest.getFirstName() + " added.");
 
         } catch (IOException e) {
             logger.warn("Add guest failed", e);
