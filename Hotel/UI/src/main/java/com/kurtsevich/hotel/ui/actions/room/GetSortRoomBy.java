@@ -1,6 +1,6 @@
 package com.kurtsevich.hotel.ui.actions.room;
 
-import com.kurtsevich.hotel.server.facade.HotelFacade;
+import com.kurtsevich.hotel.server.controller.HotelFacade;
 import com.kurtsevich.hotel.server.model.RoomStatus;
 import com.kurtsevich.hotel.server.util.comparators.ComparatorStatus;
 import com.kurtsevich.hotel.ui.actions.AbstractAction;

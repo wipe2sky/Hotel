@@ -1,6 +1,6 @@
 package com.kurtsevich.hotel.ui.actions.guest;
 
-import com.kurtsevich.hotel.server.facade.HotelFacade;
+import com.kurtsevich.hotel.server.controller.HotelFacade;
 import com.kurtsevich.hotel.ui.actions.AbstractAction;
 import com.kurtsevich.hotel.ui.actions.IAction;
 

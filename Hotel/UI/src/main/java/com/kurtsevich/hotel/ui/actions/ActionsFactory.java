@@ -2,7 +2,7 @@ package com.kurtsevich.hotel.ui.actions;
 
 import com.kurtsevich.hotel.di.annotation.InjectByType;
 import com.kurtsevich.hotel.di.annotation.Singleton;
-import com.kurtsevich.hotel.server.facade.HotelFacade;
+import com.kurtsevich.hotel.server.controller.HotelFacade;
 import com.kurtsevich.hotel.server.model.RoomStatus;
 import com.kurtsevich.hotel.server.util.comparators.ComparatorStatus;
 import lombok.SneakyThrows;

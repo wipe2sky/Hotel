@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface ConfigProperty {
-    String configName() default "./HotelServer/src/main/resources/application.properties";
+    String configName() default "./src/main/resources/application.properties";
     String propertyName() default "";
     String type() default "";
 }

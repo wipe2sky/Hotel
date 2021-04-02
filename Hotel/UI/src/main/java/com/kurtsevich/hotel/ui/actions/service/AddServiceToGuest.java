@@ -1,7 +1,8 @@
 package com.kurtsevich.hotel.ui.actions.service;
 
-import com.kurtsevich.hotel.server.exceptions.ServiceException;
-import com.kurtsevich.hotel.server.facade.HotelFacade;
+
+import com.kurtsevich.hotel.server.api.exceptions.ServiceException;
+import com.kurtsevich.hotel.server.controller.HotelFacade;
 import com.kurtsevich.hotel.server.model.Guest;
 import com.kurtsevich.hotel.server.model.Service;
 import com.kurtsevich.hotel.ui.actions.AbstractAction;
