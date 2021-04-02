@@ -9,7 +9,6 @@ import com.kurtsevich.hotel.server.service.RoomService;
 import com.kurtsevich.hotel.server.service.ServiceForService;
 import com.kurtsevich.hotel.server.util.comparators.ComparatorStatus;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 @Singleton

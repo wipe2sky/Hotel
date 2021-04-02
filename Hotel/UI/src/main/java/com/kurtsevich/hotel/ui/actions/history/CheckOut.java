@@ -33,8 +33,7 @@ public class CheckOut extends AbstractAction implements IAction {
             Room room = history.getRoom();
 
             facade.checkOut(guestId);
-            logger.info("Guest " + guest.getLastName() + " " + guest.getFirstName()
-                    + " check-out from room №" + room.getNumber());
+            logger.info("Guest {} {} check-out from room № {} ", guest.getLastName(), guest.getFirstName(), room.getNumber());
         } catch (ServiceException | NumberFormatException |IOException e) {
             logger.warn("Check-out failed", e);
         }

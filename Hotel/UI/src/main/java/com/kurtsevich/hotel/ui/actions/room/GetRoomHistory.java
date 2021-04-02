@@ -28,7 +28,7 @@ public class GetRoomHistory extends AbstractAction implements IAction {
             facade.getRoomHistory(roomId)
                     .forEach(System.out::println);
 
-            logger.info("History of room № " + roomId + ".");
+            logger.info("History of room № {}", roomId);
 
         } catch (ServiceException | NumberFormatException | IOException e) {
             logger.warn("Get room history failed", e);

@@ -7,11 +7,13 @@ import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 @Singleton
-public class DBConnection {
-    private final Logger logger = LoggerFactory.getLogger(DBConnection.class);
+public class DBConnector {
+    private final Logger logger = LoggerFactory.getLogger(DBConnector.class);
     @ConfigProperty
     private String userName;
     @ConfigProperty
@@ -22,7 +24,7 @@ public class DBConnection {
     @Getter
     private Connection connection;
 
-    public DBConnection() {
+    public DBConnector() {
     }
 
     public void open() {
@@ -42,6 +44,36 @@ public class DBConnection {
         } catch (SQLException e) {
             logger.error("Close DB connection failed", e);
             throw new RuntimeException("Close DB connection failed", e);
+        }
+    }
+
+    public void startTransaction() {
+        try {
+            connection.setAutoCommit(false);
+        } catch (SQLException e) {
+            logger.error("Impossible disable autocommit", e);
+            rollback();
+
+        }
+    }
+
+    public void finishTransaction() {
+        try {
+            connection.commit();
+            connection.setAutoCommit(true);
+        } catch (SQLException e) {
+            logger.error("Commit to DB failed", e);
+            rollback();
+        }
+    }
+
+    public void rollback() {
+        try {
+            connection.rollback();
+            connection.setAutoCommit(true);
+        } catch (SQLException e) {
+            logger.error("Rollback DB chang failed", e);
+            throw new RuntimeException("Rollback DB chang failed", e);
         }
     }
 }

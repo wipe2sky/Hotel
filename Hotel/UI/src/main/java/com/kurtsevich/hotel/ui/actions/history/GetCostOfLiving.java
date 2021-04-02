@@ -30,7 +30,7 @@ public class GetCostOfLiving extends AbstractAction implements IAction {
             Double cost = facade.getCostOfLiving(guestId);
             Guest guest = facade.getGuestById(guestId);
 
-            logger.info("Cost of accommodation for Guest " + guest.getLastName() + " " + guest.getFirstName() +" = " + cost);
+            logger.info("Cost of accommodation for Guest {} {} = {}", guest.getLastName(), guest.getFirstName(), cost);
         }catch (ServiceException | NumberFormatException |IOException e) {
             logger.warn("Get cost of living failed", e);
         }

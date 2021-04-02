@@ -30,7 +30,7 @@ public class DeleteService extends AbstractAction implements IAction {
 
             facade.deleteService(serviceId);
 
-            logger.info("Service " + service.getName() + " deleted.");
+            logger.info("Service {} deleted.", service.getName());
         } catch (ServiceException | NumberFormatException | IOException e) {
             logger.warn("Delete Service failed", e);
         }

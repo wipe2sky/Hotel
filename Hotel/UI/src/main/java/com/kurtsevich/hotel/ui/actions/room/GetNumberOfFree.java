@@ -15,6 +15,6 @@ public class GetNumberOfFree extends AbstractAction implements IAction {
 
     @Override
     public void execute() {
-        logger.info("In hotel has " + facade.getNumberOfFree() + " free room at the moment");
+        logger.info("In hotel has {} free room at the moment", facade.getNumberOfFree());
     }
 }

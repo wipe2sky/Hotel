@@ -14,8 +14,10 @@ public class MenuController {
 
     private final Builder builder;
     private final Navigator navigator;
+    private int index = -1;
 
-@InjectByType
+
+    @InjectByType
     public MenuController(Builder builder, Navigator navigator) {
         this.builder = builder;
         this.navigator = navigator;
@@ -24,21 +26,24 @@ public class MenuController {
     public void run() {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))
         ) {
-            System.err.println( );
+            System.err.println();
             builder.buildMenu();
             navigator.setCurrentMenu(builder.getRootMenu());
-            int index = -1;
             do {
-                try {
-                    navigator.printMenu();
-                    index = Integer.parseInt(reader.readLine());
-                    navigator.navigate(index);
-                } catch (NumberFormatException| IndexOutOfBoundsException e) {
-                    logger.warn("Menu Controller error", e);
-                }
+                navigate(reader);
             } while (index != 0);
         } catch (IOException e) {
             logger.error("Menu Controller error", e);
+        }
+    }
+
+    private void navigate(BufferedReader reader) throws IOException {
+        try {
+            navigator.printMenu();
+            index = Integer.parseInt(reader.readLine());
+            navigator.navigate(index);
+        } catch (NumberFormatException | IndexOutOfBoundsException e) {
+            logger.warn("Menu Controller error", e);
         }
     }
 

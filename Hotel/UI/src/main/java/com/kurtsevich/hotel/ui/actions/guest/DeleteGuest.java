@@ -29,7 +29,7 @@ public class DeleteGuest extends AbstractAction implements IAction {
             Guest guest = facade.getGuestById(guestId);
             facade.deleteGuestById(guestId);
 
-            logger.info("Guest " + guest.getLastName() + " " + guest.getFirstName() + " deleted");
+            logger.info("Guest {} {} deleted",guest.getLastName(), guest.getFirstName());
 
         } catch (ServiceException | NumberFormatException |IOException e) {
             logger.warn("Deleting the guest failing", e);

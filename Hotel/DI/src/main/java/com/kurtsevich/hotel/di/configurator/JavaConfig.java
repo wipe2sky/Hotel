@@ -27,7 +27,7 @@ public class JavaConfig implements Config {
       return   ifc2ImplClass.computeIfAbsent(ifc, aClass -> {
             Set<Class<? extends T>> classes = scanner.getSubTypesOf(ifc);
             if(classes.size()!=1){
-                logger.error(ifc + " has 0 or more than 1 impl, please update your config");
+                logger.error("{} has 0 or more than 1 impl, please update your config", ifc);
                 throw new RuntimeException(ifc + " has 0 or more than 1 impl, please update your config");
             }
             return classes.iterator().next();

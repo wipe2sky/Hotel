@@ -62,7 +62,7 @@ public class ObjectFactory {
     }
 
     private <T> void configure(T t) {
-        configurators.forEach(configurators -> configurators.configure(t, context));
+        configurators.forEach(configurator -> configurator.configure(t, context));
     }
 
     private <T> T create(Class<T> implClass) {

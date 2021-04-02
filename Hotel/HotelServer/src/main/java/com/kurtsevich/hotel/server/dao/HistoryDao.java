@@ -8,7 +8,7 @@ import com.kurtsevich.hotel.server.model.Guest;
 import com.kurtsevich.hotel.server.model.History;
 import com.kurtsevich.hotel.server.model.Room;
 import com.kurtsevich.hotel.server.model.Service;
-import com.kurtsevich.hotel.server.util.DBConnection;
+import com.kurtsevich.hotel.server.util.DBConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,8 +27,8 @@ public class HistoryDao extends AbstractDao<History> implements IHistoryDao {
     private ServiceDao serviceDaoDB;
 
     @InjectByType
-    public HistoryDao(DBConnection connection, RoomDao roomDaoDB, GuestDao guestDaoDB, ServiceDao serviceDaoDB) {
-        this.connection = connection;
+    public HistoryDao(DBConnector connection, RoomDao roomDaoDB, GuestDao guestDaoDB, ServiceDao serviceDaoDB) {
+        this.connector = connection;
         this.roomDaoDB = roomDaoDB;
         this.guestDaoDB = guestDaoDB;
         this.serviceDaoDB = serviceDaoDB;
@@ -64,7 +64,7 @@ public class HistoryDao extends AbstractDao<History> implements IHistoryDao {
 
     private List<Service> getServicesById(Integer id) {
         List<Service> entities = new ArrayList<>();
-        try (Statement statement = connection.getConnection().createStatement()) {
+        try (Statement statement = connector.getConnection().createStatement()) {
             ResultSet resultSet = statement.executeQuery(String.format("SELECT service_id FROM history_service WHERE history_id=%d", id));
             while (resultSet.next()) {
                 entities.add(serviceDaoDB.getById(resultSet.getInt(1)));
@@ -113,7 +113,7 @@ public class HistoryDao extends AbstractDao<History> implements IHistoryDao {
     private void deleteHistoryServiceValue(History entity) {
         Integer historyId = entity.getId();
 
-        try (PreparedStatement preparedStatement = connection.getConnection().prepareStatement("DELETE FROM history_service WHERE history_id=?")) {
+        try (PreparedStatement preparedStatement = connector.getConnection().prepareStatement("DELETE FROM history_service WHERE history_id=?")) {
             preparedStatement.setInt(1, historyId);
             preparedStatement.execute();
         } catch (SQLException e) {
@@ -129,12 +129,11 @@ public class HistoryDao extends AbstractDao<History> implements IHistoryDao {
         deleteHistoryServiceValue(entity);
 
         //Сетим актуальные данные
-        try (Statement statement = connection.getConnection().createStatement()) {
+        try (Statement statement = connector.getConnection().createStatement()) {
             for (Service service : services) {
                 statement.execute(String.format("INSERT INTO history_service VALUES(%d, %d)", historyId, service.getId()));
             }
         } catch (SQLException e) {
-            //TODO
             logger.warn("Couldn't set value to history_service table", e);
             throw new DaoException("Couldn't set value to history_service table", e);
         }
@@ -149,7 +148,7 @@ public class HistoryDao extends AbstractDao<History> implements IHistoryDao {
     public List<History> getByGuest(Guest entity) {
         List<History> histories;
         List<History> entities = new ArrayList<>();
-        try (Statement statement = connection.getConnection().createStatement()) {
+        try (Statement statement = connector.getConnection().createStatement()) {
             ResultSet resultSet = statement.executeQuery("SElECT * FROM history WHERE guest_id=" + entity.getId());
             entities.addAll(parseFromResultSet(resultSet));
             histories = entities.stream()
@@ -165,7 +164,7 @@ public class HistoryDao extends AbstractDao<History> implements IHistoryDao {
     public List<History> getByRoom(Room entity) {
         List<History> histories;
         List<History> entities = new ArrayList<>();
-        try (Statement statement = connection.getConnection().createStatement()) {
+        try (Statement statement = connector.getConnection().createStatement()) {
             ResultSet resultSet = statement.executeQuery("SElECT * FROM history WHERE room_id=" + entity.getId());
             entities.addAll(parseFromResultSet(resultSet));
             histories = entities.stream()

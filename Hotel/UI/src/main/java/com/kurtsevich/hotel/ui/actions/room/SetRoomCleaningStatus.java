@@ -34,9 +34,9 @@ public class SetRoomCleaningStatus extends AbstractAction implements IAction {
             facade.setRoomCleaningStatus(roomId, isCleaning);
 
             if (isCleaning) {
-                logger.info("Room " + room.getNumber() + " is cleaned");
+                logger.info("Room {} is cleaned", room.getNumber());
             } else {
-                logger.info("Room " + room.getNumber() + " cleaned");
+                logger.info("Room {} cleaned", room.getNumber());
 
             }
 

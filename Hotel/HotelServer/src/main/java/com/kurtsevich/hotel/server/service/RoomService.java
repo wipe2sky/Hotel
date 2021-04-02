@@ -11,6 +11,7 @@ import com.kurtsevich.hotel.server.model.AEntity;
 import com.kurtsevich.hotel.server.model.History;
 import com.kurtsevich.hotel.server.model.Room;
 import com.kurtsevich.hotel.server.model.RoomStatus;
+import com.kurtsevich.hotel.server.util.DBConnector;
 import com.kurtsevich.hotel.server.util.comparators.ComparatorStatus;
 import com.kurtsevich.hotel.server.util.comparators.RoomCapacityComparator;
 import com.kurtsevich.hotel.server.util.comparators.RoomPriceComparator;
@@ -18,7 +19,6 @@ import com.kurtsevich.hotel.server.util.comparators.RoomStarsComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -35,13 +35,21 @@ public class RoomService implements IRoomService {
     private boolean allowRoomStatus;
     private final IRoomDao roomDao;
     private final IHistoryDao historyDao;
+    private final DBConnector connector;
+
 
     private final EnumMap<ComparatorStatus, Comparator<Room>> comparatorMap = new EnumMap<>(ComparatorStatus.class);
 
     @InjectByType
-    public RoomService(IRoomDao roomDao, IHistoryDao historyDao) {
+    public RoomService(IRoomDao roomDao, IHistoryDao historyDao, DBConnector connector) {
         this.roomDao = roomDao;
         this.historyDao = historyDao;
+        this.connector = connector;
+        fillComparatorMap();
+
+    }
+
+    private void fillComparatorMap() {
         comparatorMap.put(ComparatorStatus.PRICE, new RoomPriceComparator());
         comparatorMap.put(ComparatorStatus.CAPACITY, new RoomCapacityComparator());
         comparatorMap.put(ComparatorStatus.STARS, new RoomStarsComparator());
@@ -51,15 +59,21 @@ public class RoomService implements IRoomService {
     @Override
     public Room addRoom(Integer number, Integer capacity, Integer stars, Double price) {
         Room room = new Room(number, capacity, stars, price);
+        connector.startTransaction();
         roomDao.save(room);
+        connector.finishTransaction();
         return room;
     }
 
     @Override
     public void deleteRoom(Integer id) {
         try {
+            connector.startTransaction();
             roomDao.delete(roomDao.getById(id));
+            connector.finishTransaction();
+
         } catch (ServiceException e) {
+            connector.rollback();
             logger.warn("Delete room failed.", e);
             throw new ServiceException("Delete room failed.", e);
         }
@@ -69,13 +83,19 @@ public class RoomService implements IRoomService {
     public void setCleaningStatus(Integer roomId, Boolean status) {
         Room room;
         try {
+            connector.startTransaction();
             room = roomDao.getById(roomId);
         } catch (ServiceException e) {
+            connector.rollback();
             logger.warn("Set cleaning status failed.", e);
             throw new ServiceException("Set cleaning status failed.", e);
         }
-        if (!allowRoomStatus) throw new ServiceException("Changed status disable.");
+        if (!allowRoomStatus) {
+            connector.rollback();
+            throw new ServiceException("Changed status disable.");
+        }
         if (status.equals(room.getIsCleaning())) {
+            connector.rollback();
             logger.warn("Set cleaning status failed");
             throw new ServiceException("Set cleaning status failed.");
         }
@@ -83,15 +103,21 @@ public class RoomService implements IRoomService {
         room.setIsCleaning(status);
         roomDao.update(room);
 
+        connector.finishTransaction();
     }
 
     @Override
     public void changePrice(Integer roomId, Double price) {
         try {
+            connector.startTransaction();
+
             Room room = roomDao.getById(roomId);
             room.setPrice(price);
             roomDao.update(room);
+
+            connector.finishTransaction();
         } catch (ServiceException e) {
+            connector.rollback();
             logger.warn("Change room price failed.", e);
             throw new ServiceException("Change room price failed.", e);
         }
@@ -112,6 +138,8 @@ public class RoomService implements IRoomService {
     @Override
     public List<Room> getAvailableAfterDate(LocalDateTime date) {
         List<Room> rooms = new ArrayList<>();
+        connector.startTransaction();
+
         rooms.addAll(getAll().stream()
                 .filter(room -> room.getStatus().equals(RoomStatus.FREE))
                 .collect(Collectors.toList()));
@@ -119,6 +147,9 @@ public class RoomService implements IRoomService {
                 .filter(room -> room.getStatus().equals(RoomStatus.BUSY))
                 .filter(room -> historyDao.getByRoom(room).get(0).getCheckOutDate().minusDays(1).isBefore(date))
                 .collect(Collectors.toList()));
+
+        connector.finishTransaction();
+
         return rooms;
     }
 
@@ -133,11 +164,18 @@ public class RoomService implements IRoomService {
     @Override
     public List<History> getRoomHistory(Integer roomId) {
         try {
-            return historyDao.getByRoom(roomDao.getById(roomId)).stream()
+            connector.startTransaction();
+
+            List<History> histories = historyDao.getByRoom(roomDao.getById(roomId)).stream()
                     .sorted(Comparator.comparing(AEntity::getId).reversed())
                     .limit(countOfHistories)
                     .collect(Collectors.toList());
+
+            connector.finishTransaction();
+
+            return histories;
         } catch (ServiceException e) {
+            connector.rollback();
             logger.warn("Get room history failed.",e);
             throw new ServiceException("Get room History failed.",e);
         }
@@ -147,18 +185,24 @@ public class RoomService implements IRoomService {
     public void setRepairStatus(Integer roomId, boolean bol) {
         Room room;
         try {
+            connector.startTransaction();
             room = roomDao.getById(roomId);
         } catch (ServiceException e) {
+            connector.rollback();
             logger.warn("Set repair status failed.", e);
             throw new ServiceException("Set repair status failed.",e);
         }
-        if (!allowRoomStatus) throw new ServiceException("Changed status disable.");
+        if (!allowRoomStatus) {
+            connector.rollback();
+            throw new ServiceException("Changed status disable.");
+        }
 
         if (bol) {
             room.setStatus(RoomStatus.REPAIR);
         } else room.setStatus(RoomStatus.FREE);
         roomDao.update(room);
 
+        connector.finishTransaction();
     }
 
     @Override

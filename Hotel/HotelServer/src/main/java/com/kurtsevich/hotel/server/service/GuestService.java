@@ -9,6 +9,7 @@ import com.kurtsevich.hotel.server.exceptions.DaoException;
 import com.kurtsevich.hotel.server.exceptions.ServiceException;
 import com.kurtsevich.hotel.server.model.Guest;
 import com.kurtsevich.hotel.server.model.History;
+import com.kurtsevich.hotel.server.util.DBConnector;
 import com.kurtsevich.hotel.server.util.comparators.ComparatorStatus;
 import com.kurtsevich.hotel.server.util.comparators.GuestDateComparator;
 import com.kurtsevich.hotel.server.util.comparators.GuestLastNameComparator;
@@ -27,15 +28,21 @@ public class GuestService implements IGuestService {
     private final Logger logger = LoggerFactory.getLogger(GuestService.class);
     private final IGuestDao guestDao;
     private final IHistoryDao historyDao;
+    private final DBConnector connector;
 
 
     private final EnumMap<ComparatorStatus, Comparator<History>> comparatorMap = new EnumMap<>(ComparatorStatus.class);
 
 
     @InjectByType
-    public GuestService(IGuestDao guestDao, IHistoryDao historyDao) {
+    public GuestService(IGuestDao guestDao, IHistoryDao historyDao, DBConnector connector) {
         this.guestDao = guestDao;
         this.historyDao = historyDao;
+        this.connector = connector;
+        fillComparatorMap();
+    }
+
+    private void fillComparatorMap() {
         comparatorMap.put(ComparatorStatus.DATE_CHECK_OUT, new GuestDateComparator());
         comparatorMap.put(ComparatorStatus.LAST_NAME, new GuestLastNameComparator());
     }
@@ -43,7 +50,9 @@ public class GuestService implements IGuestService {
     @Override
     public Guest add(String lastName, String firstName) {
         Guest guest = new Guest(lastName, firstName);
+        connector.startTransaction();
         guestDao.save(guest);
+        connector.finishTransaction();
         return guest;
     }
 
@@ -60,8 +69,11 @@ public class GuestService implements IGuestService {
     @Override
     public void deleteGuest(Integer id) {
         try {
+            connector.startTransaction();
             guestDao.delete(getById(id));
+            connector.finishTransaction();
         } catch (ServiceException e) {
+            connector.rollback();
             logger.warn("Delete guest failed.", e);
             throw new ServiceException("Delete guest failed.", e);
         }

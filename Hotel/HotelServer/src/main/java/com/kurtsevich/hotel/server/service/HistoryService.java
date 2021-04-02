@@ -9,11 +9,11 @@ import com.kurtsevich.hotel.server.api.service.IHistoryService;
 import com.kurtsevich.hotel.server.exceptions.DaoException;
 import com.kurtsevich.hotel.server.exceptions.ServiceException;
 import com.kurtsevich.hotel.server.model.*;
+import com.kurtsevich.hotel.server.util.DBConnector;
 import com.kurtsevich.hotel.server.util.comparators.HistoryDateOutComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
@@ -27,19 +27,24 @@ public class HistoryService implements IHistoryService {
     private final IGuestDao guestDao;
     private final IRoomDao roomDao;
     private final IHistoryDao historyDao;
+    private final DBConnector connector;
+
 
     @InjectByType
-    public HistoryService(IGuestDao guestDao, IRoomDao roomDao, IHistoryDao historyDao) {
+    public HistoryService(IGuestDao guestDao, IRoomDao roomDao, IHistoryDao historyDao, DBConnector connector) {
         this.guestDao = guestDao;
         this.roomDao = roomDao;
         this.historyDao = historyDao;
+        this.connector = connector;
     }
 
 
     @Override
     public History addHistory(Room room, Guest guest, Integer daysStay) {
         History history = new History(LocalDateTime.now(), LocalDateTime.now().plusDays(daysStay), room.getPrice() * daysStay, room, guest);
+        connector.startTransaction();
         historyDao.save(history);
+        connector.finishTransaction();
         return history;
     }
 
@@ -47,18 +52,23 @@ public class HistoryService implements IHistoryService {
     @Override
     public void checkIn(Integer guestId, Integer roomId, Integer daysStay) {
         try {
+            connector.startTransaction();
             Room room = roomDao.getById(roomId);
             Guest guest = guestDao.getById(guestId);
             if (room.getGuestsInRoom() < room.getCapacity()) {
-                logger.info(String.format("Check-in of the guest № %d to the room № %d for %d days", guestId, roomId, daysStay));
+                logger.info("Check-in of the guest № {} to the room № {} for {} days", guestId, roomId, daysStay);
                 guest.setCheckIn(true);
                 guestDao.update(guest);
                 room.setStatus(RoomStatus.BUSY);
                 room.setGuestsInRoom(room.getGuestsInRoom() + 1);
                 roomDao.update(room);
                 addHistory(room, guest, daysStay);
-            } else logger.info("Room " + roomId + " busy.");
+            } else logger.info("Room {} busy.", roomId);
+
+            connector.finishTransaction();
+
         } catch (DaoException e) {
+            connector.rollback();
             logger.warn("Chek-in failed.", e);
             throw new ServiceException("Chek-in failed.", e);
         }
@@ -67,11 +77,12 @@ public class HistoryService implements IHistoryService {
     @Override
     public void checkOut(Integer guestId) {
         try {
+            connector.startTransaction();
             Guest guest = guestDao.getById(guestId);
             History history = historyDao.getByGuest(guest).get(0);
             Room room = history.getRoom();
 
-            logger.info(String.format("Check-out of the guest № %d to the room № %d", guestId, room.getId()));
+            logger.info("Check-out of the guest № {} to the room № {}", guestId, room.getId());
 
             history.setCostOfLiving(ChronoUnit.DAYS.between(history.getCheckInDate(),
                     LocalDateTime.now()) > 1
@@ -87,7 +98,10 @@ public class HistoryService implements IHistoryService {
             historyDao.update(history);
             roomDao.update(room);
             guestDao.update(guest);
+
+            connector.finishTransaction();
         } catch (DaoException e) {
+            connector.rollback();
             logger.warn("Chek-out failed.", e);
             throw new ServiceException("Chek-out failed.", e);
         }
@@ -96,9 +110,11 @@ public class HistoryService implements IHistoryService {
     @Override
     public Double getCostOfLiving(Integer guestId) {
         try {
+            connector.startTransaction();
             Guest guest = guestDao.getById(guestId);
             History history = historyDao.getByGuest(guest).get(0);
 
+            connector.finishTransaction();
             return history.getCostOfLiving();
         } catch (DaoException e) {
             logger.warn("Get cost of living failed.", e);
@@ -133,10 +149,16 @@ public class HistoryService implements IHistoryService {
     @Override
     public List<Service> getListOfGuestService(Integer guestId) {
         try {
+            connector.startTransaction();
+
             Guest guest = guestDao.getById(guestId);
             History history = historyDao.getByGuest(guest).get(0);
+
+            connector.finishTransaction();
+
             return history.getServices();
         } catch (DaoException e) {
+            connector.rollback();
             logger.warn("Get list of guest service failed.", e);
             throw new ServiceException("Get list of guest service failed.", e);
         }
@@ -144,12 +166,17 @@ public class HistoryService implements IHistoryService {
 
     @Override
     public List<History> getByGuestId(Integer guestId) {
-
-        return historyDao.getByGuest(guestDao.getById(guestId));
+        connector.startTransaction();
+        List<History> histories = historyDao.getByGuest(guestDao.getById(guestId));
+        connector.finishTransaction();
+        return histories;
     }
 
     @Override
     public List<History> getByRoomId(Integer roomId) {
-        return historyDao.getByRoom(roomDao.getById(roomId));
+        connector.startTransaction();
+        List<History> histories = historyDao.getByRoom(roomDao.getById(roomId));
+        connector.finishTransaction();
+        return histories;
     }
 }

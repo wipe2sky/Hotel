@@ -29,7 +29,7 @@ public class DeleteRoom extends AbstractAction implements IAction {
             Room room = facade.getRoomInfo(roomId);
 
             facade.deleteRoom(roomId);
-            logger.info("Room № " + room.getNumber() + " has deleted.");
+            logger.info("Room № {} has deleted.", room.getNumber());
 
         } catch (ServiceException | NumberFormatException | IOException e) {
             logger.warn("Delete room failed", e);

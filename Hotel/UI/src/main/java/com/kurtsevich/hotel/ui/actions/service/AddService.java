@@ -31,7 +31,7 @@ public class AddService extends AbstractAction implements IAction {
 
             Service service = facade.addService(name, price);
 
-            logger.info("Service \"" + service.getName() + "\" added");
+            logger.info("Service \"{}\" added",service.getName());
 
         } catch (ServiceException | NumberFormatException |IOException e) {
             logger.warn("Add service failed", e);

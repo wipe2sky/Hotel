@@ -6,7 +6,7 @@ import com.kurtsevich.hotel.server.api.dao.IRoomDao;
 import com.kurtsevich.hotel.server.exceptions.DaoException;
 import com.kurtsevich.hotel.server.model.Room;
 import com.kurtsevich.hotel.server.model.RoomStatus;
-import com.kurtsevich.hotel.server.util.DBConnection;
+import com.kurtsevich.hotel.server.util.DBConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,8 +21,8 @@ public class RoomDao extends AbstractDao<Room> implements IRoomDao {
     private final Logger logger = LoggerFactory.getLogger(RoomDao.class);
 
     @InjectByType
-    public RoomDao(DBConnection connection) {
-        this.connection = connection;
+    public RoomDao(DBConnector connection) {
+        this.connector = connection;
         insertNew = "INSERT INTO room(number, capacity, stars, price) VALUES(?,?,?,?)";
         updateString = "UPDATE room SET number=?,capacity=?,stars=?,price=?,status=?,guests_in_room=?,is_cleaning=? WHERE id=?";
     }

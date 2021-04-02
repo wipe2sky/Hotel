@@ -1,6 +1,5 @@
 package com.kurtsevich.hotel.ui.menu;
 
-import com.kurtsevich.hotel.di.annotation.InjectByType;
 import com.kurtsevich.hotel.di.annotation.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,11 +7,10 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 @Singleton
 public class Navigator {
-    private final Logger logger = LoggerFactory.getLogger(MenuController.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(Navigator.class);
 
     private Menu currentMenu;
 
-    @InjectByType
     public Navigator() {
     }
 
@@ -36,7 +34,7 @@ public class Navigator {
                 menuItem.doAction();
                 currentMenu = menuItem.getNextMenu();
             } catch (IndexOutOfBoundsException e) {
-                logger.warn("Menu item with index " + index + " does not exist");
+                logger.warn("Menu item with index {} does not exist", index);
             }
         }
     }

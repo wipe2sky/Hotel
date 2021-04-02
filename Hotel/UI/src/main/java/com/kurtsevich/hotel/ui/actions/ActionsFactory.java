@@ -27,8 +27,7 @@ public class ActionsFactory {
     @SneakyThrows
     public IAction getAction(Class<? extends IAction> clazz, Boolean status) {
         Constructor<? extends IAction> constructor = clazz.getConstructor(HotelFacade.class, Boolean.class);
-        IAction iAction = constructor.newInstance(facade, status);
-        return iAction;
+        return constructor.newInstance(facade, status);
     }
 
     @SneakyThrows

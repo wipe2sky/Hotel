@@ -5,7 +5,7 @@ import com.kurtsevich.hotel.di.annotation.Singleton;
 import com.kurtsevich.hotel.server.api.dao.IGuestDao;
 import com.kurtsevich.hotel.server.exceptions.DaoException;
 import com.kurtsevich.hotel.server.model.Guest;
-import com.kurtsevich.hotel.server.util.DBConnection;
+import com.kurtsevich.hotel.server.util.DBConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,8 +20,8 @@ public class GuestDao extends AbstractDao<Guest> implements IGuestDao {
     private final Logger logger = LoggerFactory.getLogger(GuestDao.class);
 
     @InjectByType
-    public GuestDao(DBConnection connection) {
-        this.connection = connection;
+    public GuestDao(DBConnector connection) {
+        this.connector = connection;
         insertNew = "INSERT INTO guest(last_name, first_name) VALUES(?,?)";
         updateString = "UPDATE guest SET last_name=?,first_name=?,is_check_in=? WHERE id=?";
     }

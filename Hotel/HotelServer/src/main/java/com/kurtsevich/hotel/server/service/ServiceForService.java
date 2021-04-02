@@ -10,6 +10,7 @@ import com.kurtsevich.hotel.server.exceptions.DaoException;
 import com.kurtsevich.hotel.server.exceptions.ServiceException;
 import com.kurtsevich.hotel.server.model.History;
 import com.kurtsevich.hotel.server.model.Service;
+import com.kurtsevich.hotel.server.util.DBConnector;
 import com.kurtsevich.hotel.server.util.comparators.ServiceCostComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,27 +24,36 @@ public class ServiceForService implements IServiceForService {
     private final IServiceDao serviceDao;
     private final IGuestDao guestDao;
     private final IHistoryDao historyDao;
+    private final DBConnector connector;
+
 
     @InjectByType
-    public ServiceForService(IServiceDao serviceDao, IGuestDao guestDao, IHistoryDao historyDao) {
+    public ServiceForService(IServiceDao serviceDao, IGuestDao guestDao, IHistoryDao historyDao, DBConnector connector) {
         this.serviceDao = serviceDao;
         this.guestDao = guestDao;
         this.historyDao = historyDao;
+        this.connector = connector;
     }
 
 
     @Override
     public Service addService(String name, Double price) {
         Service service = new Service(name, price);
+        connector.startTransaction();
         serviceDao.save(service);
+        connector.finishTransaction();
+
         return service;
     }
 
     @Override
     public void deleteService(Integer serviceId) {
         try {
+            connector.startTransaction();
             serviceDao.delete(serviceDao.getById(serviceId));
+            connector.finishTransaction();
         } catch (ServiceException e) {
+            connector.rollback();
             logger.warn("Delete service failed.", e);
             throw new ServiceException("Delete service failed.", e);
         }
@@ -62,6 +72,8 @@ public class ServiceForService implements IServiceForService {
     @Override
     public void addServiceToGuest(Integer serviceId, Integer guestId) {
         try {
+            connector.startTransaction();
+
             Service service = serviceDao.getById(serviceId);
             History history = historyDao.getByGuest(guestDao.getById(guestId)).get(0);
             if(history.getGuest().isCheckIn()) {
@@ -69,9 +81,14 @@ public class ServiceForService implements IServiceForService {
                 history.setCostOfService(history.getCostOfService() + service.getPrice());
                 history.setCostOfLiving(history.getCostOfLiving() + service.getPrice());
                 historyDao.update(history);
-            } else throw new ServiceException("Add service to the guest failed. Guest doesn't stay in hotel.");
+                connector.finishTransaction();
+            } else {
+                connector.rollback();
+                throw new ServiceException("Add service to the guest failed. Guest doesn't stay in hotel.");
+            }
 
         } catch (DaoException e) {
+            connector.rollback();
             logger.warn("Add service to the guest failed.", e);
             throw new ServiceException("Add service to the guest failed.", e);
         }
@@ -92,10 +109,13 @@ public class ServiceForService implements IServiceForService {
     @Override
     public void changeServicePrice(Integer id, Double price) {
         try {
+            connector.startTransaction();
             Service service = getById(id);
             service.setPrice(price);
             serviceDao.update(service);
+            connector.finishTransaction();
         } catch (ServiceException e) {
+            connector.rollback();
             logger.warn("Change service price failed.", e);
             throw new ServiceException("Change service price failed.", e);
         }

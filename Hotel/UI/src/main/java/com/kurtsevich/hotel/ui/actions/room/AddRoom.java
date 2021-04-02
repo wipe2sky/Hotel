@@ -34,7 +34,7 @@ public class AddRoom extends AbstractAction implements IAction {
 
             Room room = facade.addRoom(number, capacity, stars, price);
 
-            logger.info("Room added " + room);
+            logger.info("Room added {}", room);
         } catch (NumberFormatException |IOException e) {
             logger.warn("Added room failed", e);
         }

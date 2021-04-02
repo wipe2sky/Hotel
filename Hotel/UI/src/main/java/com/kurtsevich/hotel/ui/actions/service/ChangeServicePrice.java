@@ -32,7 +32,7 @@ public class ChangeServicePrice extends AbstractAction implements IAction {
             facade.changeServicePrice(serviceId, price);
             Service service = facade.getServiceById(serviceId);
 
-            logger.info("Service price " + service.getName() + " changed to " + price);
+            logger.info("Service price {} changed to {}",service.getName(), price);
         } catch (ServiceException | NumberFormatException | IOException e) {
             logger.warn("Change service price failed", e);
         }

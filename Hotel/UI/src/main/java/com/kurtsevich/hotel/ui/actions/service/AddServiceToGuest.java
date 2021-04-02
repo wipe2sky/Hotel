@@ -35,10 +35,9 @@ public class AddServiceToGuest extends AbstractAction implements IAction {
 
             if (guest.isCheckIn()) {
                 facade.addServiceToGuest(serviceId, guestId);
-                logger.info("Service " + service.getName()
-                        + " added to guest " + guest.getLastName() + " " + guest.getFirstName());
+                logger.info("Service {} added to guest {} {}", service.getName(), guest.getLastName(), guest.getFirstName());
             } else {
-                logger.warn("Guest id " + guest.getId() + " not stay in the hotel.");
+                logger.warn("Guest id {}  not stay in the hotel.", guest.getId());
             }
         } catch (ServiceException | NumberFormatException |IOException e) {
             logger.warn("Add service to guest failed", e);

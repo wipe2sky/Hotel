@@ -31,7 +31,7 @@ public class ChangeRoomPrice extends AbstractAction implements IAction {
 
             facade.changeRoomPrice(roomId, price);
             Room room = facade.getRoomInfo(roomId);
-            logger.info("Cost of living per day in the room " + room.getNumber() + " has been changed to " + room.getPrice());
+            logger.info("Cost of living per day in the room {} has been changed to {}", room.getNumber(), room.getPrice());
 
         } catch (ServiceException | NumberFormatException | IOException e) {
             logger.warn("Change room price failed", e);

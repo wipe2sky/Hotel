@@ -5,7 +5,7 @@ import com.kurtsevich.hotel.di.annotation.Singleton;
 import com.kurtsevich.hotel.server.api.dao.IServiceDao;
 import com.kurtsevich.hotel.server.exceptions.DaoException;
 import com.kurtsevich.hotel.server.model.Service;
-import com.kurtsevich.hotel.server.util.DBConnection;
+import com.kurtsevich.hotel.server.util.DBConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,8 +20,8 @@ public class ServiceDao extends AbstractDao<Service> implements IServiceDao {
     private final Logger logger = LoggerFactory.getLogger(ServiceDao.class);
 
     @InjectByType
-    public ServiceDao(DBConnection connection) {
-        this.connection = connection;
+    public ServiceDao(DBConnector connection) {
+        this.connector = connection;
         insertNew = "INSERT INTO service(name, price) VALUES(?,?)";
         updateString = "UPDATE service SET name=?,price=? WHERE id=?";
     }
