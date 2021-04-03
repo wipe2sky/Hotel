@@ -7,7 +7,7 @@ import com.kurtsevich.hotel.server.service.GuestService;
 import com.kurtsevich.hotel.server.service.HistoryService;
 import com.kurtsevich.hotel.server.service.RoomService;
 import com.kurtsevich.hotel.server.service.ServiceForService;
-import com.kurtsevich.hotel.server.util.comparators.ComparatorStatus;
+import com.kurtsevich.hotel.server.util.SortStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -51,8 +51,8 @@ public class HotelFacade {
         return guestService.getAllGuestInHotel();
     }
 
-    public List<Guest> getGuestSortBy(ComparatorStatus comparatorStatus) {
-        return guestService.getShortBy(comparatorStatus);
+    public List<Guest> getGuestSortBy(SortStatus sortStatus) {
+        return guestService.getSortBy(sortStatus);
 
     }
 
@@ -83,8 +83,8 @@ public class HotelFacade {
         return roomService.getNumberOfFree();
     }
 
-    public List<Room> getRoomSortBy(ComparatorStatus comparatorStatus, RoomStatus roomStatus) {
-        return roomService.getSortBy(comparatorStatus, roomStatus);
+    public List<Room> getRoomSortBy(SortStatus sortStatus, RoomStatus roomStatus) {
+        return roomService.getSortBy(sortStatus, roomStatus);
     }
 
     public void setRoomCleaningStatus(Integer id, boolean isCleaning) {

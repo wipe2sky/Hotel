@@ -22,9 +22,16 @@ import java.util.stream.Collectors;
 @Singleton
 public class HistoryDao extends AbstractDao<History> implements IHistoryDao {
     private final Logger logger = LoggerFactory.getLogger(HistoryDao.class);
-    private RoomDao roomDaoDB;
-    private GuestDao guestDaoDB;
-    private ServiceDao serviceDaoDB;
+    private static final String NOT_PARSE = "Couldn't parse from result";
+    private static final String NOT_GET_SERVICE = "Couldn't get services by id";
+    private static final String NOT_FILL = "Couldn't fill prepared statement";
+    private static final String NOT_SET_STATEMENT = "Couldn't set prepared statement";
+    private static final String NOT_DELETE = "Couldn't delete value from history_service table";
+    private static final String NOT_SET_VALUE = "Couldn't set value to history_service table";
+    private static final String NOT_GET_VALUE = "Couldn't get value from history table";
+    private final RoomDao roomDaoDB;
+    private final GuestDao guestDaoDB;
+    private final ServiceDao serviceDaoDB;
 
     @InjectByType
     public HistoryDao(DBConnector connection, RoomDao roomDaoDB, GuestDao guestDaoDB, ServiceDao serviceDaoDB) {
@@ -41,25 +48,29 @@ public class HistoryDao extends AbstractDao<History> implements IHistoryDao {
         List<History> histories = new ArrayList<>();
         try {
             while (resultSet.next()) {
-                Integer id = resultSet.getInt("id");
-                LocalDateTime checkInDate = resultSet.getTimestamp("check_in_date").toLocalDateTime();
-                LocalDateTime checkOutDate = resultSet.getTimestamp("check_out_date").toLocalDateTime();
-                Double costOfLiving = resultSet.getDouble("cost_of_living");
-                Double costOfService = resultSet.getDouble("cost_of_service");
-                Room room = roomDaoDB.getById(resultSet.getInt("room_id"));
-                Guest guest = guestDaoDB.getById(resultSet.getInt("guest_id"));
-                List<Service> services = getServicesById(id);
-
-
-                histories.add(new History(id, checkInDate, checkOutDate, costOfLiving, costOfService, room, guest, services));
+                histories.add(resultSetMapper(resultSet));
             }
         } catch (SQLException e) {
-            logger.warn("Couldn't parse from result", e);
-            throw new DaoException("Couldn't parse from result", e);
+            logger.warn(NOT_PARSE, e);
+            throw new DaoException(NOT_PARSE, e);
         }
 
 
         return histories;
+    }
+
+    private History resultSetMapper(ResultSet resultSet) throws SQLException {
+        Integer id = resultSet.getInt("id");
+        LocalDateTime checkInDate = resultSet.getTimestamp("check_in_date").toLocalDateTime();
+        LocalDateTime checkOutDate = resultSet.getTimestamp("check_out_date").toLocalDateTime();
+        Double costOfLiving = resultSet.getDouble("cost_of_living");
+        Double costOfService = resultSet.getDouble("cost_of_service");
+        Room room = roomDaoDB.getById(resultSet.getInt("room_id"));
+        Guest guest = guestDaoDB.getById(resultSet.getInt("guest_id"));
+        List<Service> services = getServicesById(id);
+
+
+        return new History(id, checkInDate, checkOutDate, costOfLiving, costOfService, room, guest, services);
     }
 
     private List<Service> getServicesById(Integer id) {
@@ -71,8 +82,8 @@ public class HistoryDao extends AbstractDao<History> implements IHistoryDao {
 
             }
         } catch (SQLException e) {
-            logger.warn("Couldn't get services by id", e);
-            throw new DaoException("Couldn't get services by id ", e);
+            logger.warn(NOT_GET_SERVICE, e);
+            throw new DaoException(NOT_GET_SERVICE, e);
         }
         return entities;
     }
@@ -86,8 +97,8 @@ public class HistoryDao extends AbstractDao<History> implements IHistoryDao {
             preparedStatement.setInt(4, entity.getRoom().getId());
             preparedStatement.setInt(5, entity.getGuest().getId());
         } catch (SQLException e) {
-            logger.warn("Couldn't fill prepared statement", e);
-            throw new DaoException("Couldn't fill prepared statement", e);
+            logger.warn(NOT_FILL, e);
+            throw new DaoException(NOT_FILL, e);
         }
     }
 
@@ -105,8 +116,8 @@ public class HistoryDao extends AbstractDao<History> implements IHistoryDao {
                 updateServiceToGuest(entity);
             }
         } catch (SQLException e) {
-            logger.warn("Couldn't set prepared statement", e);
-            throw new DaoException("Couldn't set prepared statement", e);
+            logger.warn(NOT_SET_STATEMENT, e);
+            throw new DaoException(NOT_SET_STATEMENT, e);
         }
     }
 
@@ -117,8 +128,8 @@ public class HistoryDao extends AbstractDao<History> implements IHistoryDao {
             preparedStatement.setInt(1, historyId);
             preparedStatement.execute();
         } catch (SQLException e) {
-            logger.warn("Couldn't delete value from history_service table", e);
-            throw new DaoException("Couldn't delete value from history_service table", e);
+            logger.warn(NOT_DELETE, e);
+            throw new DaoException(NOT_DELETE, e);
         }
     }
 
@@ -134,8 +145,8 @@ public class HistoryDao extends AbstractDao<History> implements IHistoryDao {
                 statement.execute(String.format("INSERT INTO history_service VALUES(%d, %d)", historyId, service.getId()));
             }
         } catch (SQLException e) {
-            logger.warn("Couldn't set value to history_service table", e);
-            throw new DaoException("Couldn't set value to history_service table", e);
+            logger.warn(NOT_SET_VALUE, e);
+            throw new DaoException(NOT_SET_VALUE, e);
         }
     }
 
@@ -155,8 +166,8 @@ public class HistoryDao extends AbstractDao<History> implements IHistoryDao {
                     .sorted(Comparator.comparing(History::getCheckOutDate).reversed())
                     .collect(Collectors.toList());
         } catch (SQLException e) {
-            logger.warn("Couldn't get value from history table by guest id", e);
-            throw new DaoException("Couldn't get value from history table by guest id", e);
+            logger.warn(NOT_GET_VALUE, e);
+            throw new DaoException(NOT_GET_VALUE, e);
         }
         return histories;
     }
@@ -171,8 +182,8 @@ public class HistoryDao extends AbstractDao<History> implements IHistoryDao {
                     .sorted(Comparator.comparing(History::getCheckOutDate).reversed())
                     .collect(Collectors.toList());
         } catch (SQLException e) {
-            logger.warn("Couldn't get value from history table by room id", e);
-            throw new DaoException("Couldn't get value from history table by room id", e);
+            logger.warn(NOT_GET_VALUE, e);
+            throw new DaoException(NOT_GET_VALUE, e);
         }
         return histories;
     }

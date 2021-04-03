@@ -15,4 +15,5 @@ public interface GenericDao<T extends AEntity> {
     void delete(T entity);
 
     void update(T entity);
+
 }

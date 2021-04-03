@@ -11,12 +11,10 @@ import com.kurtsevich.hotel.server.api.service.IServiceForService;
 import com.kurtsevich.hotel.server.model.History;
 import com.kurtsevich.hotel.server.model.Service;
 import com.kurtsevich.hotel.server.util.DBConnector;
-import com.kurtsevich.hotel.server.util.comparators.ServiceCostComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Singleton
 public class ServiceForService implements IServiceForService {
@@ -96,9 +94,8 @@ public class ServiceForService implements IServiceForService {
 
     @Override
     public List<Service> getSortByPrice() {
-        return getAll().stream()
-                .sorted(new ServiceCostComparator())
-                .collect(Collectors.toList());
+        return serviceDao.getSortByPrice();
+
     }
 
     @Override

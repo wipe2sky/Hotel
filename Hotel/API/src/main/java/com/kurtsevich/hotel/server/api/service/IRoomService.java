@@ -3,7 +3,7 @@ package com.kurtsevich.hotel.server.api.service;
 import com.kurtsevich.hotel.server.model.History;
 import com.kurtsevich.hotel.server.model.Room;
 import com.kurtsevich.hotel.server.model.RoomStatus;
-import com.kurtsevich.hotel.server.util.comparators.ComparatorStatus;
+import com.kurtsevich.hotel.server.util.SortStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,7 +18,7 @@ public interface IRoomService {
 
     void changePrice(Integer roomId, Double price);
 
-    List<Room> getSortBy(ComparatorStatus comparatorStatus, RoomStatus roomStatus);
+    List<Room> getSortBy(SortStatus sortStatus, RoomStatus roomStatus);
 
     List<Room> getAvailableAfterDate(LocalDateTime date);
 

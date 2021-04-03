@@ -12,11 +12,9 @@ repositories {
 dependencies {
     implementation(project(':DI'))
     implementation(project(':Service'))
-    implementation(project(':Model'))
-    implementation(project(':Util'))
-    implementation(project(':API'))
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    compile(project(':API'))
+//    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+//    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 }
 
 test {

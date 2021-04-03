@@ -12,17 +12,13 @@ import com.kurtsevich.hotel.server.model.History;
 import com.kurtsevich.hotel.server.model.Room;
 import com.kurtsevich.hotel.server.model.RoomStatus;
 import com.kurtsevich.hotel.server.util.DBConnector;
-import com.kurtsevich.hotel.server.util.comparators.ComparatorStatus;
-import com.kurtsevich.hotel.server.util.comparators.RoomCapacityComparator;
-import com.kurtsevich.hotel.server.util.comparators.RoomPriceComparator;
-import com.kurtsevich.hotel.server.util.comparators.RoomStarsComparator;
+import com.kurtsevich.hotel.server.util.SortStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,22 +34,22 @@ public class RoomService implements IRoomService {
     private final DBConnector connector;
 
 
-    private final EnumMap<ComparatorStatus, Comparator<Room>> comparatorMap = new EnumMap<>(ComparatorStatus.class);
+//    private final EnumMap<ComparatorStatus, Comparator<Room>> comparatorMap = new EnumMap<>(ComparatorStatus.class);
 
     @InjectByType
     public RoomService(IRoomDao roomDao, IHistoryDao historyDao, DBConnector connector) {
         this.roomDao = roomDao;
         this.historyDao = historyDao;
         this.connector = connector;
-        fillComparatorMap();
+//        fillComparatorMap();
 
     }
 
-    private void fillComparatorMap() {
-        comparatorMap.put(ComparatorStatus.PRICE, new RoomPriceComparator());
-        comparatorMap.put(ComparatorStatus.CAPACITY, new RoomCapacityComparator());
-        comparatorMap.put(ComparatorStatus.STARS, new RoomStarsComparator());
-    }
+//    private void fillComparatorMap() {
+//        comparatorMap.put(ComparatorStatus.PRICE, new RoomPriceComparator());
+//        comparatorMap.put(ComparatorStatus.CAPACITY, new RoomCapacityComparator());
+//        comparatorMap.put(ComparatorStatus.STARS, new RoomStarsComparator());
+//    }
 
 
     @Override
@@ -124,15 +120,8 @@ public class RoomService implements IRoomService {
     }
 
     @Override
-    public List<Room> getSortBy(ComparatorStatus comparatorStatus, RoomStatus roomStatus) {
-        return roomStatus == null
-                ? getAll().stream()
-                .sorted(comparatorMap.get(comparatorStatus))
-                .collect(Collectors.toList())
-                : getAll().stream()
-                .filter(room -> room.getStatus().equals(roomStatus))
-                .sorted(comparatorMap.get(comparatorStatus))
-                .collect(Collectors.toList());
+    public List<Room> getSortBy(SortStatus sortStatus, RoomStatus roomStatus) {
+        return roomDao.getSortBy(sortStatus, roomStatus);
     }
 
     @Override

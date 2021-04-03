@@ -10,13 +10,11 @@ import com.kurtsevich.hotel.server.api.exceptions.ServiceException;
 import com.kurtsevich.hotel.server.api.service.IHistoryService;
 import com.kurtsevich.hotel.server.model.*;
 import com.kurtsevich.hotel.server.util.DBConnector;
-import com.kurtsevich.hotel.server.util.comparators.HistoryDateOutComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -83,7 +81,6 @@ public class HistoryService implements IHistoryService {
             Room room = history.getRoom();
 
             logger.info("Check-out of the guest № {} to the room № {}", guestId, room.getId());
-
             history.setCostOfLiving(ChronoUnit.DAYS.between(history.getCheckInDate(),
                     LocalDateTime.now()) > 1
                     ? ChronoUnit.DAYS.between(history.getCheckInDate(), LocalDateTime.now()) * room.getPrice() + history.getCostOfService()
@@ -127,7 +124,7 @@ public class HistoryService implements IHistoryService {
         return historyDao.getAll().stream()
                 .filter(history -> history.getRoom().getId().equals(roomId))
                 .limit(3)
-                .sorted(Collections.reverseOrder(new HistoryDateOutComparator()))
+                .sorted(Comparator.comparing(History::getCheckOutDate).reversed())
                 .collect(Collectors.toList());
     }
 

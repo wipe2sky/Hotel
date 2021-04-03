@@ -11,10 +11,8 @@ repositories {
 
 dependencies {
     implementation(project(':DI'))
-    implementation(project(':Model'))
-    implementation(project(':Util'))
-    implementation(project(':Controller'))
-    implementation(project(':API'))
+    compile(project(':Controller'))
+
 }
 
 test {

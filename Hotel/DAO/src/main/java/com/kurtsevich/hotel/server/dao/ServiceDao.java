@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,5 +72,16 @@ public class ServiceDao extends AbstractDao<Service> implements IServiceDao {
         return "service";
     }
 
-
+    @Override
+    public List<Service> getSortByPrice() {
+        List<Service> entities = new ArrayList<>();
+        try (Statement statement = connector.getConnection().createStatement()) {
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM service ORDER BY price;");
+            entities.addAll(parseFromResultSet(resultSet));
+        } catch (SQLException e) {
+            logger.warn("Couldn't read from DB ", e);
+            throw new DaoException("Couldn't read from DB", e);
+        }
+        return entities;
+    }
 }

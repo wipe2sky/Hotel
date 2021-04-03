@@ -6,18 +6,21 @@ import com.kurtsevich.hotel.server.api.dao.IGuestDao;
 import com.kurtsevich.hotel.server.api.exceptions.DaoException;
 import com.kurtsevich.hotel.server.model.Guest;
 import com.kurtsevich.hotel.server.util.DBConnector;
+import com.kurtsevich.hotel.server.util.SortStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 @Singleton
 public class GuestDao extends AbstractDao<Guest> implements IGuestDao {
     private final Logger logger = LoggerFactory.getLogger(GuestDao.class);
+    private static final String SORT = "SELECT id, last_name, first_name, is_check_in FROM guest JOIN history USING(id) WHERE is_check_in = false AND check_out_date > CURRENT_DATE() ORDER BY %s;";
 
     @InjectByType
     public GuestDao(DBConnector connection) {
@@ -75,7 +78,17 @@ public class GuestDao extends AbstractDao<Guest> implements IGuestDao {
         return "guest";
     }
 
-
+    public List<Guest> getSortBy(SortStatus sortStatus) {
+        List<Guest> entities = new ArrayList<>();
+        try (Statement statement = connector.getConnection().createStatement()) {
+            ResultSet resultSet = statement.executeQuery(String.format(SORT, sortStatus.getValue()));
+            entities.addAll(parseFromResultSet(resultSet));
+        } catch (SQLException e) {
+            logger.warn("Couldn't read from DB ", e);
+            throw new DaoException("Couldn't read from DB", e);
+        }
+        return entities;
+    }
 }
 
 

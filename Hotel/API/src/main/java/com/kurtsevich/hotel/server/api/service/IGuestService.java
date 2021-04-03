@@ -1,7 +1,7 @@
 package com.kurtsevich.hotel.server.api.service;
 
 import com.kurtsevich.hotel.server.model.Guest;
-import com.kurtsevich.hotel.server.util.comparators.ComparatorStatus;
+import com.kurtsevich.hotel.server.util.SortStatus;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ public interface IGuestService {
 
     void deleteGuest(Integer id);
 
-    List<Guest> getShortBy(ComparatorStatus comparatorStatus);
+    List<Guest> getSortBy(SortStatus sortStatus);
 
     Integer getCountGuestInHotel();
 

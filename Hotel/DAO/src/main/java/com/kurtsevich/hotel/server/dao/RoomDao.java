@@ -7,18 +7,23 @@ import com.kurtsevich.hotel.server.api.exceptions.DaoException;
 import com.kurtsevich.hotel.server.model.Room;
 import com.kurtsevich.hotel.server.model.RoomStatus;
 import com.kurtsevich.hotel.server.util.DBConnector;
+import com.kurtsevich.hotel.server.util.SortStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 @Singleton
 public class RoomDao extends AbstractDao<Room> implements IRoomDao {
     private final Logger logger = LoggerFactory.getLogger(RoomDao.class);
+    private static final String SORT = "SELECT * FROM room ORDER BY %s;";
+    private static final String SORT_FREE = "SELECT * FROM room WHERE status = 'FREE' ORDER BY %s;";
+
 
     @InjectByType
     public RoomDao(DBConnector connection) {
@@ -89,5 +94,18 @@ public class RoomDao extends AbstractDao<Room> implements IRoomDao {
         return "room";
     }
 
-
+    @Override
+    public List<Room> getSortBy(SortStatus sortStatus, RoomStatus roomStatus) {
+        List<Room> entities = new ArrayList<>();
+        try (Statement statement = connector.getConnection().createStatement()) {
+            ResultSet resultSet = roomStatus == null
+                    ? statement.executeQuery(String.format(SORT, sortStatus.getValue()))
+                    : statement.executeQuery(String.format(SORT_FREE, sortStatus.getValue()));
+            entities.addAll(parseFromResultSet(resultSet));
+        } catch (SQLException e) {
+            logger.warn("Couldn't read from DB ", e);
+            throw new DaoException("Couldn't read from DB", e);
+        }
+        return entities;
+    }
 }

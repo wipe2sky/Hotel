@@ -34,9 +34,13 @@ apply plugin: 'java'
 }
 
 dependencies {
-    implementation(project(':HotelServer'))
     implementation(project(':UI'))
     implementation(project(':DI'))
+    implementation(project(':Util'))
+    implementation(project(':DAO'))
+    implementation(project(':API'))
+
+
 //    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
 //    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 //    implementation 'org.springframework.boot:spring-boot-starter-security'
