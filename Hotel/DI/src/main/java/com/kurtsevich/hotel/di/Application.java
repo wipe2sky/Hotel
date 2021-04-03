@@ -6,6 +6,11 @@ import com.kurtsevich.hotel.di.configurator.JavaConfig;
 import java.util.Map;
 
 public class Application {
+
+    private Application() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static ApplicationContext run(String packagesToScan, Map<Class, Class> ifc2ImplClass){
         JavaConfig config = new JavaConfig(packagesToScan, ifc2ImplClass);
         ApplicationContext context = new ApplicationContext(config);
@@ -16,7 +21,7 @@ public class Application {
         //Просканировать пакеты, найти все с аннотацие сигальтон и засунут в контекст Проверить работоспособность!!!
         //Нужна доп проверка в контексте, т.к. имлементирует и интерфейс, и его реализацию
         config.getScanner().getTypesAnnotatedWith(Singleton.class).stream()
-                .forEach(t->context.getObject(t));
+                .forEach(context::getObject);
         return context;
     }
 }

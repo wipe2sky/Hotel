@@ -1,12 +1,13 @@
 package com.kurtsevich.hotel.ui.actions.room;
 
-import com.kurtsevich.hotel.server.facade.HotelFacade;
-import com.kurtsevich.hotel.server.util.Logger;
+import com.kurtsevich.hotel.server.controller.HotelFacade;
 import com.kurtsevich.hotel.ui.actions.AbstractAction;
 import com.kurtsevich.hotel.ui.actions.IAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GetNumberOfFree extends AbstractAction implements IAction {
-    private static final Logger logger = new Logger(GetNumberOfFree.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(GetNumberOfFree.class);
 
     public GetNumberOfFree(HotelFacade facade) {
         this.facade = facade;
@@ -14,6 +15,6 @@ public class GetNumberOfFree extends AbstractAction implements IAction {
 
     @Override
     public void execute() {
-        logger.log(Logger.Level.INFO, "In hotel has " + facade.getNumberOfFree() + " free room at the moment");
+        logger.info("In hotel has {} free room at the moment", facade.getNumberOfFree());
     }
 }

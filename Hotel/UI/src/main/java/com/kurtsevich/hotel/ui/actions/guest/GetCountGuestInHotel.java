@@ -1,12 +1,13 @@
 package com.kurtsevich.hotel.ui.actions.guest;
 
-import com.kurtsevich.hotel.server.facade.HotelFacade;
-import com.kurtsevich.hotel.server.util.Logger;
+import com.kurtsevich.hotel.server.controller.HotelFacade;
 import com.kurtsevich.hotel.ui.actions.AbstractAction;
 import com.kurtsevich.hotel.ui.actions.IAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GetCountGuestInHotel extends AbstractAction implements IAction {
-    private static final Logger logger = new Logger(GetCountGuestInHotel.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(GetCountGuestInHotel.class);
 
     public GetCountGuestInHotel(HotelFacade facade) {
         this.facade = facade;
@@ -15,6 +16,6 @@ public class GetCountGuestInHotel extends AbstractAction implements IAction {
     @Override
     public void execute() {
         Integer countGuestInHotel = facade.getCountGuestInHotel();
-        logger.log(Logger.Level.INFO, "In Hotel stay " + countGuestInHotel + " guests, at this moment.");
+        logger.info("In Hotel stay {} guests, at this moment.", countGuestInHotel);
     }
 }

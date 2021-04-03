@@ -1,18 +1,19 @@
 package com.kurtsevich.hotel.ui.actions.guest;
 
-import com.kurtsevich.hotel.server.exceptions.ServiceException;
-import com.kurtsevich.hotel.server.facade.HotelFacade;
+import com.kurtsevich.hotel.server.api.exceptions.ServiceException;
+import com.kurtsevich.hotel.server.controller.HotelFacade;
 import com.kurtsevich.hotel.server.model.Guest;
-import com.kurtsevich.hotel.server.util.Logger;
 import com.kurtsevich.hotel.ui.actions.AbstractAction;
 import com.kurtsevich.hotel.ui.actions.IAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class DeleteGuest extends AbstractAction implements IAction {
-    private static final Logger logger = new Logger(DeleteGuest.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(DeleteGuest.class);
 
     public DeleteGuest(HotelFacade facade) {
         this.facade = facade;
@@ -28,10 +29,10 @@ public class DeleteGuest extends AbstractAction implements IAction {
             Guest guest = facade.getGuestById(guestId);
             facade.deleteGuestById(guestId);
 
-            logger.log(Logger.Level.INFO, "Guest " + guest.getLastName() + " " + guest.getFirstName() + " deleted");
+            logger.info("Guest {} {} deleted",guest.getLastName(), guest.getFirstName());
 
         } catch (ServiceException | NumberFormatException |IOException e) {
-            logger.log(Logger.Level.WARNING, "Deleting the guest failing", e);
+            logger.warn("Deleting the guest failing", e);
         }
     }
 }

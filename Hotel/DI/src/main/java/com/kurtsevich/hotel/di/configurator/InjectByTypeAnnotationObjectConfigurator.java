@@ -2,10 +2,13 @@ package com.kurtsevich.hotel.di.configurator;
 
 import com.kurtsevich.hotel.di.ApplicationContext;
 import com.kurtsevich.hotel.di.annotation.InjectByType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 
 public class InjectByTypeAnnotationObjectConfigurator implements ObjectConfigurator {
+    private final Logger logger = LoggerFactory.getLogger(InjectByTypeAnnotationObjectConfigurator.class);
     @Override
     public void configure(Object t, ApplicationContext context) {
 
@@ -16,7 +19,7 @@ public class InjectByTypeAnnotationObjectConfigurator implements ObjectConfigura
                 try {
                     field.set(t, object);
                 } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+                    logger.warn("Unable to access the field", e);
                 }
 
             }

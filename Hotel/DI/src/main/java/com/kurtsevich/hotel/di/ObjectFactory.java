@@ -3,6 +3,8 @@ package com.kurtsevich.hotel.di;
 import com.kurtsevich.hotel.di.annotation.InjectByType;
 import com.kurtsevich.hotel.di.annotation.PostConstruct;
 import com.kurtsevich.hotel.di.configurator.ObjectConfigurator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -12,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ObjectFactory {
+    private final Logger logger = LoggerFactory.getLogger(ObjectFactory.class);
     private List<ObjectConfigurator> configurators = new ArrayList<>();
     private final ApplicationContext context;
 
@@ -28,7 +31,7 @@ public class ObjectFactory {
                     configurators.add(aClass.getDeclaredConstructor().newInstance());
                 }
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                e.printStackTrace();
+                logger.error("Context filling error", e);
             }
         }
 
@@ -54,12 +57,12 @@ public class ObjectFactory {
                 }
             }
         } catch (IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
+            logger.error("Invoke init failed", e);
         }
     }
 
     private <T> void configure(T t) {
-        configurators.forEach(configurators -> configurators.configure(t, context));
+        configurators.forEach(configurator -> configurator.configure(t, context));
     }
 
     private <T> T create(Class<T> implClass) {
@@ -70,7 +73,7 @@ public class ObjectFactory {
                 try {
                     t = (T) constructor.newInstance(getParams(constructor).toArray());
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                    e.printStackTrace();
+                    logger.error("Crate class failed", e);
                 }
             }
         }
@@ -79,7 +82,7 @@ public class ObjectFactory {
                 t = implClass.getDeclaredConstructor().newInstance();
                 return t;
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                e.printStackTrace();
+                logger.error("Create class failed", e);
             }
         }
         return t;

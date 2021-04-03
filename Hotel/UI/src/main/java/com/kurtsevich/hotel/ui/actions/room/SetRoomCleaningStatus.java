@@ -1,18 +1,19 @@
 package com.kurtsevich.hotel.ui.actions.room;
 
-import com.kurtsevich.hotel.server.exceptions.ServiceException;
-import com.kurtsevich.hotel.server.facade.HotelFacade;
+import com.kurtsevich.hotel.server.api.exceptions.ServiceException;
+import com.kurtsevich.hotel.server.controller.HotelFacade;
 import com.kurtsevich.hotel.server.model.Room;
-import com.kurtsevich.hotel.server.util.Logger;
 import com.kurtsevich.hotel.ui.actions.AbstractAction;
 import com.kurtsevich.hotel.ui.actions.IAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class SetRoomCleaningStatus extends AbstractAction implements IAction {
-    private static final Logger logger = new Logger(SetRoomCleaningStatus.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(SetRoomCleaningStatus.class);
     private Boolean isCleaning;
 
 
@@ -33,14 +34,14 @@ public class SetRoomCleaningStatus extends AbstractAction implements IAction {
             facade.setRoomCleaningStatus(roomId, isCleaning);
 
             if (isCleaning) {
-                logger.log(Logger.Level.INFO, "Room " + room.getNumber() + " is cleaned");
+                logger.info("Room {} is cleaned", room.getNumber());
             } else {
-                logger.log(Logger.Level.INFO, "Room " + room.getNumber() + " cleaned");
+                logger.info("Room {} cleaned", room.getNumber());
 
             }
 
         } catch (ServiceException | NumberFormatException |IOException e) {
-            logger.log(Logger.Level.WARNING, e.getMessage(), e);
+            logger.warn(e.getMessage(), e);
         }
     }
 }

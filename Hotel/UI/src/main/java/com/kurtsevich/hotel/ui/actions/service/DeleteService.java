@@ -1,18 +1,19 @@
 package com.kurtsevich.hotel.ui.actions.service;
 
-import com.kurtsevich.hotel.server.exceptions.ServiceException;
-import com.kurtsevich.hotel.server.facade.HotelFacade;
+import com.kurtsevich.hotel.server.api.exceptions.ServiceException;
+import com.kurtsevich.hotel.server.controller.HotelFacade;
 import com.kurtsevich.hotel.server.model.Service;
-import com.kurtsevich.hotel.server.util.Logger;
 import com.kurtsevich.hotel.ui.actions.AbstractAction;
 import com.kurtsevich.hotel.ui.actions.IAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class DeleteService extends AbstractAction implements IAction {
-    private static final Logger logger = new Logger(DeleteService.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(DeleteService.class);
 
     public DeleteService(HotelFacade facade) {
         this.facade = facade;
@@ -29,9 +30,9 @@ public class DeleteService extends AbstractAction implements IAction {
 
             facade.deleteService(serviceId);
 
-            logger.log(Logger.Level.INFO, "Service " + service.getName() + " deleted.");
+            logger.info("Service {} deleted.", service.getName());
         } catch (ServiceException | NumberFormatException | IOException e) {
-            logger.log(Logger.Level.WARNING, "Delete Service failed", e);
+            logger.warn("Delete Service failed", e);
         }
     }
 }

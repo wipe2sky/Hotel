@@ -3,9 +3,8 @@ package com.kurtsevich.hotel.ui.menu;
 import com.kurtsevich.hotel.di.annotation.InjectByType;
 import com.kurtsevich.hotel.di.annotation.Singleton;
 import com.kurtsevich.hotel.server.model.RoomStatus;
-import com.kurtsevich.hotel.server.util.comparators.ComparatorStatus;
+import com.kurtsevich.hotel.server.util.SortStatus;
 import com.kurtsevich.hotel.ui.actions.ActionsFactory;
-import com.kurtsevich.hotel.ui.actions.SaveProgram;
 import com.kurtsevich.hotel.ui.actions.guest.*;
 import com.kurtsevich.hotel.ui.actions.history.*;
 import com.kurtsevich.hotel.ui.actions.room.*;
@@ -16,19 +15,18 @@ public class Builder {
     private Menu rootMenu;
     private static final String EXIT = "Выход";
     private static final String COMEBACK = "Назад";
-    private final SaveProgram saveProgram;
     private final ActionsFactory factory;
 
     @InjectByType
-    public Builder(SaveProgram saveProgram, ActionsFactory factory) {
-        this.saveProgram = saveProgram;
+    public Builder( ActionsFactory factory) {
         this.factory = factory;
     }
 
     public void buildMenu() {
         rootMenu = new Menu("Главное меню");
 
-        rootMenu.addMenuItems(new MenuItem(EXIT, saveProgram, rootMenu));
+        rootMenu.addMenuItems(new MenuItem(EXIT, () -> {
+        }, rootMenu));
         rootMenu.addMenuItems(new MenuItem("Управление номерами", () -> {
         }, createRoomMenu()));
         rootMenu.addMenuItems(new MenuItem("Управление гостями", () -> {
@@ -46,7 +44,8 @@ public class Builder {
     private Menu createRoomMenu() {
         Menu roomMenu = new Menu("Меню управления номерами");
 
-        roomMenu.addMenuItems(new MenuItem(EXIT, saveProgram, rootMenu));
+        roomMenu.addMenuItems(new MenuItem(EXIT, () -> {
+        }, rootMenu));
         roomMenu.addMenuItems(new MenuItem("Поставить номер на уборку", factory.getAction(SetRoomCleaningStatus.class, true), roomMenu));
         roomMenu.addMenuItems(new MenuItem("Снять номер с уборки", factory.getAction(SetRoomCleaningStatus.class, false), roomMenu));
         roomMenu.addMenuItems(new MenuItem("Информация о номере", factory.getAction(GetRoomInfo.class), roomMenu));
@@ -70,13 +69,14 @@ public class Builder {
     private Menu createRoomSortMenu() {
         Menu roomSortMenu = new Menu("Сортировать номера по:");
 
-        roomSortMenu.addMenuItems(new MenuItem(EXIT, saveProgram, rootMenu));
-        roomSortMenu.addMenuItems(new MenuItem("Сободные номера по цене", factory.getAction(GetSortRoomBy.class, ComparatorStatus.PRICE, RoomStatus.FREE), roomSortMenu));
-        roomSortMenu.addMenuItems(new MenuItem("Сободные номера по вместимости", factory.getAction(GetSortRoomBy.class, ComparatorStatus.CAPACITY, RoomStatus.FREE), roomSortMenu));
-        roomSortMenu.addMenuItems(new MenuItem("Сободные номера по звёздности", factory.getAction(GetSortRoomBy.class, ComparatorStatus.STARS, RoomStatus.FREE), roomSortMenu));
-        roomSortMenu.addMenuItems(new MenuItem("Все номера по цене", factory.getAction(GetSortRoomBy.class, ComparatorStatus.PRICE, RoomStatus.ALL), roomSortMenu));
-        roomSortMenu.addMenuItems(new MenuItem("Все номера по вместимости", factory.getAction(GetSortRoomBy.class, ComparatorStatus.CAPACITY, RoomStatus.ALL), roomSortMenu));
-        roomSortMenu.addMenuItems(new MenuItem("Все номера по звёздности", factory.getAction(GetSortRoomBy.class, ComparatorStatus.STARS, RoomStatus.ALL), roomSortMenu));
+        roomSortMenu.addMenuItems(new MenuItem(EXIT, () -> {
+        }, rootMenu));
+        roomSortMenu.addMenuItems(new MenuItem("Сободные номера по цене", factory.getAction(GetSortRoomBy.class, SortStatus.PRICE, RoomStatus.FREE), roomSortMenu));
+        roomSortMenu.addMenuItems(new MenuItem("Сободные номера по вместимости", factory.getAction(GetSortRoomBy.class, SortStatus.CAPACITY, RoomStatus.FREE), roomSortMenu));
+        roomSortMenu.addMenuItems(new MenuItem("Сободные номера по звёздности", factory.getAction(GetSortRoomBy.class, SortStatus.STARS, RoomStatus.FREE), roomSortMenu));
+        roomSortMenu.addMenuItems(new MenuItem("Все номера по цене", factory.getAction(GetSortRoomBy.class, SortStatus.PRICE, null), roomSortMenu));
+        roomSortMenu.addMenuItems(new MenuItem("Все номера по вместимости", factory.getAction(GetSortRoomBy.class, SortStatus.CAPACITY, null), roomSortMenu));
+        roomSortMenu.addMenuItems(new MenuItem("Все номера по звёздности", factory.getAction(GetSortRoomBy.class, SortStatus.STARS, null), roomSortMenu));
         roomSortMenu.addMenuItems(new MenuItem(COMEBACK, () -> {
         }, rootMenu));
 
@@ -86,7 +86,8 @@ public class Builder {
     private Menu createGuestMenu() {
         Menu guestMenu = new Menu("Меню управления гостями");
 
-        guestMenu.addMenuItems(new MenuItem(EXIT, saveProgram, rootMenu));
+        guestMenu.addMenuItems(new MenuItem(EXIT, () -> {
+        }, rootMenu));
         guestMenu.addMenuItems(new MenuItem("Добавить гостя", factory.getAction(AddGuest.class), guestMenu));
         guestMenu.addMenuItems(new MenuItem("Удалить гостя", factory.getAction(DeleteGuest.class), guestMenu));
         guestMenu.addMenuItems(new MenuItem("Получить список гостей за всё время ", factory.getAction(GetAllGuest.class), guestMenu));
@@ -103,9 +104,10 @@ public class Builder {
     private Menu createGuestSortMenu() {
         Menu guestSortMenu = new Menu("Сортировать гостей по:");
 
-        guestSortMenu.addMenuItems(new MenuItem(EXIT, saveProgram, rootMenu));
-        guestSortMenu.addMenuItems(new MenuItem("Сортировать по фамилии", factory.getAction(GetGuestSortBy.class, ComparatorStatus.LAST_NAME), guestSortMenu));
-        guestSortMenu.addMenuItems(new MenuItem("Сортировать по дате выезда", factory.getAction(GetGuestSortBy.class, ComparatorStatus.DATE_CHECK_OUT), guestSortMenu));
+        guestSortMenu.addMenuItems(new MenuItem(EXIT, () -> {
+        }, rootMenu));
+        guestSortMenu.addMenuItems(new MenuItem("Сортировать по фамилии", factory.getAction(GetGuestSortBy.class, SortStatus.LAST_NAME), guestSortMenu));
+        guestSortMenu.addMenuItems(new MenuItem("Сортировать по дате выезда", factory.getAction(GetGuestSortBy.class, SortStatus.DATE_CHECK_OUT), guestSortMenu));
         guestSortMenu.addMenuItems(new MenuItem(COMEBACK, () -> {
         }, rootMenu));
         return guestSortMenu;
@@ -114,7 +116,8 @@ public class Builder {
     private Menu createServiceMenu() {
         Menu serviceMenu = new Menu("Меню управления услугами");
 
-        serviceMenu.addMenuItems(new MenuItem(EXIT, saveProgram, rootMenu));
+        serviceMenu.addMenuItems(new MenuItem(EXIT, () -> {
+        }, rootMenu));
         serviceMenu.addMenuItems(new MenuItem("Добавить гостю услугу", factory.getAction(AddServiceToGuest.class), serviceMenu));
         serviceMenu.addMenuItems(new MenuItem("Получить список услуг", factory.getAction(GetAllService.class), serviceMenu));
         serviceMenu.addMenuItems(new MenuItem("Сортировать услуги по стоимости", factory.getAction(GetServiceSortByPrice.class), serviceMenu));
@@ -130,7 +133,8 @@ public class Builder {
     private Menu createHistoryMenu() {
         Menu historyMenu = new Menu("Меню управления бронированием");
 
-        historyMenu.addMenuItems(new MenuItem(EXIT, saveProgram, rootMenu));
+        historyMenu.addMenuItems(new MenuItem(EXIT, () -> {
+        }, rootMenu));
         historyMenu.addMenuItems(new MenuItem("Check-In", factory.getAction(CheckIn.class), historyMenu));
         historyMenu.addMenuItems(new MenuItem("Check-Out", factory.getAction(CheckOut.class), historyMenu));
         historyMenu.addMenuItems(new MenuItem("Показать список услуг гостя", factory.getAction(GetListOfGuestService.class), historyMenu));
