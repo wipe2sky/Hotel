@@ -9,15 +9,13 @@ import com.kurtsevich.hotel.server.api.exceptions.DaoException;
 import com.kurtsevich.hotel.server.api.exceptions.ServiceException;
 import com.kurtsevich.hotel.server.api.service.IHistoryService;
 import com.kurtsevich.hotel.server.model.*;
-import com.kurtsevich.hotel.server.util.DBConnector;
+import com.kurtsevich.hotel.server.util.HibernateConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Singleton
 public class HistoryService implements IHistoryService {
@@ -25,11 +23,11 @@ public class HistoryService implements IHistoryService {
     private final IGuestDao guestDao;
     private final IRoomDao roomDao;
     private final IHistoryDao historyDao;
-    private final DBConnector connector;
+    private final HibernateConnector connector;
 
 
     @InjectByType
-    public HistoryService(IGuestDao guestDao, IRoomDao roomDao, IHistoryDao historyDao, DBConnector connector) {
+    public HistoryService(IGuestDao guestDao, IRoomDao roomDao, IHistoryDao historyDao, HibernateConnector connector) {
         this.guestDao = guestDao;
         this.roomDao = roomDao;
         this.historyDao = historyDao;
@@ -40,9 +38,9 @@ public class HistoryService implements IHistoryService {
     @Override
     public History addHistory(Room room, Guest guest, Integer daysStay) {
         History history = new History(LocalDateTime.now(), LocalDateTime.now().plusDays(daysStay), room.getPrice() * daysStay, room, guest);
-        connector.startTransaction();
+//        connector.startTransaction();
         historyDao.save(history);
-        connector.finishTransaction();
+//        connector.finishTransaction();
         return history;
     }
 
@@ -61,14 +59,16 @@ public class HistoryService implements IHistoryService {
                 room.setGuestsInRoom(room.getGuestsInRoom() + 1);
                 roomDao.update(room);
                 addHistory(room, guest, daysStay);
-            } else logger.info("Room {} busy.", roomId);
-
-            connector.finishTransaction();
+            } else {
+                logger.info("Room {} busy.", roomId);
+            }
 
         } catch (DaoException e) {
-            connector.rollback();
+            connector.rollbackTransaction();
             logger.warn("Chek-in failed.", e);
             throw new ServiceException("Chek-in failed.", e);
+        } finally {
+            connector.finishTransaction();
         }
     }
 
@@ -95,12 +95,12 @@ public class HistoryService implements IHistoryService {
             historyDao.update(history);
             roomDao.update(room);
             guestDao.update(guest);
-
-            connector.finishTransaction();
         } catch (DaoException e) {
-            connector.rollback();
+            connector.rollbackTransaction();
             logger.warn("Chek-out failed.", e);
             throw new ServiceException("Chek-out failed.", e);
+        } finally {
+            connector.finishTransaction();
         }
     }
 
@@ -110,36 +110,56 @@ public class HistoryService implements IHistoryService {
             connector.startTransaction();
             Guest guest = guestDao.getById(guestId);
             History history = historyDao.getByGuest(guest).get(0);
-
-            connector.finishTransaction();
             return history.getCostOfLiving();
         } catch (DaoException e) {
             logger.warn("Get cost of living failed.", e);
             throw new ServiceException("Get cost of living failed.", e);
+        } finally {
+            connector.finishTransaction();
         }
     }
 
     @Override
-    public List<History> getLast3GuestInRoom(Integer roomId) {
-        return historyDao.getAll().stream()
-                .filter(history -> history.getRoom().getId().equals(roomId))
-                .limit(3)
-                .sorted(Comparator.comparing(History::getCheckOutDate).reversed())
-                .collect(Collectors.toList());
+    public List<Guest> getLast3GuestInRoom(Integer roomId) {
+        try {
+            connector.startTransaction();
+            return historyDao.getLast3GuestInRoom(roomDao.getById(roomId));
+        } catch (DaoException e) {
+            connector.rollbackTransaction();
+            logger.warn("Get guests in Room failed.", e);
+            throw new ServiceException("Get guests in Room failed.", e);
+        } finally {
+            connector.finishTransaction();
+        }
+
     }
 
     @Override
     public List<History> getGuestHistory(Integer id) {
-        return historyDao.getAll().stream()
-                .filter(history -> history.getGuest().getId().equals(id))
-                .collect(Collectors.toList());
+        try {
+            connector.startTransaction();
+            return guestDao.getHistory(guestDao.getById(id));
+        } catch (DaoException e) {
+            connector.rollbackTransaction();
+            logger.warn("Get guests history failed.", e);
+            throw new ServiceException("Get guests history failed.", e);
+        } finally {
+            connector.finishTransaction();
+        }
     }
 
     @Override
     public List<History> getAll() {
-        return historyDao.getAll().stream()
-                .sorted(Comparator.comparing(AEntity::getId).reversed())
-                .collect(Collectors.toList());
+        try {
+            connector.startTransaction();
+            return historyDao.getAll();
+        } catch (DaoException e) {
+            connector.rollbackTransaction();
+            logger.warn("Get guests failed.", e);
+            throw new ServiceException("Get guests failed.", e);
+        } finally {
+            connector.finishTransaction();
+        }
     }
 
 
@@ -151,29 +171,13 @@ public class HistoryService implements IHistoryService {
             Guest guest = guestDao.getById(guestId);
             History history = historyDao.getByGuest(guest).get(0);
 
-            connector.finishTransaction();
-
             return history.getServices();
         } catch (DaoException e) {
-            connector.rollback();
+            connector.rollbackTransaction();
             logger.warn("Get list of guest service failed.", e);
             throw new ServiceException("Get list of guest service failed.", e);
+        } finally {
+            connector.finishTransaction();
         }
-    }
-
-    @Override
-    public List<History> getByGuestId(Integer guestId) {
-        connector.startTransaction();
-        List<History> histories = historyDao.getByGuest(guestDao.getById(guestId));
-        connector.finishTransaction();
-        return histories;
-    }
-
-    @Override
-    public List<History> getByRoomId(Integer roomId) {
-        connector.startTransaction();
-        List<History> histories = historyDao.getByRoom(roomDao.getById(roomId));
-        connector.finishTransaction();
-        return histories;
     }
 }

@@ -10,7 +10,7 @@ import com.kurtsevich.hotel.server.api.exceptions.ServiceException;
 import com.kurtsevich.hotel.server.api.service.IServiceForService;
 import com.kurtsevich.hotel.server.model.History;
 import com.kurtsevich.hotel.server.model.Service;
-import com.kurtsevich.hotel.server.util.DBConnector;
+import com.kurtsevich.hotel.server.util.HibernateConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,11 +22,11 @@ public class ServiceForService implements IServiceForService {
     private final IServiceDao serviceDao;
     private final IGuestDao guestDao;
     private final IHistoryDao historyDao;
-    private final DBConnector connector;
+    private final HibernateConnector connector;
 
 
     @InjectByType
-    public ServiceForService(IServiceDao serviceDao, IGuestDao guestDao, IHistoryDao historyDao, DBConnector connector) {
+    public ServiceForService(IServiceDao serviceDao, IGuestDao guestDao, IHistoryDao historyDao, HibernateConnector connector) {
         this.serviceDao = serviceDao;
         this.guestDao = guestDao;
         this.historyDao = historyDao;
@@ -49,72 +49,94 @@ public class ServiceForService implements IServiceForService {
         try {
             connector.startTransaction();
             serviceDao.delete(serviceDao.getById(serviceId));
-            connector.finishTransaction();
         } catch (ServiceException e) {
-            connector.rollback();
+            connector.rollbackTransaction();
             logger.warn("Delete service failed.", e);
             throw new ServiceException("Delete service failed.", e);
+        }finally {
+            connector.finishTransaction();
         }
     }
 
     @Override
     public Service getById(Integer serviceId) {
         try {
+            connector.startTransaction();
             return serviceDao.getById(serviceId);
         } catch (DaoException e) {
+            connector.rollbackTransaction();
             logger.warn("Get by id failed.", e);
             throw new ServiceException("Get by id failed.", e);
+        } finally {
+            connector.finishTransaction();
         }
     }
 
     @Override
     public void addServiceToGuest(Integer serviceId, Integer guestId) {
         try {
-            connector.startTransaction();
-
             Service service = serviceDao.getById(serviceId);
             History history = historyDao.getByGuest(guestDao.getById(guestId)).get(0);
             if(history.getGuest().isCheckIn()) {
+                connector.startTransaction();
                 history.getServices().add(service);
                 history.setCostOfService(history.getCostOfService() + service.getPrice());
                 history.setCostOfLiving(history.getCostOfLiving() + service.getPrice());
                 historyDao.update(history);
-                connector.finishTransaction();
             } else {
-                connector.rollback();
                 throw new ServiceException("Add service to the guest failed. Guest doesn't stay in hotel.");
             }
-
         } catch (DaoException e) {
-            connector.rollback();
+            connector.rollbackTransaction();
             logger.warn("Add service to the guest failed.", e);
             throw new ServiceException("Add service to the guest failed.", e);
+        }finally {
+            connector.finishTransaction();
         }
     }
 
     @Override
     public List<Service> getSortByPrice() {
-        return serviceDao.getSortByPrice();
+        try {
+            connector.startTransaction();
+            return serviceDao.getSortByPrice();
+        } catch (DaoException e) {
+            connector.rollbackTransaction();
+            logger.warn("Sorting room failed.", e);
+            throw new ServiceException("Sorting room failed.", e);
+        } finally {
+            connector.finishTransaction();
+        }
 
     }
 
     @Override
     public List<Service> getAll() {
-        return serviceDao.getAll();
+        try {
+            connector.startTransaction();
+            return serviceDao.getAll();
+        } catch (DaoException e) {
+            connector.rollbackTransaction();
+            logger.warn("Get rooms failed.", e);
+            throw new ServiceException("Get rooms failed.", e);
+        } finally {
+            connector.finishTransaction();
+        }
     }
 
     @Override
     public void changeServicePrice(Integer id, Double price) {
         try {
             connector.startTransaction();
-            Service service = getById(id);
+            Service service = serviceDao.getById(id);
             service.setPrice(price);
             serviceDao.update(service);
-            connector.finishTransaction();
-        } catch (ServiceException e) {
-            connector.rollback();
+        } catch (DaoException e) {
+            connector.rollbackTransaction();
             logger.warn("Change service price failed.", e);
             throw new ServiceException("Change service price failed.", e);
+        }finally {
+            connector.finishTransaction();
         }
     }
 }

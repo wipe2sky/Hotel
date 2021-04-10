@@ -25,11 +25,10 @@ public class GetRoomHistory extends AbstractAction implements IAction {
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
             System.out.println("Введите id комнаты");
             Integer roomId = Integer.parseInt(reader.readLine());
-
+            logger.info("History of room № {}", roomId);
             facade.getRoomHistory(roomId)
                     .forEach(System.out::println);
 
-            logger.info("History of room № {}", roomId);
 
         } catch (ServiceException | NumberFormatException | IOException e) {
             logger.warn("Get room history failed", e);

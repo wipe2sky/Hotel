@@ -73,7 +73,7 @@ public class ObjectFactory {
                 try {
                     t = (T) constructor.newInstance(getParams(constructor).toArray());
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                    logger.error("Crate class failed", e);
+                    logger.error("Create class failed", e);
                 }
             }
         }

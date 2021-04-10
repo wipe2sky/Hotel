@@ -4,108 +4,93 @@ import com.kurtsevich.hotel.di.annotation.InjectByType;
 import com.kurtsevich.hotel.di.annotation.Singleton;
 import com.kurtsevich.hotel.server.api.dao.IRoomDao;
 import com.kurtsevich.hotel.server.api.exceptions.DaoException;
+import com.kurtsevich.hotel.server.model.History;
 import com.kurtsevich.hotel.server.model.Room;
 import com.kurtsevich.hotel.server.model.RoomStatus;
-import com.kurtsevich.hotel.server.util.DBConnector;
+import com.kurtsevich.hotel.server.util.HibernateConnector;
 import com.kurtsevich.hotel.server.util.SortStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.List;
 
 @Singleton
 public class RoomDao extends AbstractDao<Room> implements IRoomDao {
     private final Logger logger = LoggerFactory.getLogger(RoomDao.class);
-    private static final String SORT = "SELECT * FROM room ORDER BY %s;";
-    private static final String SORT_FREE = "SELECT * FROM room WHERE status = 'FREE' ORDER BY %s;";
-
 
     @InjectByType
-    public RoomDao(DBConnector connection) {
+    public RoomDao(HibernateConnector connection) {
         this.connector = connection;
-        insertNew = "INSERT INTO room(number, capacity, stars, price) VALUES(?,?,?,?)";
-        updateString = "UPDATE room SET number=?,capacity=?,stars=?,price=?,status=?,guests_in_room=?,is_cleaning=? WHERE id=?";
+        this.em = connector.getEntityManager();
+    }
+
+
+
+    @Override
+    protected Class<Room> getClazz() {
+        return Room.class;
     }
 
     @Override
-    protected List<Room> parseFromResultSet(ResultSet resultSet) {
-        List<Room> rooms = new ArrayList<>();
+    public List<Room> getSortBy(SortStatus sortStatus, RoomStatus roomStatus) throws DaoException{
         try {
-            while (resultSet.next()) {
-                Integer id = resultSet.getInt("id");
-                Integer number = resultSet.getInt("number");
-                Integer capacity = resultSet.getInt("capacity");
-                Integer stars = resultSet.getInt("stars");
-                Double price = resultSet.getDouble("price");
-                RoomStatus status = RoomStatus.valueOf(resultSet.getString("status"));
-                Integer guestsInRoom = resultSet.getInt("guests_in_room");
-                Boolean isCleaning = resultSet.getBoolean("is_cleaning");
-                rooms.add(new Room(id, number, capacity, stars, price, status, guestsInRoom, isCleaning));
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<Room> cq = cb.createQuery(Room.class);
+            Root<Room> root = cq.from(Room.class);
+
+            if (roomStatus == RoomStatus.FREE) {
+                cq.select(root)
+                        .where(cb.equal(root.get("status"), RoomStatus.FREE))
+                        .orderBy(cb.asc(root.get(sortStatus.getValue())));
+            } else {
+                cq.select(root)
+                        .orderBy(cb.asc(root.get(sortStatus.getValue())));
             }
-        } catch (SQLException e) {
-            logger.warn("Couldn't parse from result", e);
-            throw new DaoException("Couldn't parse from result", e);
+            TypedQuery<Room> query = em.createQuery(cq);
+            return query.getResultList();
+        } catch (Exception e) {
+            logger.warn(e.getLocalizedMessage());
+            throw new DaoException(e);
         }
-        return rooms;
     }
 
     @Override
-    protected void fillPreparedStatement(PreparedStatement preparedStatement, Room entity) {
-        Integer number = entity.getNumber();
-        Integer capacity = entity.getCapacity();
-        Integer stars = entity.getStars();
-        Double price = entity.getPrice();
+    public Integer getNumberOfFree() throws DaoException{
         try {
-            preparedStatement.setInt(1, number);
-            preparedStatement.setInt(2, capacity);
-            preparedStatement.setInt(3, stars);
-            preparedStatement.setDouble(4, price);
-        } catch (SQLException e) {
-            logger.warn("Couldn't fill prepared statement", e);
-            throw new DaoException("Couldn't fill prepared statement", e);
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<Room> cq = cb.createQuery(Room.class);
+            Root<Room> root = cq.from(Room.class);
+            Predicate statusPredicate = cb.equal(root.get("status"), RoomStatus.FREE);
+            cq.select(root).where(statusPredicate);
+            Query query = em.createQuery(cq);
+            return query.getResultList().size();
+        } catch (Exception e) {
+            logger.warn(e.getLocalizedMessage());
+            throw new DaoException(e);
         }
     }
 
     @Override
-    protected void fillAllPreparedStatement(PreparedStatement preparedStatement, Room entity) {
+    public List<History> getHistory(Room room) throws DaoException{
         try {
-            preparedStatement.setInt(1, entity.getNumber());
-            preparedStatement.setInt(2, entity.getCapacity());
-            preparedStatement.setInt(3, entity.getStars());
-            preparedStatement.setDouble(4, entity.getPrice());
-            preparedStatement.setString(5, entity.getStatus().toString());
-            preparedStatement.setInt(6, entity.getGuestsInRoom());
-            preparedStatement.setBoolean(7, entity.getIsCleaning());
-            preparedStatement.setInt(8, entity.getId());
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<History> cq = cb.createQuery(History.class);
+            Root<History> root = cq.from(History.class);
 
-        } catch (SQLException e) {
-            logger.warn("Couldn't set prepared statement", e);
-            throw new DaoException("Couldn't set prepared statement", e);
+            cq.select(root)
+                    .where(cb.equal(root.get("room"), room.getId()))
+                    .orderBy(cb.desc(root.get("checkOutDate")));
+            TypedQuery<History> query = em.createQuery(cq);
+            return query.getResultList();
+        } catch (Exception e) {
+            logger.warn(e.getLocalizedMessage());
+            throw new DaoException(e);
         }
-    }
-
-    @Override
-    protected String getTableName() {
-        return "room";
-    }
-
-    @Override
-    public List<Room> getSortBy(SortStatus sortStatus, RoomStatus roomStatus) {
-        List<Room> entities = new ArrayList<>();
-        try (Statement statement = connector.getConnection().createStatement()) {
-            ResultSet resultSet = roomStatus == null
-                    ? statement.executeQuery(String.format(SORT, sortStatus.getValue()))
-                    : statement.executeQuery(String.format(SORT_FREE, sortStatus.getValue()));
-            entities.addAll(parseFromResultSet(resultSet));
-        } catch (SQLException e) {
-            logger.warn("Couldn't read from DB ", e);
-            throw new DaoException("Couldn't read from DB", e);
-        }
-        return entities;
     }
 }

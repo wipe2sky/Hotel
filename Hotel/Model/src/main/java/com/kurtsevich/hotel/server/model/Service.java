@@ -1,16 +1,29 @@
 package com.kurtsevich.hotel.server.model;
 
 import lombok.Data;
+import lombok.ToString;
+
+import javax.persistence.*;
+import java.util.List;
 
 @Data
+@ToString(exclude="histories")
+@Entity
+@Table(name = "service")
 public class Service extends AEntity {
+    @Column(name = "name")
     private String name;
+    @Column(name = "price")
     private Double price;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "history_service",
+            joinColumns = { @JoinColumn(name = "service_id") },
+            inverseJoinColumns = { @JoinColumn(name = "history_id") }
+    )
+    private List<History> histories;
 
-    public Service(Integer id, String name, Double price) {
-        setId(id);
-        this.name = name;
-        this.price = price;
+    public Service() {
     }
 
     public Service(String name, Double price) {
