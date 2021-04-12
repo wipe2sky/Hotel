@@ -76,7 +76,7 @@ public class ServiceForService implements IServiceForService {
     public void addServiceToGuest(Integer serviceId, Integer guestId) {
         try {
             Service service = serviceDao.getById(serviceId);
-            History history = historyDao.getByGuest(guestDao.getById(guestId)).get(0);
+            History history = historyDao.getGuestHistories(guestDao.getById(guestId)).get(0);
             if(history.getGuest().isCheckIn()) {
                 connector.startTransaction();
                 history.getServices().add(service);

@@ -1,10 +1,10 @@
 package com.kurtsevich.hotel.server.api.dao;
 
-import com.kurtsevich.hotel.server.model.History;
 import com.kurtsevich.hotel.server.model.Room;
 import com.kurtsevich.hotel.server.model.RoomStatus;
 import com.kurtsevich.hotel.server.util.SortStatus;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface IRoomDao extends GenericDao<Room> {
@@ -12,5 +12,6 @@ public interface IRoomDao extends GenericDao<Room> {
 
     Integer getNumberOfFree();
 
-    List<History> getHistory(Room room);
+    List<Room> getAvailableAfterDate(LocalDateTime date);
+
 }

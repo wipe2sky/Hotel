@@ -77,7 +77,7 @@ public class HistoryService implements IHistoryService {
         try {
             connector.startTransaction();
             Guest guest = guestDao.getById(guestId);
-            History history = historyDao.getByGuest(guest).get(0);
+            History history = historyDao.getGuestHistories(guest).get(0);
             Room room = history.getRoom();
 
             logger.info("Check-out of the guest № {} to the room № {}", guestId, room.getId());
@@ -109,7 +109,7 @@ public class HistoryService implements IHistoryService {
         try {
             connector.startTransaction();
             Guest guest = guestDao.getById(guestId);
-            History history = historyDao.getByGuest(guest).get(0);
+            History history = historyDao.getGuestHistories(guest).get(0);
             return history.getCostOfLiving();
         } catch (DaoException e) {
             logger.warn("Get cost of living failed.", e);
@@ -123,7 +123,7 @@ public class HistoryService implements IHistoryService {
     public List<Guest> getLast3GuestInRoom(Integer roomId) {
         try {
             connector.startTransaction();
-            return historyDao.getLast3GuestInRoom(roomDao.getById(roomId));
+            return guestDao.getLast3GuestInRoom(roomDao.getById(roomId));
         } catch (DaoException e) {
             connector.rollbackTransaction();
             logger.warn("Get guests in Room failed.", e);
@@ -138,7 +138,7 @@ public class HistoryService implements IHistoryService {
     public List<History> getGuestHistory(Integer id) {
         try {
             connector.startTransaction();
-            return guestDao.getHistory(guestDao.getById(id));
+            return historyDao.getGuestHistories(guestDao.getById(id));
         } catch (DaoException e) {
             connector.rollbackTransaction();
             logger.warn("Get guests history failed.", e);
@@ -169,7 +169,7 @@ public class HistoryService implements IHistoryService {
             connector.startTransaction();
 
             Guest guest = guestDao.getById(guestId);
-            History history = historyDao.getByGuest(guest).get(0);
+            History history = historyDao.getGuestHistories(guest).get(0);
 
             return history.getServices();
         } catch (DaoException e) {

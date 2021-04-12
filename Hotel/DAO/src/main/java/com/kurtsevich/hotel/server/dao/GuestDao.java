@@ -1,12 +1,12 @@
 package com.kurtsevich.hotel.server.dao;
 
-import com.kurtsevich.hotel.di.annotation.ConfigProperty;
 import com.kurtsevich.hotel.di.annotation.InjectByType;
 import com.kurtsevich.hotel.di.annotation.Singleton;
 import com.kurtsevich.hotel.server.api.dao.IGuestDao;
 import com.kurtsevich.hotel.server.api.exceptions.DaoException;
 import com.kurtsevich.hotel.server.model.Guest;
 import com.kurtsevich.hotel.server.model.History;
+import com.kurtsevich.hotel.server.model.Room;
 import com.kurtsevich.hotel.server.util.HibernateConnector;
 import com.kurtsevich.hotel.server.util.SortStatus;
 import org.slf4j.Logger;
@@ -20,8 +20,7 @@ import java.util.List;
 @Singleton
 public class GuestDao extends AbstractDao<Guest> implements IGuestDao {
     private final Logger logger = LoggerFactory.getLogger(GuestDao.class);
-    @ConfigProperty
-    private Integer countOfHistories;
+
 
     @InjectByType
     public GuestDao(HibernateConnector connector) {
@@ -35,6 +34,7 @@ public class GuestDao extends AbstractDao<Guest> implements IGuestDao {
         return Guest.class;
     }
 
+    @Override
     public List<Guest> getSortBy(SortStatus sortStatus) throws DaoException {
         try {
             CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -90,16 +90,18 @@ public class GuestDao extends AbstractDao<Guest> implements IGuestDao {
         }
     }
 
+
+
     @Override
-    public List<History> getHistory(Guest guest) throws DaoException{
+    public List<Guest> getLast3GuestInRoom(Room room) throws DaoException{
         try {
             CriteriaBuilder cb = em.getCriteriaBuilder();
-            CriteriaQuery<History> cq = cb.createQuery(History.class);
+            CriteriaQuery<Guest> cq = cb.createQuery(Guest.class);
             Root<History> root = cq.from(History.class);
-            cq.select(root)
-                    .where(cb.equal(root.get("guest"), guest.getId()));
-            TypedQuery<History> query = em.createQuery(cq);
-            return query.setMaxResults(countOfHistories).getResultList();
+            cq.select(root.get("guest"))
+                    .where(cb.equal(root.get("room"), room.getId()));
+            TypedQuery<Guest> query = em.createQuery(cq);
+            return query.setMaxResults(3).getResultList();
         } catch (Exception e) {
             logger.warn(e.getLocalizedMessage());
             throw new DaoException(e);

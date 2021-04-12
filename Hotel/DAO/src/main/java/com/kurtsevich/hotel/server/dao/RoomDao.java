@@ -14,10 +14,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Singleton
@@ -77,16 +75,18 @@ public class RoomDao extends AbstractDao<Room> implements IRoomDao {
     }
 
     @Override
-    public List<History> getHistory(Room room) throws DaoException{
+    public List<Room> getAvailableAfterDate(LocalDateTime date) throws DaoException{
         try {
             CriteriaBuilder cb = em.getCriteriaBuilder();
-            CriteriaQuery<History> cq = cb.createQuery(History.class);
-            Root<History> root = cq.from(History.class);
-
+            CriteriaQuery<Room> cq = cb.createQuery(Room.class);
+            Root<Room> root = cq.from(Room.class);
+            Join<Room, History> roomHistoryJoin = root.join("histories", JoinType.LEFT);
+            Predicate roomStatusFreePredicate = cb.equal(root.get("status"), RoomStatus.FREE);
+            Predicate roomCheckOutDatePredicate = cb.lessThan(roomHistoryJoin.get("checkOutDate"), date);
+            Predicate finalPredicate = cb.or(roomStatusFreePredicate, roomCheckOutDatePredicate);
             cq.select(root)
-                    .where(cb.equal(root.get("room"), room.getId()))
-                    .orderBy(cb.desc(root.get("checkOutDate")));
-            TypedQuery<History> query = em.createQuery(cq);
+                    .where(finalPredicate);
+            TypedQuery<Room> query = em.createQuery(cq);
             return query.getResultList();
         } catch (Exception e) {
             logger.warn(e.getLocalizedMessage());

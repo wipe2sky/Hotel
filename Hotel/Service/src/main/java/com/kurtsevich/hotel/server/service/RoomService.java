@@ -132,7 +132,7 @@ public class RoomService implements IRoomService {
     public List<Room> getAvailableAfterDate(LocalDateTime date) {
         try {
             connector.startTransaction();
-            return historyDao.getAvailableAfterDate(date);
+            return roomDao.getAvailableAfterDate(date);
         } catch (DaoException e) {
             connector.rollbackTransaction();
             logger.warn("Get rooms failed.", e);
@@ -161,7 +161,7 @@ public class RoomService implements IRoomService {
     public List<History> getRoomHistory(Integer roomId) {
         try {
             connector.startTransaction();
-            return roomDao.getHistory(roomDao.getById(roomId));
+            return historyDao.getRoomHistories(roomDao.getById(roomId));
 
         } catch (DaoException e) {
             connector.rollbackTransaction();
