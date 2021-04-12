@@ -36,8 +36,8 @@ public class GuestService implements IGuestService {
             return guest;
         } catch (DaoException e) {
             connector.rollbackTransaction();
-            logger.warn("Couldn't add Guest", e);
-            throw new ServiceException("Couldn't add Guest", e);
+            logger.warn(e.getLocalizedMessage(), e);
+            throw new ServiceException("Couldn't add Guest");
         }finally {
             connector.finishTransaction();
         }
@@ -50,8 +50,8 @@ public class GuestService implements IGuestService {
             return guestDao.getById(id);
         } catch (DaoException e) {
             connector.rollbackTransaction();
-            logger.warn("Couldn't find entity by id: " + id, e);
-            throw new ServiceException("Couldn't find entity by id: " + id, e);
+            logger.warn(e.getLocalizedMessage());
+            throw new ServiceException("Couldn't find entity by id: " + id);
         } finally {
             connector.finishTransaction();
         }
@@ -64,8 +64,8 @@ public class GuestService implements IGuestService {
             guestDao.delete(guestDao.getById(id));
         } catch (DaoException e) {
             connector.rollbackTransaction();
-            logger.warn("Delete guest failed.", e);
-            throw new ServiceException("Delete guest failed.", e);
+            logger.warn(e.getLocalizedMessage(), e);
+            throw new ServiceException("Delete guest failed.");
         } finally {
             connector.finishTransaction();
         }
@@ -78,8 +78,8 @@ public class GuestService implements IGuestService {
             return guestDao.getSortBy(sortStatus);
         } catch (DaoException e) {
             connector.rollbackTransaction();
-            logger.warn("Sort guest failed.", e);
-            throw new ServiceException("Sort guest failed.", e);
+            logger.warn(e.getLocalizedMessage(), e);
+            throw new ServiceException("Sort guest failed.");
         } finally {
             connector.finishTransaction();
         }
@@ -93,8 +93,8 @@ public class GuestService implements IGuestService {
             return guestDao.getCountGuestInHotel();
         } catch (DaoException e) {
             connector.rollbackTransaction();
-            logger.warn("Get count of guest failed.", e);
-            throw new ServiceException("Get count of guest failed.", e);
+            logger.warn(e.getLocalizedMessage(), e);
+            throw new ServiceException("Get count of guest failed.");
         } finally {
             connector.finishTransaction();
         }
@@ -108,8 +108,8 @@ public class GuestService implements IGuestService {
 
         } catch (DaoException e) {
             connector.rollbackTransaction();
-            logger.warn("Get guests failed.", e);
-            throw new ServiceException("Get guests failed.", e);
+            logger.warn(e.getLocalizedMessage(), e);
+            throw new ServiceException("Get guests failed.");
         } finally {
             connector.finishTransaction();
         }
@@ -123,8 +123,8 @@ public class GuestService implements IGuestService {
             return  guestDao.getAllGuestInHotel();
         } catch (DaoException e) {
             connector.rollbackTransaction();
-            logger.warn("Get all guests in hotel failed.", e);
-            throw new ServiceException("Get all guests in hotel failed.", e);
+            logger.warn(e.getLocalizedMessage(), e);
+            throw new ServiceException("Get all guests in hotel failed.");
         } finally {
             connector.finishTransaction();
         }

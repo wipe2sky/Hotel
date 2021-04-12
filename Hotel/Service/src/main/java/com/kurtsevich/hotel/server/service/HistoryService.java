@@ -38,9 +38,7 @@ public class HistoryService implements IHistoryService {
     @Override
     public History addHistory(Room room, Guest guest, Integer daysStay) {
         History history = new History(LocalDateTime.now(), LocalDateTime.now().plusDays(daysStay), room.getPrice() * daysStay, room, guest);
-//        connector.startTransaction();
         historyDao.save(history);
-//        connector.finishTransaction();
         return history;
     }
 
@@ -65,8 +63,8 @@ public class HistoryService implements IHistoryService {
 
         } catch (DaoException e) {
             connector.rollbackTransaction();
-            logger.warn("Chek-in failed.", e);
-            throw new ServiceException("Chek-in failed.", e);
+            logger.warn(e.getLocalizedMessage(), e);
+            throw new ServiceException("Chek-in failed.");
         } finally {
             connector.finishTransaction();
         }
@@ -97,8 +95,8 @@ public class HistoryService implements IHistoryService {
             guestDao.update(guest);
         } catch (DaoException e) {
             connector.rollbackTransaction();
-            logger.warn("Chek-out failed.", e);
-            throw new ServiceException("Chek-out failed.", e);
+            logger.warn(e.getLocalizedMessage(), e);
+            throw new ServiceException("Chek-out failed.");
         } finally {
             connector.finishTransaction();
         }
@@ -112,8 +110,8 @@ public class HistoryService implements IHistoryService {
             History history = historyDao.getGuestHistories(guest).get(0);
             return history.getCostOfLiving();
         } catch (DaoException e) {
-            logger.warn("Get cost of living failed.", e);
-            throw new ServiceException("Get cost of living failed.", e);
+            logger.warn(e.getLocalizedMessage(), e);
+            throw new ServiceException("Get cost of living failed.");
         } finally {
             connector.finishTransaction();
         }
@@ -126,8 +124,8 @@ public class HistoryService implements IHistoryService {
             return guestDao.getLast3GuestInRoom(roomDao.getById(roomId));
         } catch (DaoException e) {
             connector.rollbackTransaction();
-            logger.warn("Get guests in Room failed.", e);
-            throw new ServiceException("Get guests in Room failed.", e);
+            logger.warn(e.getLocalizedMessage(), e);
+            throw new ServiceException("Get guests in Room failed.");
         } finally {
             connector.finishTransaction();
         }
@@ -141,8 +139,8 @@ public class HistoryService implements IHistoryService {
             return historyDao.getGuestHistories(guestDao.getById(id));
         } catch (DaoException e) {
             connector.rollbackTransaction();
-            logger.warn("Get guests history failed.", e);
-            throw new ServiceException("Get guests history failed.", e);
+            logger.warn(e.getLocalizedMessage(), e);
+            throw new ServiceException("Get guests history failed.");
         } finally {
             connector.finishTransaction();
         }
@@ -155,8 +153,8 @@ public class HistoryService implements IHistoryService {
             return historyDao.getAll();
         } catch (DaoException e) {
             connector.rollbackTransaction();
-            logger.warn("Get guests failed.", e);
-            throw new ServiceException("Get guests failed.", e);
+            logger.warn(e.getLocalizedMessage(), e);
+            throw new ServiceException("Get guests failed.");
         } finally {
             connector.finishTransaction();
         }
@@ -174,8 +172,8 @@ public class HistoryService implements IHistoryService {
             return history.getServices();
         } catch (DaoException e) {
             connector.rollbackTransaction();
-            logger.warn("Get list of guest service failed.", e);
-            throw new ServiceException("Get list of guest service failed.", e);
+            logger.warn(e.getLocalizedMessage(), e);
+            throw new ServiceException("Get list of guest service failed.");
         } finally {
             connector.finishTransaction();
         }

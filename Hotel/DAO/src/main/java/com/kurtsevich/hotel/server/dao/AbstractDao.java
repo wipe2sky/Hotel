@@ -22,7 +22,12 @@ public abstract class AbstractDao<T extends AEntity> implements GenericDao<T> {
 
     @Override
     public void save(T entity) {
-        em.persist(entity);
+
+        try {
+            em.persist(entity);
+        } catch (Exception e) {
+            throw new DaoException(e);
+        }
     }
 
     @Override
@@ -31,7 +36,6 @@ public abstract class AbstractDao<T extends AEntity> implements GenericDao<T> {
            return em.find(getClazz(), id);
 
         } catch (Exception e) {
-            logger.warn(e.getLocalizedMessage());
             throw new DaoException(e);
         }
     }
@@ -45,7 +49,6 @@ public abstract class AbstractDao<T extends AEntity> implements GenericDao<T> {
 
             return em.createQuery(cq).getResultList();
         } catch (Exception e) {
-            logger.warn(e.getLocalizedMessage());
             throw new DaoException(e);
         }
     }
@@ -55,8 +58,7 @@ public abstract class AbstractDao<T extends AEntity> implements GenericDao<T> {
         try {
             em.remove(entity);
         } catch (Exception e) {
-            logger.warn(e.getLocalizedMessage());
-            throw new DaoException(e);
+            throw new DaoException("Delete guest failed.", e);
         }
     }
 
@@ -65,7 +67,6 @@ public abstract class AbstractDao<T extends AEntity> implements GenericDao<T> {
         try {
             em.merge(entity);
         } catch (Exception e) {
-            logger.warn(e.getLocalizedMessage());
             throw new DaoException(e);
         }
     }

@@ -47,8 +47,8 @@ public class RoomService implements IRoomService {
             return room;
         } catch (DaoException e) {
             connector.rollbackTransaction();
-            logger.warn("Add room failed.", e);
-            throw new ServiceException("Add room failed.", e);
+            logger.warn(e.getLocalizedMessage(), e);
+            throw new ServiceException("Add room failed.");
         } finally {
             connector.finishTransaction();
         }
@@ -62,8 +62,8 @@ public class RoomService implements IRoomService {
 
         } catch (DaoException e) {
             connector.rollbackTransaction();
-            logger.warn("Delete room failed.", e);
-            throw new ServiceException("Delete room failed.", e);
+            logger.warn(e.getLocalizedMessage(), e);
+            throw new ServiceException("Delete room failed.");
         } finally {
             connector.finishTransaction();
         }
@@ -81,7 +81,7 @@ public class RoomService implements IRoomService {
             room = roomDao.getById(roomId);
 
             if (status.equals(room.getIsCleaning())) {
-                logger.warn("Set cleaning status failed");
+                logger.warn("Impossible change status {} on {}", room.getIsCleaning(), room.getIsCleaning());
                 throw new ServiceException("Set cleaning status failed.");
             }
             room.setIsCleaning(status);
@@ -89,8 +89,8 @@ public class RoomService implements IRoomService {
 
         } catch (DaoException e) {
             connector.rollbackTransaction();
-            logger.warn("Set cleaning status failed.", e);
-            throw new ServiceException("Set cleaning status failed.", e);
+            logger.warn(e.getLocalizedMessage(), e);
+            throw new ServiceException("Set cleaning status failed.");
         } finally {
             connector.finishTransaction();
         }
@@ -107,8 +107,8 @@ public class RoomService implements IRoomService {
 
         } catch (DaoException e) {
             connector.rollbackTransaction();
-            logger.warn("Change room price failed.", e);
-            throw new ServiceException("Change room price failed.", e);
+            logger.warn(e.getLocalizedMessage(), e);
+            throw new ServiceException("Change room price failed.");
         } finally {
             connector.finishTransaction();
         }
@@ -121,8 +121,8 @@ public class RoomService implements IRoomService {
             return roomDao.getSortBy(sortStatus, roomStatus);
         } catch (DaoException e) {
             connector.rollbackTransaction();
-            logger.warn("Sorting room failed.", e);
-            throw new ServiceException("Sorting room failed.", e);
+            logger.warn(e.getLocalizedMessage(), e);
+            throw new ServiceException("Sorting room failed.");
         } finally {
             connector.finishTransaction();
         }
@@ -135,8 +135,8 @@ public class RoomService implements IRoomService {
             return roomDao.getAvailableAfterDate(date);
         } catch (DaoException e) {
             connector.rollbackTransaction();
-            logger.warn("Get rooms failed.", e);
-            throw new ServiceException("Get rooms failed.", e);
+            logger.warn(e.getLocalizedMessage(), e);
+            throw new ServiceException("Get rooms failed.");
         } finally {
             connector.finishTransaction();
         }
@@ -149,8 +149,8 @@ public class RoomService implements IRoomService {
             return roomDao.getNumberOfFree();
         } catch (DaoException e) {
             connector.rollbackTransaction();
-            logger.warn("Get count of free rooms failed.", e);
-            throw new ServiceException("Get count of free rooms failed.", e);
+            logger.warn(e.getLocalizedMessage(), e);
+            throw new ServiceException("Get count of free rooms failed.");
         } finally {
             connector.finishTransaction();
         }
@@ -165,8 +165,8 @@ public class RoomService implements IRoomService {
 
         } catch (DaoException e) {
             connector.rollbackTransaction();
-            logger.warn("Get room history failed.", e);
-            throw new ServiceException("Get room History failed.", e);
+            logger.warn(e.getLocalizedMessage(), e);
+            throw new ServiceException("Get room History failed.");
         } finally {
             connector.finishTransaction();
         }
@@ -190,8 +190,8 @@ public class RoomService implements IRoomService {
             roomDao.update(room);
         } catch (DaoException e) {
             connector.rollbackTransaction();
-            logger.warn("Set repair status failed.", e);
-            throw new ServiceException("Set repair status failed.", e);
+            logger.warn(e.getLocalizedMessage(), e);
+            throw new ServiceException("Set repair status failed.");
         } finally {
             connector.finishTransaction();
 
@@ -205,8 +205,8 @@ public class RoomService implements IRoomService {
             return roomDao.getAll();
         } catch (DaoException e) {
             connector.rollbackTransaction();
-            logger.warn("Get rooms failed.", e);
-            throw new ServiceException("Get rooms failed.", e);
+            logger.warn(e.getLocalizedMessage(), e);
+            throw new ServiceException("Get rooms failed.");
         } finally {
             connector.finishTransaction();
         }
@@ -219,8 +219,8 @@ public class RoomService implements IRoomService {
             return roomDao.getById(roomId);
         } catch (DaoException e) {
             connector.rollbackTransaction();
-            logger.warn("Get room by id failed.", e);
-            throw new ServiceException("Get room by id failed.", e);
+            logger.warn(e.getLocalizedMessage(), e);
+            throw new ServiceException("Get room by id failed.");
         } finally {
             connector.finishTransaction();
         }

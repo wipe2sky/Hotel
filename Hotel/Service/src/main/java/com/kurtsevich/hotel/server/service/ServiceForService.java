@@ -49,10 +49,10 @@ public class ServiceForService implements IServiceForService {
         try {
             connector.startTransaction();
             serviceDao.delete(serviceDao.getById(serviceId));
-        } catch (ServiceException e) {
+        } catch (DaoException e) {
             connector.rollbackTransaction();
-            logger.warn("Delete service failed.", e);
-            throw new ServiceException("Delete service failed.", e);
+            logger.warn(e.getLocalizedMessage(), e);
+            throw new ServiceException("Delete service failed.");
         }finally {
             connector.finishTransaction();
         }
@@ -65,8 +65,8 @@ public class ServiceForService implements IServiceForService {
             return serviceDao.getById(serviceId);
         } catch (DaoException e) {
             connector.rollbackTransaction();
-            logger.warn("Get by id failed.", e);
-            throw new ServiceException("Get by id failed.", e);
+            logger.warn(e.getLocalizedMessage(), e);
+            throw new ServiceException("Get by id failed.");
         } finally {
             connector.finishTransaction();
         }
@@ -88,8 +88,8 @@ public class ServiceForService implements IServiceForService {
             }
         } catch (DaoException e) {
             connector.rollbackTransaction();
-            logger.warn("Add service to the guest failed.", e);
-            throw new ServiceException("Add service to the guest failed.", e);
+            logger.warn(e.getLocalizedMessage(), e);
+            throw new ServiceException("Add service to the guest failed.");
         }finally {
             connector.finishTransaction();
         }
@@ -102,8 +102,8 @@ public class ServiceForService implements IServiceForService {
             return serviceDao.getSortByPrice();
         } catch (DaoException e) {
             connector.rollbackTransaction();
-            logger.warn("Sorting room failed.", e);
-            throw new ServiceException("Sorting room failed.", e);
+            logger.warn(e.getLocalizedMessage(), e);
+            throw new ServiceException("Sorting room failed.");
         } finally {
             connector.finishTransaction();
         }
@@ -117,8 +117,8 @@ public class ServiceForService implements IServiceForService {
             return serviceDao.getAll();
         } catch (DaoException e) {
             connector.rollbackTransaction();
-            logger.warn("Get rooms failed.", e);
-            throw new ServiceException("Get rooms failed.", e);
+            logger.warn(e.getLocalizedMessage(), e);
+            throw new ServiceException("Get rooms failed.");
         } finally {
             connector.finishTransaction();
         }
@@ -133,8 +133,8 @@ public class ServiceForService implements IServiceForService {
             serviceDao.update(service);
         } catch (DaoException e) {
             connector.rollbackTransaction();
-            logger.warn("Change service price failed.", e);
-            throw new ServiceException("Change service price failed.", e);
+            logger.warn(e.getLocalizedMessage(), e);
+            throw new ServiceException("Change service price failed.");
         }finally {
             connector.finishTransaction();
         }

@@ -53,7 +53,6 @@ public class RoomDao extends AbstractDao<Room> implements IRoomDao {
             TypedQuery<Room> query = em.createQuery(cq);
             return query.getResultList();
         } catch (Exception e) {
-            logger.warn(e.getLocalizedMessage());
             throw new DaoException(e);
         }
     }
@@ -69,7 +68,6 @@ public class RoomDao extends AbstractDao<Room> implements IRoomDao {
             Query query = em.createQuery(cq);
             return query.getResultList().size();
         } catch (Exception e) {
-            logger.warn(e.getLocalizedMessage());
             throw new DaoException(e);
         }
     }
@@ -89,7 +87,6 @@ public class RoomDao extends AbstractDao<Room> implements IRoomDao {
             TypedQuery<Room> query = em.createQuery(cq);
             return query.getResultList();
         } catch (Exception e) {
-            logger.warn(e.getLocalizedMessage());
             throw new DaoException(e);
         }
     }

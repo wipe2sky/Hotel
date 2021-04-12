@@ -48,7 +48,6 @@ public class HistoryDao extends AbstractDao<History> implements IHistoryDao {
             TypedQuery<History> query = em.createQuery(cq);
             return query.setMaxResults(countOfHistories).getResultList();
         } catch (Exception e) {
-            logger.warn(e.getLocalizedMessage());
             throw new DaoException(e);
         }
     }
@@ -66,11 +65,7 @@ public class HistoryDao extends AbstractDao<History> implements IHistoryDao {
             TypedQuery<History> query = em.createQuery(cq);
             return query.getResultList();
         } catch (Exception e) {
-            logger.warn(e.getLocalizedMessage());
             throw new DaoException(e);
         }
     }
-
-
-
 }

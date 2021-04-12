@@ -43,7 +43,6 @@ public class ServiceDao extends AbstractDao<Service> implements IServiceDao {
             TypedQuery<Service> query = em.createQuery(cq);
             return query.getResultList();
         } catch (Exception e) {
-            logger.warn(e.getLocalizedMessage());
             throw new DaoException(e);
         }
     }

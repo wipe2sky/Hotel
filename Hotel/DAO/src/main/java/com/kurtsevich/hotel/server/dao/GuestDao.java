@@ -67,9 +67,8 @@ public class GuestDao extends AbstractDao<Guest> implements IGuestDao {
             Predicate isCheckInPredicate = cb.equal(root.get("isCheckIn"), true);
             cq.select(root).where(isCheckInPredicate);
             Query query = em.createQuery(cq);
-            return Long.valueOf(query.getResultList().size());
+            return (long) query.getResultList().size();
         } catch (Exception e) {
-            logger.warn(e.getLocalizedMessage());
             throw new DaoException(e);
         }
     }
@@ -82,10 +81,9 @@ public class GuestDao extends AbstractDao<Guest> implements IGuestDao {
             Root<Guest> root = cq.from(Guest.class);
             Predicate isCheckInPredicate = cb.equal(root.get("isCheckIn"), true);
             cq.select(root).where(isCheckInPredicate);
-            Query query = em.createQuery(cq);
+            TypedQuery<Guest> query = em.createQuery(cq);
             return query.getResultList();
         } catch (Exception e) {
-            logger.warn(e.getLocalizedMessage());
             throw new DaoException(e);
         }
     }
@@ -103,7 +101,6 @@ public class GuestDao extends AbstractDao<Guest> implements IGuestDao {
             TypedQuery<Guest> query = em.createQuery(cq);
             return query.setMaxResults(3).getResultList();
         } catch (Exception e) {
-            logger.warn(e.getLocalizedMessage());
             throw new DaoException(e);
         }
     }
