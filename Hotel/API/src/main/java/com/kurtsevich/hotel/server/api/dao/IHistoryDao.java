@@ -7,6 +7,11 @@ import com.kurtsevich.hotel.server.model.Room;
 import java.util.List;
 
 public interface IHistoryDao extends GenericDao<History> {
-    List<History> getByGuest(Guest guest);
-    List<History> getByRoom(Room room);
+
+    List<History> getGuestHistories(Guest guest);
+
+
+    List<History> getRoomHistories(Room room);
+
+
 }

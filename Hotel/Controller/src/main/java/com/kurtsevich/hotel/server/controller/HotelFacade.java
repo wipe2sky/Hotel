@@ -39,7 +39,7 @@ public class HotelFacade {
         guestService.deleteGuest(id);
     }
 
-    public Integer getCountGuestInHotel() {
+    public Long getCountGuestInHotel() {
         return guestService.getCountGuestInHotel();
     }
 
@@ -69,7 +69,7 @@ public class HotelFacade {
     }
 
     public Room getRoomInfo(Integer id) {
-        return roomService.getInfo(id);
+        return roomService.getById(id);
     }
     public List<History> getRoomHistory(Integer id){
         return roomService.getRoomHistory(id);
@@ -112,10 +112,10 @@ public class HotelFacade {
     }
 
     public List<History> getGuestHistory (Integer id){
-        return historyService.getByGuestId(id);
+        return historyService.getGuestHistory(id);
     }
 
-    public List<History> getLast3GuestInRoom(Integer roomId) {
+    public List<Guest> getLast3GuestInRoom(Integer roomId) {
         return historyService.getLast3GuestInRoom(roomId);
     }
 

@@ -15,7 +15,7 @@ public class GetCountGuestInHotel extends AbstractAction implements IAction {
 
     @Override
     public void execute() {
-        Integer countGuestInHotel = facade.getCountGuestInHotel();
+        Long countGuestInHotel = facade.getCountGuestInHotel();
         logger.info("In Hotel stay {} guests, at this moment.", countGuestInHotel);
     }
 }

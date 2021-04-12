@@ -3,8 +3,8 @@ package com.kurtsevich.hotel.server.util;
 import lombok.Getter;
 
 public enum SortStatus {
-    DATE_CHECK_OUT("check_out_date"),
-    LAST_NAME("last_name"),
+    DATE_CHECK_OUT("checkOutDate"),
+    LAST_NAME("lastName"),
     CAPACITY("capacity"),
     PRICE("price"),
     STARS("stars");

@@ -14,7 +14,7 @@ public interface IGuestService {
 
     List<Guest> getSortBy(SortStatus sortStatus);
 
-    Integer getCountGuestInHotel();
+    Long getCountGuestInHotel();
 
     List<Guest> getAll();
 

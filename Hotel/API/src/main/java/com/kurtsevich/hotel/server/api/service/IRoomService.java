@@ -25,7 +25,7 @@ public interface IRoomService {
 
     Integer getNumberOfFree();
 
-    Room getInfo(Integer roomId);
+    Room getById(Integer roomId);
 
     List<History> getRoomHistory(Integer roomId);
 
