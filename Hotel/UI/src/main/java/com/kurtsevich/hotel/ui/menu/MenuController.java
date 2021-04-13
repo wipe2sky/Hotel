@@ -1,14 +1,15 @@
 package com.kurtsevich.hotel.ui.menu;
 
-import com.kurtsevich.hotel.di.annotation.InjectByType;
-import com.kurtsevich.hotel.di.annotation.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-@Singleton
+
+@Component
 public class MenuController {
     private final Logger logger = LoggerFactory.getLogger(MenuController.class);
 
@@ -17,7 +18,7 @@ public class MenuController {
     private int index = -1;
 
 
-    @InjectByType
+    @Autowired
     public MenuController(Builder builder, Navigator navigator) {
         this.builder = builder;
         this.navigator = navigator;

@@ -1,11 +1,11 @@
 package com.kurtsevich.hotel.ui.menu;
 
-import com.kurtsevich.hotel.di.annotation.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
-@Singleton
+@Component
 public class Navigator {
     private final Logger logger = LoggerFactory.getLogger(Navigator.class);
 

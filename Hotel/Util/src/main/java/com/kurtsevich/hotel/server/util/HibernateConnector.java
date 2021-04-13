@@ -1,16 +1,16 @@
 package com.kurtsevich.hotel.server.util;
 
 
-import com.kurtsevich.hotel.di.annotation.Singleton;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-@Singleton
+@Component
 public class HibernateConnector {
     private final Logger logger = LoggerFactory.getLogger(HibernateConnector.class);
     @Getter

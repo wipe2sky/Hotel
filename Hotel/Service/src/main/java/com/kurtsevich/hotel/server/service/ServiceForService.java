@@ -1,7 +1,5 @@
 package com.kurtsevich.hotel.server.service;
 
-import com.kurtsevich.hotel.di.annotation.InjectByType;
-import com.kurtsevich.hotel.di.annotation.Singleton;
 import com.kurtsevich.hotel.server.api.dao.IGuestDao;
 import com.kurtsevich.hotel.server.api.dao.IHistoryDao;
 import com.kurtsevich.hotel.server.api.dao.IServiceDao;
@@ -13,10 +11,12 @@ import com.kurtsevich.hotel.server.model.Service;
 import com.kurtsevich.hotel.server.util.HibernateConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Singleton
+@Component
 public class ServiceForService implements IServiceForService {
     private final Logger logger = LoggerFactory.getLogger(ServiceForService.class);
     private final IServiceDao serviceDao;
@@ -25,7 +25,7 @@ public class ServiceForService implements IServiceForService {
     private final HibernateConnector connector;
 
 
-    @InjectByType
+    @Autowired
     public ServiceForService(IServiceDao serviceDao, IGuestDao guestDao, IHistoryDao historyDao, HibernateConnector connector) {
         this.serviceDao = serviceDao;
         this.guestDao = guestDao;

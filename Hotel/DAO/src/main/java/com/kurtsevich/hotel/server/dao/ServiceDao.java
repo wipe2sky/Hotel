@@ -1,13 +1,13 @@
 package com.kurtsevich.hotel.server.dao;
 
-import com.kurtsevich.hotel.di.annotation.InjectByType;
-import com.kurtsevich.hotel.di.annotation.Singleton;
 import com.kurtsevich.hotel.server.api.dao.IServiceDao;
 import com.kurtsevich.hotel.server.api.exceptions.DaoException;
 import com.kurtsevich.hotel.server.model.Service;
 import com.kurtsevich.hotel.server.util.HibernateConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -15,11 +15,11 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
-@Singleton
+@Component
 public class ServiceDao extends AbstractDao<Service> implements IServiceDao {
     private final Logger logger = LoggerFactory.getLogger(ServiceDao.class);
 
-    @InjectByType
+    @Autowired
     public ServiceDao(HibernateConnector connection) {
         this.connector = connection;
         this.em = connector.getEntityManager();
