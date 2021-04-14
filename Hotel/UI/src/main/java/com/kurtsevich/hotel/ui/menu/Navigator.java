@@ -1,18 +1,15 @@
 package com.kurtsevich.hotel.ui.menu;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+
 @Component
+@Log4j2
 public class Navigator {
-    private final Logger logger = LoggerFactory.getLogger(Navigator.class);
 
     private Menu currentMenu;
-
-    public Navigator() {
-    }
 
     public void printMenu() {
         if (currentMenu != null) {
@@ -34,7 +31,7 @@ public class Navigator {
                 menuItem.doAction();
                 currentMenu = menuItem.getNextMenu();
             } catch (IndexOutOfBoundsException e) {
-                logger.warn("Menu item with index {} does not exist", index);
+                log.warn("Menu item with index {} does not exist", index);
             }
         }
     }

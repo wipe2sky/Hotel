@@ -4,15 +4,14 @@ import com.kurtsevich.hotel.server.controller.HotelFacade;
 import com.kurtsevich.hotel.server.model.Guest;
 import com.kurtsevich.hotel.ui.actions.AbstractAction;
 import com.kurtsevich.hotel.ui.actions.IAction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+@Log4j2
 public class AddGuest extends AbstractAction implements IAction {
-    private final Logger logger = LoggerFactory.getLogger(AddGuest.class);
 
     public AddGuest(HotelFacade facade) {
         this.facade = facade;
@@ -29,10 +28,10 @@ public class AddGuest extends AbstractAction implements IAction {
             String firstName = reader.readLine();
             Guest guest = facade.addGuest(lastName, firstName);
 
-            logger.info("Guest {} {} added", guest.getLastName(), guest.getFirstName());
+            log.info("Guest {} {} added", guest.getLastName(), guest.getFirstName());
 
         } catch (IOException e) {
-            logger.warn("Add guest failed", e);
+            log.warn("Add guest failed", e);
         }
     }
 }

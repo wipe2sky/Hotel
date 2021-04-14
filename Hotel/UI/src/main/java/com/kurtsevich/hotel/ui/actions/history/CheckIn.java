@@ -5,15 +5,14 @@ import com.kurtsevich.hotel.server.controller.HotelFacade;
 import com.kurtsevich.hotel.server.model.Guest;
 import com.kurtsevich.hotel.ui.actions.AbstractAction;
 import com.kurtsevich.hotel.ui.actions.IAction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+@Log4j2
 public class CheckIn extends AbstractAction implements IAction {
-    private final Logger logger = LoggerFactory.getLogger(CheckIn.class);
 
     public CheckIn(HotelFacade facade) {
         this.facade = facade;
@@ -34,9 +33,9 @@ public class CheckIn extends AbstractAction implements IAction {
 
             Guest guest = facade.getGuestById(guestId);
 
-            logger.info("Guest {} {} check-in {}", guest.getLastName(), guest.getFirstName(), facade.getRoomInfo(roomId).getNumber());
+            log.info("Guest {} {} check-in {}", guest.getLastName(), guest.getFirstName(), facade.getRoomInfo(roomId).getNumber());
         } catch (ServiceException | NumberFormatException |IOException e) {
-            logger.warn("CheckIn Failed", e);
+            log.warn("CheckIn Failed", e);
         }
     }
 }

@@ -6,18 +6,16 @@ import com.kurtsevich.hotel.server.model.Guest;
 import com.kurtsevich.hotel.server.model.History;
 import com.kurtsevich.hotel.server.model.Room;
 import com.kurtsevich.hotel.server.util.SortStatus;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.util.List;
 
-@Component
+@Repository
 public class GuestDao extends AbstractDao<Guest> implements IGuestDao {
-    private final Logger logger = LoggerFactory.getLogger(GuestDao.class);
 
     private static final String IS_CHECK_IN = "isCheckIn";
     private static final String GUEST = "guest";
@@ -45,7 +43,6 @@ public class GuestDao extends AbstractDao<Guest> implements IGuestDao {
             TypedQuery<Guest> query = em.createQuery(cq);
             return query.getResultList();
         } catch (Exception e) {
-            logger.warn(e.getLocalizedMessage());
             throw new DaoException(e);
         }
     }

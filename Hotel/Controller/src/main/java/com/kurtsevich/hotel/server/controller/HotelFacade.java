@@ -10,25 +10,19 @@ import com.kurtsevich.hotel.server.service.HistoryService;
 import com.kurtsevich.hotel.server.service.RoomService;
 import com.kurtsevich.hotel.server.service.ServiceForService;
 import com.kurtsevich.hotel.server.util.SortStatus;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
 @Component
+@RequiredArgsConstructor
 public class HotelFacade {
     private final IGuestService guestService;
     private final IRoomService roomService;
     private final IHistoryService historyService;
     private final IServiceForService serviceForService;
-
-    @Autowired
-    public HotelFacade(IGuestService guestService, IRoomService roomService, IHistoryService historyService, IServiceForService serviceForService) {
-        this.guestService = guestService;
-        this.roomService = roomService;
-        this.historyService = historyService;
-        this.serviceForService = serviceForService;
-    }
 
 
     public Guest addGuest(String lastName, String firstName) {

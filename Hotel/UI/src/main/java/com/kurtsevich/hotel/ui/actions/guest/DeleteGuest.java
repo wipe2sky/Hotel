@@ -5,15 +5,14 @@ import com.kurtsevich.hotel.server.controller.HotelFacade;
 import com.kurtsevich.hotel.server.model.Guest;
 import com.kurtsevich.hotel.ui.actions.AbstractAction;
 import com.kurtsevich.hotel.ui.actions.IAction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+@Log4j2
 public class DeleteGuest extends AbstractAction implements IAction {
-    private final Logger logger = LoggerFactory.getLogger(DeleteGuest.class);
 
     public DeleteGuest(HotelFacade facade) {
         this.facade = facade;
@@ -29,10 +28,10 @@ public class DeleteGuest extends AbstractAction implements IAction {
             Guest guest = facade.getGuestById(guestId);
             facade.deleteGuestById(guestId);
 
-            logger.info("Guest {} {} deleted",guest.getLastName(), guest.getFirstName());
+            log.info("Guest {} {} deleted", guest.getLastName(), guest.getFirstName());
 
         } catch (ServiceException | NumberFormatException |IOException e) {
-            logger.warn("Deleting the guest failing", e);
+            log.warn("Deleting the guest failing", e);
         }
     }
 }

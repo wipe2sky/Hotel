@@ -7,20 +7,17 @@ import com.kurtsevich.hotel.ui.actions.guest.*;
 import com.kurtsevich.hotel.ui.actions.history.*;
 import com.kurtsevich.hotel.ui.actions.room.*;
 import com.kurtsevich.hotel.ui.actions.service.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class Builder {
     private Menu rootMenu;
     private static final String EXIT = "Выход";
     private static final String COMEBACK = "Назад";
     private final ActionsFactory factory;
-
-    @Autowired
-    public Builder( ActionsFactory factory) {
-        this.factory = factory;
-    }
 
     public void buildMenu() {
         rootMenu = new Menu("Главное меню");

@@ -6,9 +6,7 @@ import com.kurtsevich.hotel.server.model.History;
 import com.kurtsevich.hotel.server.model.Room;
 import com.kurtsevich.hotel.server.model.RoomStatus;
 import com.kurtsevich.hotel.server.util.SortStatus;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
@@ -16,9 +14,8 @@ import javax.persistence.criteria.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Component
+@Repository
 public class RoomDao extends AbstractDao<Room> implements IRoomDao {
-    private final Logger logger = LoggerFactory.getLogger(RoomDao.class);
 
     private static final String STATUS = "status";
 
