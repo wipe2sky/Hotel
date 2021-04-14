@@ -8,13 +8,13 @@ import com.kurtsevich.hotel.server.api.service.IRoomService;
 import com.kurtsevich.hotel.server.model.History;
 import com.kurtsevich.hotel.server.model.Room;
 import com.kurtsevich.hotel.server.model.RoomStatus;
-import com.kurtsevich.hotel.server.util.HibernateConnector;
 import com.kurtsevich.hotel.server.util.SortStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,54 +27,45 @@ public class RoomService implements IRoomService {
     private boolean allowRoomStatus;
     private final IRoomDao roomDao;
     private final IHistoryDao historyDao;
-    private final HibernateConnector connector;
 
 
     @Autowired
-    public RoomService(IRoomDao roomDao, IHistoryDao historyDao, HibernateConnector connector) {
+    public RoomService(IRoomDao roomDao, IHistoryDao historyDao) {
         this.roomDao = roomDao;
         this.historyDao = historyDao;
-        this.connector = connector;
     }
 
 
     @Override
+    @Transactional
     public Room addRoom(Integer number, Integer capacity, Integer stars, Double price) {
         try {
             Room room = new Room(number, capacity, stars, price);
-            connector.startTransaction();
             roomDao.save(room);
             return room;
         } catch (DaoException e) {
-            connector.rollbackTransaction();
             logger.warn(e.getLocalizedMessage(), e);
             throw new ServiceException("Add room failed.");
-        } finally {
-            connector.finishTransaction();
         }
     }
 
     @Override
+    @Transactional
     public void deleteRoom(Integer id) {
         try {
-            connector.startTransaction();
             roomDao.delete(roomDao.getById(id));
 
         } catch (DaoException e) {
-            connector.rollbackTransaction();
             logger.warn(e.getLocalizedMessage(), e);
             throw new ServiceException("Delete room failed.");
-        } finally {
-            connector.finishTransaction();
         }
     }
 
     @Override
+    @Transactional
     public void setCleaningStatus(Integer roomId, Boolean status) {
         Room room;
         try {
-            connector.startTransaction();
-
             if (!allowRoomStatus) {
                 throw new ServiceException("Changed status disable.");
             }
@@ -88,94 +79,75 @@ public class RoomService implements IRoomService {
             roomDao.update(room);
 
         } catch (DaoException e) {
-            connector.rollbackTransaction();
             logger.warn(e.getLocalizedMessage(), e);
             throw new ServiceException("Set cleaning status failed.");
-        } finally {
-            connector.finishTransaction();
         }
     }
 
     @Override
+    @Transactional
     public void changePrice(Integer roomId, Double price) {
         try {
-            connector.startTransaction();
-
             Room room = roomDao.getById(roomId);
             room.setPrice(price);
             roomDao.update(room);
 
         } catch (DaoException e) {
-            connector.rollbackTransaction();
             logger.warn(e.getLocalizedMessage(), e);
             throw new ServiceException("Change room price failed.");
-        } finally {
-            connector.finishTransaction();
         }
     }
 
     @Override
+    @Transactional
     public List<Room> getSortBy(SortStatus sortStatus, RoomStatus roomStatus) {
         try {
-            connector.startTransaction();
             return roomDao.getSortBy(sortStatus, roomStatus);
         } catch (DaoException e) {
-            connector.rollbackTransaction();
             logger.warn(e.getLocalizedMessage(), e);
             throw new ServiceException("Sorting room failed.");
-        } finally {
-            connector.finishTransaction();
         }
     }
 
     @Override
+    @Transactional
     public List<Room> getAvailableAfterDate(LocalDateTime date) {
         try {
-            connector.startTransaction();
             return roomDao.getAvailableAfterDate(date);
         } catch (DaoException e) {
-            connector.rollbackTransaction();
             logger.warn(e.getLocalizedMessage(), e);
             throw new ServiceException("Get rooms failed.");
-        } finally {
-            connector.finishTransaction();
         }
     }
 
     @Override
+    @Transactional
     public Integer getNumberOfFree() {
         try {
-            connector.startTransaction();
             return roomDao.getNumberOfFree();
         } catch (DaoException e) {
-            connector.rollbackTransaction();
             logger.warn(e.getLocalizedMessage(), e);
             throw new ServiceException("Get count of free rooms failed.");
-        } finally {
-            connector.finishTransaction();
         }
     }
 
 
     @Override
+    @Transactional
     public List<History> getRoomHistory(Integer roomId) {
         try {
-            connector.startTransaction();
             return historyDao.getRoomHistories(roomDao.getById(roomId));
 
         } catch (DaoException e) {
-            connector.rollbackTransaction();
             logger.warn(e.getLocalizedMessage(), e);
             throw new ServiceException("Get room History failed.");
-        } finally {
-            connector.finishTransaction();
         }
     }
 
     @Override
+    @Transactional
     public void setRepairStatus(Integer roomId, boolean bol) {
         try {
-            connector.startTransaction();
             Room room = roomDao.getById(roomId);
 
             if (!allowRoomStatus) {
@@ -189,40 +161,30 @@ public class RoomService implements IRoomService {
             }
             roomDao.update(room);
         } catch (DaoException e) {
-            connector.rollbackTransaction();
             logger.warn(e.getLocalizedMessage(), e);
             throw new ServiceException("Set repair status failed.");
-        } finally {
-            connector.finishTransaction();
-
         }
     }
 
     @Override
+    @Transactional
     public List<Room> getAll() {
         try {
-            connector.startTransaction();
             return roomDao.getAll();
         } catch (DaoException e) {
-            connector.rollbackTransaction();
             logger.warn(e.getLocalizedMessage(), e);
             throw new ServiceException("Get rooms failed.");
-        } finally {
-            connector.finishTransaction();
         }
     }
 
     @Override
+    @Transactional
     public Room getById(Integer roomId) {
         try {
-            connector.startTransaction();
             return roomDao.getById(roomId);
         } catch (DaoException e) {
-            connector.rollbackTransaction();
             logger.warn(e.getLocalizedMessage(), e);
             throw new ServiceException("Get room by id failed.");
-        } finally {
-            connector.finishTransaction();
         }
     }
 }

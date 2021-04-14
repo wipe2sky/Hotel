@@ -3,10 +3,8 @@ package com.kurtsevich.hotel.server.dao;
 import com.kurtsevich.hotel.server.api.dao.IServiceDao;
 import com.kurtsevich.hotel.server.api.exceptions.DaoException;
 import com.kurtsevich.hotel.server.model.Service;
-import com.kurtsevich.hotel.server.util.HibernateConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.TypedQuery;
@@ -18,13 +16,6 @@ import java.util.List;
 @Component
 public class ServiceDao extends AbstractDao<Service> implements IServiceDao {
     private final Logger logger = LoggerFactory.getLogger(ServiceDao.class);
-
-    @Autowired
-    public ServiceDao(HibernateConnector connection) {
-        this.connector = connection;
-        this.em = connector.getEntityManager();
-    }
-
 
     @Override
     protected Class<Service> getClazz() {

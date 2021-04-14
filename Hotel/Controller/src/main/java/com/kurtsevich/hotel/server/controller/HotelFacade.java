@@ -1,5 +1,9 @@
 package com.kurtsevich.hotel.server.controller;
 
+import com.kurtsevich.hotel.server.api.service.IGuestService;
+import com.kurtsevich.hotel.server.api.service.IHistoryService;
+import com.kurtsevich.hotel.server.api.service.IRoomService;
+import com.kurtsevich.hotel.server.api.service.IServiceForService;
 import com.kurtsevich.hotel.server.model.*;
 import com.kurtsevich.hotel.server.service.GuestService;
 import com.kurtsevich.hotel.server.service.HistoryService;
@@ -13,13 +17,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 @Component
 public class HotelFacade {
-    private final  GuestService guestService;
-    private final RoomService roomService;
-    private final HistoryService historyService;
-    private final ServiceForService serviceForService;
+    private final IGuestService guestService;
+    private final IRoomService roomService;
+    private final IHistoryService historyService;
+    private final IServiceForService serviceForService;
 
     @Autowired
-    public HotelFacade(GuestService guestService, RoomService roomService, HistoryService historyService, ServiceForService serviceForService) {
+    public HotelFacade(IGuestService guestService, IRoomService roomService, IHistoryService historyService, IServiceForService serviceForService) {
         this.guestService = guestService;
         this.roomService = roomService;
         this.historyService = historyService;

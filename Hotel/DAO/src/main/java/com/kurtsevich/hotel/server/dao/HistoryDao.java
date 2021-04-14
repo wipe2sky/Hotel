@@ -5,10 +5,8 @@ import com.kurtsevich.hotel.server.api.exceptions.DaoException;
 import com.kurtsevich.hotel.server.model.Guest;
 import com.kurtsevich.hotel.server.model.History;
 import com.kurtsevich.hotel.server.model.Room;
-import com.kurtsevich.hotel.server.util.HibernateConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -21,14 +19,9 @@ import java.util.List;
 @Component
 public class HistoryDao extends AbstractDao<History> implements IHistoryDao {
     private final Logger logger = LoggerFactory.getLogger(HistoryDao.class);
+
     @Value("${historyDao.countOfHistories}")
     private Integer countOfHistories;
-
-    @Autowired
-    public HistoryDao(HibernateConnector connector) {
-        this.connector = connector;
-        this.em = connector.getEntityManager();
-    }
 
 
     @Override

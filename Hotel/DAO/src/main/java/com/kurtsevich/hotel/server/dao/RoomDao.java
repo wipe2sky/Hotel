@@ -5,11 +5,9 @@ import com.kurtsevich.hotel.server.api.exceptions.DaoException;
 import com.kurtsevich.hotel.server.model.History;
 import com.kurtsevich.hotel.server.model.Room;
 import com.kurtsevich.hotel.server.model.RoomStatus;
-import com.kurtsevich.hotel.server.util.HibernateConnector;
 import com.kurtsevich.hotel.server.util.SortStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.Query;
@@ -22,13 +20,7 @@ import java.util.List;
 public class RoomDao extends AbstractDao<Room> implements IRoomDao {
     private final Logger logger = LoggerFactory.getLogger(RoomDao.class);
 
-    @Autowired
-    public RoomDao(HibernateConnector connection) {
-        this.connector = connection;
-        this.em = connector.getEntityManager();
-    }
-
-
+    private static final String STATUS = "status";
 
     @Override
     protected Class<Room> getClazz() {
@@ -44,7 +36,7 @@ public class RoomDao extends AbstractDao<Room> implements IRoomDao {
 
             if (roomStatus == RoomStatus.FREE) {
                 cq.select(root)
-                        .where(cb.equal(root.get("status"), RoomStatus.FREE))
+                        .where(cb.equal(root.get(STATUS), RoomStatus.FREE))
                         .orderBy(cb.asc(root.get(sortStatus.getValue())));
             } else {
                 cq.select(root)
@@ -63,7 +55,7 @@ public class RoomDao extends AbstractDao<Room> implements IRoomDao {
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery<Room> cq = cb.createQuery(Room.class);
             Root<Room> root = cq.from(Room.class);
-            Predicate statusPredicate = cb.equal(root.get("status"), RoomStatus.FREE);
+            Predicate statusPredicate = cb.equal(root.get(STATUS), RoomStatus.FREE);
             cq.select(root).where(statusPredicate);
             Query query = em.createQuery(cq);
             return query.getResultList().size();
@@ -79,7 +71,7 @@ public class RoomDao extends AbstractDao<Room> implements IRoomDao {
             CriteriaQuery<Room> cq = cb.createQuery(Room.class);
             Root<Room> root = cq.from(Room.class);
             Join<Room, History> roomHistoryJoin = root.join("histories", JoinType.LEFT);
-            Predicate roomStatusFreePredicate = cb.equal(root.get("status"), RoomStatus.FREE);
+            Predicate roomStatusFreePredicate = cb.equal(root.get(STATUS), RoomStatus.FREE);
             Predicate roomCheckOutDatePredicate = cb.lessThan(roomHistoryJoin.get("checkOutDate"), date);
             Predicate finalPredicate = cb.or(roomStatusFreePredicate, roomCheckOutDatePredicate);
             cq.select(root)
