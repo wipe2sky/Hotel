@@ -1,7 +1,5 @@
 package com.kurtsevich.hotel.ui.menu;
 
-import com.kurtsevich.hotel.di.annotation.InjectByType;
-import com.kurtsevich.hotel.di.annotation.Singleton;
 import com.kurtsevich.hotel.server.model.RoomStatus;
 import com.kurtsevich.hotel.server.util.SortStatus;
 import com.kurtsevich.hotel.ui.actions.ActionsFactory;
@@ -9,18 +7,17 @@ import com.kurtsevich.hotel.ui.actions.guest.*;
 import com.kurtsevich.hotel.ui.actions.history.*;
 import com.kurtsevich.hotel.ui.actions.room.*;
 import com.kurtsevich.hotel.ui.actions.service.*;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-@Singleton
+@Component
+@RequiredArgsConstructor
 public class Builder {
     private Menu rootMenu;
     private static final String EXIT = "Выход";
     private static final String COMEBACK = "Назад";
     private final ActionsFactory factory;
-
-    @InjectByType
-    public Builder( ActionsFactory factory) {
-        this.factory = factory;
-    }
 
     public void buildMenu() {
         rootMenu = new Menu("Главное меню");

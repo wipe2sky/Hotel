@@ -7,15 +7,14 @@ import com.kurtsevich.hotel.server.model.Guest;
 import com.kurtsevich.hotel.server.model.Service;
 import com.kurtsevich.hotel.ui.actions.AbstractAction;
 import com.kurtsevich.hotel.ui.actions.IAction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+@Log4j2
 public class AddServiceToGuest extends AbstractAction implements IAction {
-    private final Logger logger = LoggerFactory.getLogger(AddServiceToGuest.class);
 
     public AddServiceToGuest(HotelFacade facade) {
         this.facade = facade;
@@ -36,12 +35,12 @@ public class AddServiceToGuest extends AbstractAction implements IAction {
 
             if (guest.isCheckIn()) {
                 facade.addServiceToGuest(serviceId, guestId);
-                logger.info("Service {} added to guest {} {}", service.getName(), guest.getLastName(), guest.getFirstName());
+                log.info("Service {} added to guest {} {}", service.getName(), guest.getLastName(), guest.getFirstName());
             } else {
-                logger.warn("Guest id {}  not stay in the hotel.", guest.getId());
+                log.warn("Guest id {}  not stay in the hotel.", guest.getId());
             }
         } catch (ServiceException | NumberFormatException |IOException e) {
-            logger.warn("Add service to guest failed", e);
+            log.warn("Add service to guest failed", e);
         }
     }
 }

@@ -5,15 +5,14 @@ import com.kurtsevich.hotel.server.controller.HotelFacade;
 import com.kurtsevich.hotel.server.model.Room;
 import com.kurtsevich.hotel.ui.actions.AbstractAction;
 import com.kurtsevich.hotel.ui.actions.IAction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+@Log4j2
 public class SetRoomCleaningStatus extends AbstractAction implements IAction {
-    private final Logger logger = LoggerFactory.getLogger(SetRoomCleaningStatus.class);
     private Boolean isCleaning;
 
 
@@ -34,14 +33,14 @@ public class SetRoomCleaningStatus extends AbstractAction implements IAction {
             facade.setRoomCleaningStatus(roomId, isCleaning);
 
             if (isCleaning) {
-                logger.info("Room {} is cleaned", room.getNumber());
+                log.info("Room {} is cleaned", room.getNumber());
             } else {
-                logger.info("Room {} cleaned", room.getNumber());
+                log.info("Room {} cleaned", room.getNumber());
 
             }
 
         } catch (ServiceException | NumberFormatException |IOException e) {
-            logger.warn(e.getMessage(), e);
+            log.warn(e.getMessage(), e);
         }
     }
 }

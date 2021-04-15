@@ -1,30 +1,28 @@
 package com.kurtsevich.hotel.server.controller;
 
-import com.kurtsevich.hotel.di.annotation.InjectByType;
-import com.kurtsevich.hotel.di.annotation.Singleton;
+import com.kurtsevich.hotel.server.api.service.IGuestService;
+import com.kurtsevich.hotel.server.api.service.IHistoryService;
+import com.kurtsevich.hotel.server.api.service.IRoomService;
+import com.kurtsevich.hotel.server.api.service.IServiceForService;
 import com.kurtsevich.hotel.server.model.*;
 import com.kurtsevich.hotel.server.service.GuestService;
 import com.kurtsevich.hotel.server.service.HistoryService;
 import com.kurtsevich.hotel.server.service.RoomService;
 import com.kurtsevich.hotel.server.service.ServiceForService;
 import com.kurtsevich.hotel.server.util.SortStatus;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
-@Singleton
+@Component
+@RequiredArgsConstructor
 public class HotelFacade {
-    private final  GuestService guestService;
-    private final RoomService roomService;
-    private final HistoryService historyService;
-    private final ServiceForService serviceForService;
-
-    @InjectByType
-    public HotelFacade(GuestService guestService, RoomService roomService, HistoryService historyService, ServiceForService serviceForService) {
-        this.guestService = guestService;
-        this.roomService = roomService;
-        this.historyService = historyService;
-        this.serviceForService = serviceForService;
-    }
+    private final IGuestService guestService;
+    private final IRoomService roomService;
+    private final IHistoryService historyService;
+    private final IServiceForService serviceForService;
 
 
     public Guest addGuest(String lastName, String firstName) {

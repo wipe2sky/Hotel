@@ -3,19 +3,16 @@ package com.kurtsevich.hotel.server.dao;
 import com.kurtsevich.hotel.server.api.dao.GenericDao;
 import com.kurtsevich.hotel.server.api.exceptions.DaoException;
 import com.kurtsevich.hotel.server.model.AEntity;
-import com.kurtsevich.hotel.server.util.HibernateConnector;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
 public abstract class AbstractDao<T extends AEntity> implements GenericDao<T> {
-    protected final Logger logger = LoggerFactory.getLogger(AbstractDao.class);
-    protected HibernateConnector connector;
+    @PersistenceContext
     protected EntityManager em;
 
     protected abstract Class<T> getClazz();
@@ -33,7 +30,7 @@ public abstract class AbstractDao<T extends AEntity> implements GenericDao<T> {
     @Override
     public T getById(Integer id) throws DaoException {
         try {
-           return em.find(getClazz(), id);
+            return em.find(getClazz(), id);
 
         } catch (Exception e) {
             throw new DaoException(e);

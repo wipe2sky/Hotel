@@ -1,33 +1,24 @@
 package com.kurtsevich.hotel.server.dao;
 
-import com.kurtsevich.hotel.di.annotation.InjectByType;
-import com.kurtsevich.hotel.di.annotation.Singleton;
 import com.kurtsevich.hotel.server.api.dao.IGuestDao;
 import com.kurtsevich.hotel.server.api.exceptions.DaoException;
 import com.kurtsevich.hotel.server.model.Guest;
 import com.kurtsevich.hotel.server.model.History;
 import com.kurtsevich.hotel.server.model.Room;
-import com.kurtsevich.hotel.server.util.HibernateConnector;
 import com.kurtsevich.hotel.server.util.SortStatus;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.util.List;
 
-@Singleton
+@Repository
 public class GuestDao extends AbstractDao<Guest> implements IGuestDao {
-    private final Logger logger = LoggerFactory.getLogger(GuestDao.class);
 
-
-    @InjectByType
-    public GuestDao(HibernateConnector connector) {
-        this.connector = connector;
-        this.em = connector.getEntityManager();
-    }
-
+    private static final String IS_CHECK_IN = "isCheckIn";
+    private static final String GUEST = "guest";
 
     @Override
     protected Class<Guest> getClazz() {
@@ -44,15 +35,14 @@ public class GuestDao extends AbstractDao<Guest> implements IGuestDao {
             if (sortStatus.equals(SortStatus.DATE_CHECK_OUT)) {
                 order = cb.asc(root.get(sortStatus.getValue()));
             } else if (sortStatus.equals(SortStatus.LAST_NAME)) {
-                order = cb.asc(root.get("guest").get(sortStatus.getValue()));
+                order = cb.asc(root.get(GUEST).get(sortStatus.getValue()));
             }
-            cq.select(root.get("guest"))
-                    .where(cb.equal(root.get("guest").get("isCheckIn"), true))
+            cq.select(root.get(GUEST))
+                    .where(cb.equal(root.get(GUEST).get(IS_CHECK_IN), true))
                     .orderBy(order);
             TypedQuery<Guest> query = em.createQuery(cq);
             return query.getResultList();
         } catch (Exception e) {
-            logger.warn(e.getLocalizedMessage());
             throw new DaoException(e);
         }
     }
@@ -64,7 +54,7 @@ public class GuestDao extends AbstractDao<Guest> implements IGuestDao {
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery<Guest> cq = cb.createQuery(Guest.class);
             Root<Guest> root = cq.from(Guest.class);
-            Predicate isCheckInPredicate = cb.equal(root.get("isCheckIn"), true);
+            Predicate isCheckInPredicate = cb.equal(root.get(IS_CHECK_IN), true);
             cq.select(root).where(isCheckInPredicate);
             Query query = em.createQuery(cq);
             return (long) query.getResultList().size();
@@ -79,7 +69,7 @@ public class GuestDao extends AbstractDao<Guest> implements IGuestDao {
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery<Guest> cq = cb.createQuery(Guest.class);
             Root<Guest> root = cq.from(Guest.class);
-            Predicate isCheckInPredicate = cb.equal(root.get("isCheckIn"), true);
+            Predicate isCheckInPredicate = cb.equal(root.get(IS_CHECK_IN), true);
             cq.select(root).where(isCheckInPredicate);
             TypedQuery<Guest> query = em.createQuery(cq);
             return query.getResultList();
@@ -96,7 +86,7 @@ public class GuestDao extends AbstractDao<Guest> implements IGuestDao {
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery<Guest> cq = cb.createQuery(Guest.class);
             Root<History> root = cq.from(History.class);
-            cq.select(root.get("guest"))
+            cq.select(root.get(GUEST))
                     .where(cb.equal(root.get("room"), room.getId()));
             TypedQuery<Guest> query = em.createQuery(cq);
             return query.setMaxResults(3).getResultList();

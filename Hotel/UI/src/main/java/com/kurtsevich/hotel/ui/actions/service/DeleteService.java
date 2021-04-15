@@ -5,15 +5,14 @@ import com.kurtsevich.hotel.server.controller.HotelFacade;
 import com.kurtsevich.hotel.server.model.Service;
 import com.kurtsevich.hotel.ui.actions.AbstractAction;
 import com.kurtsevich.hotel.ui.actions.IAction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+@Log4j2
 public class DeleteService extends AbstractAction implements IAction {
-    private final Logger logger = LoggerFactory.getLogger(DeleteService.class);
 
     public DeleteService(HotelFacade facade) {
         this.facade = facade;
@@ -30,9 +29,9 @@ public class DeleteService extends AbstractAction implements IAction {
 
             facade.deleteService(serviceId);
 
-            logger.info("Service {} deleted.", service.getName());
+            log.info("Service {} deleted.", service.getName());
         } catch (ServiceException | NumberFormatException | IOException e) {
-            logger.warn("Delete Service failed", e);
+            log.warn("Delete Service failed", e);
         }
     }
 }

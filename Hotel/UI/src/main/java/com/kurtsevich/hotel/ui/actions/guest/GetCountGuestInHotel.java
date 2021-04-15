@@ -3,11 +3,10 @@ package com.kurtsevich.hotel.ui.actions.guest;
 import com.kurtsevich.hotel.server.controller.HotelFacade;
 import com.kurtsevich.hotel.ui.actions.AbstractAction;
 import com.kurtsevich.hotel.ui.actions.IAction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class GetCountGuestInHotel extends AbstractAction implements IAction {
-    private final Logger logger = LoggerFactory.getLogger(GetCountGuestInHotel.class);
 
     public GetCountGuestInHotel(HotelFacade facade) {
         this.facade = facade;
@@ -16,6 +15,6 @@ public class GetCountGuestInHotel extends AbstractAction implements IAction {
     @Override
     public void execute() {
         Long countGuestInHotel = facade.getCountGuestInHotel();
-        logger.info("In Hotel stay {} guests, at this moment.", countGuestInHotel);
+        log.info("In Hotel stay {} guests, at this moment.", countGuestInHotel);
     }
 }
