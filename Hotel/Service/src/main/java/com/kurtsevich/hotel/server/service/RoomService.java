@@ -5,10 +5,15 @@ import com.kurtsevich.hotel.server.api.dao.IRoomDao;
 import com.kurtsevich.hotel.server.api.exceptions.DaoException;
 import com.kurtsevich.hotel.server.api.exceptions.ServiceException;
 import com.kurtsevich.hotel.server.api.service.IRoomService;
+import com.kurtsevich.hotel.server.dto.HistoryDto;
+import com.kurtsevich.hotel.server.dto.RoomDto;
+import com.kurtsevich.hotel.server.dto.RoomWithoutHistoriesDto;
 import com.kurtsevich.hotel.server.model.History;
 import com.kurtsevich.hotel.server.model.Room;
 import com.kurtsevich.hotel.server.model.RoomStatus;
-import com.kurtsevich.hotel.server.util.SortStatus;
+import com.kurtsevich.hotel.server.util.HistoryMapper;
+import com.kurtsevich.hotel.server.util.RoomMapper;
+import com.kurtsevich.hotel.server.SortStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,11 +35,10 @@ public class RoomService implements IRoomService {
     private final IHistoryDao historyDao;
 
     @Override
-    public Room addRoom(Integer number, Integer capacity, Integer stars, Double price) {
+    public void addRoom(RoomDto roomDTO) {
         try {
-            Room room = new Room(number, capacity, stars, price);
+            Room room = RoomMapper.INSTANCE.roomDtoToRoom(roomDTO);
             roomDao.save(room);
-            return room;
         } catch (DaoException e) {
             log.warn(e.getLocalizedMessage(), e);
             throw new ServiceException("Add room failed.");
@@ -52,19 +57,19 @@ public class RoomService implements IRoomService {
     }
 
     @Override
-    public void setCleaningStatus(Integer roomId, Boolean status) {
+    public void setCleaningStatus(RoomDto roomDTO) {
         Room room;
         try {
             if (!allowRoomStatus) {
                 throw new ServiceException("Changed status disable.");
             }
-            room = roomDao.getById(roomId);
+            room = roomDao.getById(roomDTO.getId());
 
-            if (status.equals(room.getIsCleaning())) {
+            if (roomDTO.getIsCleaning().equals(room.getIsCleaning())) {
                 log.warn("Impossible change status {} on {}", room.getIsCleaning(), room.getIsCleaning());
-                throw new ServiceException("Set cleaning status failed.");
+                throw new ServiceException("Impossible change status.");
             }
-            room.setIsCleaning(status);
+            room.setIsCleaning(roomDTO.getIsCleaning());
             roomDao.update(room);
 
         } catch (DaoException e) {
@@ -74,10 +79,10 @@ public class RoomService implements IRoomService {
     }
 
     @Override
-    public void changePrice(Integer roomId, Double price) {
+    public void changePrice(RoomDto roomDTO) {
         try {
-            Room room = roomDao.getById(roomId);
-            room.setPrice(price);
+            Room room = roomDao.getById(roomDTO.getId());
+            room.setPrice(roomDTO.getPrice());
             roomDao.update(room);
 
         } catch (DaoException e) {
@@ -87,9 +92,12 @@ public class RoomService implements IRoomService {
     }
 
     @Override
-    public List<Room> getSortBy(SortStatus sortStatus, RoomStatus roomStatus) {
+    public List<RoomWithoutHistoriesDto> getSortBy(SortStatus sortStatus, RoomStatus roomStatus) {
         try {
-            return roomDao.getSortBy(sortStatus, roomStatus);
+            List<Room> rooms = roomDao.getSortBy(sortStatus, roomStatus);
+            List<RoomWithoutHistoriesDto> roomsDTO = new ArrayList<>();
+            rooms.forEach(room -> roomsDTO.add(RoomMapper.INSTANCE.roomToRoomWithoutHistoriesDto(room)));
+            return roomsDTO;
         } catch (DaoException e) {
             log.warn(e.getLocalizedMessage(), e);
             throw new ServiceException("Sorting room failed.");
@@ -98,9 +106,12 @@ public class RoomService implements IRoomService {
 
     @Override
     @Transactional
-    public List<Room> getAvailableAfterDate(LocalDateTime date) {
+    public List<RoomWithoutHistoriesDto> getAvailableAfterDate(LocalDateTime date) {
         try {
-            return roomDao.getAvailableAfterDate(date);
+            List<Room> rooms = roomDao.getAvailableAfterDate(date);
+            List<RoomWithoutHistoriesDto> roomsDTO = new ArrayList<>();
+            rooms.forEach(room -> roomsDTO.add(RoomMapper.INSTANCE.roomToRoomWithoutHistoriesDto(room)));
+            return roomsDTO;
         } catch (DaoException e) {
             log.warn(e.getLocalizedMessage(), e);
             throw new ServiceException("Get rooms failed.");
@@ -119,9 +130,12 @@ public class RoomService implements IRoomService {
 
 
     @Override
-    public List<History> getRoomHistory(Integer roomId) {
+    public List<HistoryDto> getRoomHistory(Integer roomId) {
         try {
-            return historyDao.getRoomHistories(roomDao.getById(roomId));
+            List<History> histories = historyDao.getRoomHistories(roomDao.getById(roomId));
+            List<HistoryDto> historiesDTO = new ArrayList<>();
+            histories.forEach(history -> historiesDTO.add(HistoryMapper.INSTANCE.historyToHistoryDto(history)));
+            return historiesDTO;
 
         } catch (DaoException e) {
             log.warn(e.getLocalizedMessage(), e);
@@ -130,18 +144,22 @@ public class RoomService implements IRoomService {
     }
 
     @Override
-    public void setRepairStatus(Integer roomId, boolean bol) {
+    public void setRepairStatus(RoomDto roomDTO) {
         try {
-            Room room = roomDao.getById(roomId);
+            Room room = roomDao.getById(roomDTO.getId());
 
             if (!allowRoomStatus) {
                 throw new ServiceException("Changed status disable.");
             }
-
-            if (bol) {
-                room.setStatus(RoomStatus.REPAIR);
+if(room.getStatus().equals(RoomStatus.BUSY)){
+    log.warn("Set repair status failed. Room {} is busy}", room.getNumber());
+    throw new ServiceException("Set repair status failed. Room is busy");
+}
+            if (roomDTO.getStatus().equals(room.getStatus())) {
+                log.warn("Impossible change status {} on {}", room.getStatus(), room.getStatus());
+                throw new ServiceException("Set repair status failed.");
             } else {
-                room.setStatus(RoomStatus.FREE);
+                room.setStatus(roomDTO.getStatus());
             }
             roomDao.update(room);
         } catch (DaoException e) {
@@ -151,9 +169,12 @@ public class RoomService implements IRoomService {
     }
 
     @Override
-    public List<Room> getAll() {
+    public List<RoomWithoutHistoriesDto> getAll() {
         try {
-            return roomDao.getAll();
+            List<Room> rooms = roomDao.getAll();
+            List<RoomWithoutHistoriesDto> roomsDTO = new ArrayList<>();
+            rooms.forEach(room -> roomsDTO.add(RoomMapper.INSTANCE.roomToRoomWithoutHistoriesDto(room)));
+            return roomsDTO;
         } catch (DaoException e) {
             log.warn(e.getLocalizedMessage(), e);
             throw new ServiceException("Get rooms failed.");
@@ -161,9 +182,9 @@ public class RoomService implements IRoomService {
     }
 
     @Override
-    public Room getById(Integer roomId) {
+    public RoomWithoutHistoriesDto getById(Integer roomId) {
         try {
-            return roomDao.getById(roomId);
+            return RoomMapper.INSTANCE.roomToRoomWithoutHistoriesDto( roomDao.getById(roomId));
         } catch (DaoException e) {
             log.warn(e.getLocalizedMessage(), e);
             throw new ServiceException("Get room by id failed.");

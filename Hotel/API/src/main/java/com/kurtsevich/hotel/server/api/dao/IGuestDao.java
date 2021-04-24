@@ -2,7 +2,7 @@ package com.kurtsevich.hotel.server.api.dao;
 
 import com.kurtsevich.hotel.server.model.Guest;
 import com.kurtsevich.hotel.server.model.Room;
-import com.kurtsevich.hotel.server.util.SortStatus;
+import com.kurtsevich.hotel.server.SortStatus;
 
 import java.util.List;
 

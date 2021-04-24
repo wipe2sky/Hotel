@@ -4,13 +4,17 @@ import com.kurtsevich.hotel.server.api.dao.IGuestDao;
 import com.kurtsevich.hotel.server.api.exceptions.DaoException;
 import com.kurtsevich.hotel.server.api.exceptions.ServiceException;
 import com.kurtsevich.hotel.server.api.service.IGuestService;
+import com.kurtsevich.hotel.server.dto.GuestDto;
+import com.kurtsevich.hotel.server.dto.GuestWithoutHistoriesDto;
 import com.kurtsevich.hotel.server.model.Guest;
-import com.kurtsevich.hotel.server.util.SortStatus;
+import com.kurtsevich.hotel.server.util.GuestMapper;
+import com.kurtsevich.hotel.server.SortStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -21,11 +25,10 @@ public class GuestService implements IGuestService {
     private final IGuestDao guestDao;
 
     @Override
-    public Guest add(String lastName, String firstName) {
+    public void add(GuestDto guestDTO) {
         try {
-            Guest guest = new Guest(lastName, firstName);
+            Guest guest = GuestMapper.INSTANCE.guestDtoToGuest(guestDTO);
             guestDao.save(guest);
-            return guest;
         } catch (DaoException e) {
             log.warn(e.getLocalizedMessage(), e);
             throw new ServiceException("Couldn't add Guest");
@@ -34,9 +37,9 @@ public class GuestService implements IGuestService {
 
 
     @Override
-    public  Guest getById(Integer id) {
+    public GuestWithoutHistoriesDto getById(Integer id) {
         try {
-            return guestDao.getById(id);
+            return GuestMapper.INSTANCE.guestToGuestWithoutHistoriesDto(guestDao.getById(id));
         } catch (DaoException e) {
             log.warn(e.getLocalizedMessage());
             throw new ServiceException("Couldn't find entity by id: " + id);
@@ -54,9 +57,12 @@ public class GuestService implements IGuestService {
     }
 
     @Override
-    public List<Guest> getSortBy(SortStatus sortStatus) {
+    public List<GuestWithoutHistoriesDto> getSortBy(SortStatus sortStatus) {
         try {
-            return guestDao.getSortBy(sortStatus);
+            List<Guest> guests = guestDao.getSortBy(sortStatus);
+            List<GuestWithoutHistoriesDto> guestsDTO = new ArrayList<>();
+            guests.forEach(guest -> guestsDTO.add(GuestMapper.INSTANCE.guestToGuestWithoutHistoriesDto(guest)));
+            return guestsDTO;
         } catch (DaoException e) {
             log.warn(e.getLocalizedMessage(), e);
             throw new ServiceException("Sort guest failed.");
@@ -75,9 +81,12 @@ public class GuestService implements IGuestService {
     }
 
     @Override
-    public List<Guest> getAll() {
+    public List<GuestWithoutHistoriesDto> getAll() {
         try {
-           return guestDao.getAll();
+            List<Guest> guests = guestDao.getAll();
+            List<GuestWithoutHistoriesDto> guestsDTO = new ArrayList<>();
+            guests.forEach(g -> guestsDTO.add(GuestMapper.INSTANCE.guestToGuestWithoutHistoriesDto(g)));
+            return guestsDTO;
 
         } catch (DaoException e) {
             log.warn(e.getLocalizedMessage(), e);
@@ -87,9 +96,12 @@ public class GuestService implements IGuestService {
 
 
     @Override
-    public List<Guest> getAllGuestInHotel() {
+    public List<GuestDto> getAllGuestInHotel() {
         try {
-            return  guestDao.getAllGuestInHotel();
+            List<Guest> guests = guestDao.getAllGuestInHotel();
+            List<GuestDto> guestsDTO = new ArrayList<>();
+            guests.forEach(g -> guestsDTO.add(GuestMapper.INSTANCE.guestToGuestDto(g)));
+            return guestsDTO;
         } catch (DaoException e) {
             log.warn(e.getLocalizedMessage(), e);
             throw new ServiceException("Get all guests in hotel failed.");

@@ -2,6 +2,7 @@ package com.kurtsevich.hotel.server.dao;
 
 import com.kurtsevich.hotel.server.api.dao.GenericDao;
 import com.kurtsevich.hotel.server.api.exceptions.DaoException;
+import com.kurtsevich.hotel.server.api.exceptions.NotFoundEntityException;
 import com.kurtsevich.hotel.server.model.AEntity;
 
 import javax.persistence.EntityManager;
@@ -19,7 +20,6 @@ public abstract class AbstractDao<T extends AEntity> implements GenericDao<T> {
 
     @Override
     public void save(T entity) {
-
         try {
             em.persist(entity);
         } catch (Exception e) {
@@ -29,16 +29,16 @@ public abstract class AbstractDao<T extends AEntity> implements GenericDao<T> {
 
     @Override
     public T getById(Integer id) throws DaoException {
-        try {
-            return em.find(getClazz(), id);
-
-        } catch (Exception e) {
-            throw new DaoException(e);
+        T entity = em.find(getClazz(), id);
+        if (entity == null) {
+            throw new NotFoundEntityException(id);
+        } else {
+            return entity;
         }
     }
 
     @Override
-    public List<T> getAll() throws DaoException{
+    public List<T> getAll() throws DaoException {
         try {
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery<T> cq = cb.createQuery(getClazz());
@@ -51,7 +51,7 @@ public abstract class AbstractDao<T extends AEntity> implements GenericDao<T> {
     }
 
     @Override
-    public void delete(T entity) throws DaoException{
+    public void delete(T entity) throws DaoException {
         try {
             em.remove(entity);
         } catch (Exception e) {
@@ -60,7 +60,7 @@ public abstract class AbstractDao<T extends AEntity> implements GenericDao<T> {
     }
 
     @Override
-    public void update(T entity) throws DaoException{
+    public void update(T entity) throws DaoException {
         try {
             em.merge(entity);
         } catch (Exception e) {

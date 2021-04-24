@@ -6,13 +6,21 @@ import com.kurtsevich.hotel.server.api.dao.IRoomDao;
 import com.kurtsevich.hotel.server.api.exceptions.DaoException;
 import com.kurtsevich.hotel.server.api.exceptions.ServiceException;
 import com.kurtsevich.hotel.server.api.service.IHistoryService;
+import com.kurtsevich.hotel.server.dto.CheckInDto;
+import com.kurtsevich.hotel.server.dto.GuestWithoutHistoriesDto;
+import com.kurtsevich.hotel.server.dto.HistoryDto;
+import com.kurtsevich.hotel.server.dto.ServiceWithoutHistoriesDTO;
 import com.kurtsevich.hotel.server.model.*;
+import com.kurtsevich.hotel.server.util.GuestMapper;
+import com.kurtsevich.hotel.server.util.HistoryMapper;
+import com.kurtsevich.hotel.server.util.ServiceMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 
 @org.springframework.stereotype.Service
@@ -34,20 +42,20 @@ public class HistoryService implements IHistoryService {
 
 
     @Override
-    public void checkIn(Integer guestId, Integer roomId, Integer daysStay) {
+    public void checkIn(CheckInDto checkInDto) {
         try {
-            Room room = roomDao.getById(roomId);
-            Guest guest = guestDao.getById(guestId);
+            Room room = roomDao.getById(checkInDto.getRoomId());
+            Guest guest = guestDao.getById(checkInDto.getGuestId());
             if (room.getGuestsInRoom() < room.getCapacity()) {
-                log.info("Check-in of the guest № {} to the room № {} for {} days", guestId, roomId, daysStay);
+                log.info("Check-in of the guest № {} to the room № {} for {} days", checkInDto.getGuestId(), checkInDto.getRoomId(), checkInDto.getDaysStay());
                 guest.setCheckIn(true);
                 guestDao.update(guest);
                 room.setStatus(RoomStatus.BUSY);
                 room.setGuestsInRoom(room.getGuestsInRoom() + 1);
                 roomDao.update(room);
-                addHistory(room, guest, daysStay);
+                addHistory(room, guest, checkInDto.getDaysStay());
             } else {
-                log.info("Room {} busy.", roomId);
+                log.info("Room {} busy.", checkInDto.getRoomId());
             }
 
         } catch (DaoException e) {
@@ -75,6 +83,7 @@ public class HistoryService implements IHistoryService {
                 room.setStatus(RoomStatus.FREE);
             }
             history.setCheckOutDate(LocalDateTime.now());
+            history.setCurrent(false);
             historyDao.update(history);
             roomDao.update(room);
             guestDao.update(guest);
@@ -92,14 +101,17 @@ public class HistoryService implements IHistoryService {
             return history.getCostOfLiving();
         } catch (DaoException e) {
             log.warn(e.getLocalizedMessage(), e);
-            throw new ServiceException("Get cost of living failed.");
+            throw new ServiceException("Guest history not found.");
         }
     }
 
     @Override
-    public List<Guest> getLast3GuestInRoom(Integer roomId) {
+    public List<GuestWithoutHistoriesDto> getLast3GuestInRoom(Integer roomId) {
         try {
-            return guestDao.getLast3GuestInRoom(roomDao.getById(roomId));
+            List<Guest> guests = guestDao.getLast3GuestInRoom(roomDao.getById(roomId));
+            List<GuestWithoutHistoriesDto> guestsDto = new ArrayList<>();
+            guests.forEach(guest -> guestsDto.add(GuestMapper.INSTANCE.guestToGuestWithoutHistoriesDto(guest)));
+            return guestsDto;
         } catch (DaoException e) {
             log.warn(e.getLocalizedMessage(), e);
             throw new ServiceException("Get guests in Room failed.");
@@ -107,9 +119,12 @@ public class HistoryService implements IHistoryService {
     }
 
     @Override
-    public List<History> getGuestHistory(Integer id) {
+    public List<HistoryDto> getGuestHistory(Integer id) {
         try {
-            return historyDao.getGuestHistories(guestDao.getById(id));
+            List<History> histories = historyDao.getGuestHistories(guestDao.getById(id));
+            List<HistoryDto> historiesDto = new ArrayList<>();
+            histories.forEach(history -> historiesDto.add(HistoryMapper.INSTANCE.historyToHistoryDto(history)));
+            return historiesDto;
         } catch (DaoException e) {
             log.warn(e.getLocalizedMessage(), e);
             throw new ServiceException("Get guests history failed.");
@@ -117,9 +132,12 @@ public class HistoryService implements IHistoryService {
     }
 
     @Override
-    public List<History> getAll() {
+    public List<HistoryDto> getAll() {
         try {
-            return historyDao.getAll();
+            List<History> histories = historyDao.getAll();
+            List<HistoryDto> historiesDto = new ArrayList<>();
+            histories.forEach(history -> historiesDto.add(HistoryMapper.INSTANCE.historyToHistoryDto(history)));
+            return historiesDto;
         } catch (DaoException e) {
             log.warn(e.getLocalizedMessage(), e);
             throw new ServiceException("Get guests failed.");
@@ -128,12 +146,15 @@ public class HistoryService implements IHistoryService {
 
 
     @Override
-    public List<Service> getListOfGuestService(Integer guestId) {
+    public List<ServiceWithoutHistoriesDTO> getListOfGuestService(Integer guestId) {
         try {
             Guest guest = guestDao.getById(guestId);
             History history = historyDao.getGuestHistories(guest).get(0);
 
-            return history.getServices();
+            List<Service> services = history.getServices();
+            List<ServiceWithoutHistoriesDTO> servicesDTO = new ArrayList<>();
+            services.forEach(service -> servicesDTO.add(ServiceMapper.INSTANCE.serviceToServiceWithoutHistoriesDTO(service)));
+            return servicesDTO;
         } catch (DaoException e) {
             log.warn(e.getLocalizedMessage(), e);
             throw new ServiceException("Get list of guest service failed.");

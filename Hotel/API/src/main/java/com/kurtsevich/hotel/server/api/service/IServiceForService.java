@@ -1,21 +1,23 @@
 package com.kurtsevich.hotel.server.api.service;
 
-import com.kurtsevich.hotel.server.model.Service;
+import com.kurtsevich.hotel.server.dto.ServiceDto;
+import com.kurtsevich.hotel.server.dto.ServiceToGuestDto;
+import com.kurtsevich.hotel.server.dto.ServiceWithoutHistoriesDTO;
 
 import java.util.List;
 
 public interface IServiceForService {
-    Service addService(String name, Double price);
+    void addService(ServiceDto serviceDto);
     void deleteService(Integer serviceId);
 
-    Service getById(Integer serviceId);
+    ServiceWithoutHistoriesDTO getById(Integer serviceId);
 
-    void addServiceToGuest(Integer serviceId, Integer guestId);
+    void addServiceToGuest(ServiceToGuestDto serviceToGuestDto);
 
-    List<Service> getSortByPrice();
+    List<ServiceWithoutHistoriesDTO> getSortByPrice();
 
-    List<Service> getAll();
+    List<ServiceWithoutHistoriesDTO> getAll();
 
-    void changeServicePrice(Integer id, Double price);
+    void changeServicePrice(ServiceDto serviceDto);
 
 }

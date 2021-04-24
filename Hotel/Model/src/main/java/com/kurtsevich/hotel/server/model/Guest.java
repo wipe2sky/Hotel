@@ -5,6 +5,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @ToString(exclude="histories")
@@ -26,6 +27,5 @@ public class Guest extends AEntity {
     public Guest(String lastName, String firstName) {
         setLastName(lastName);
         setFirstName(firstName);
-
     }
 }

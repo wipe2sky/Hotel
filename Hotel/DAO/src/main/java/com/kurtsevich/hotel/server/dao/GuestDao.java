@@ -1,12 +1,11 @@
 package com.kurtsevich.hotel.server.dao;
 
+import com.kurtsevich.hotel.server.SortStatus;
 import com.kurtsevich.hotel.server.api.dao.IGuestDao;
 import com.kurtsevich.hotel.server.api.exceptions.DaoException;
 import com.kurtsevich.hotel.server.model.Guest;
 import com.kurtsevich.hotel.server.model.History;
 import com.kurtsevich.hotel.server.model.Room;
-import com.kurtsevich.hotel.server.util.SortStatus;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.Query;
@@ -39,7 +38,8 @@ public class GuestDao extends AbstractDao<Guest> implements IGuestDao {
             }
             cq.select(root.get(GUEST))
                     .where(cb.equal(root.get(GUEST).get(IS_CHECK_IN), true))
-                    .orderBy(order);
+                    .orderBy(order)
+                    .groupBy(root.get(GUEST));
             TypedQuery<Guest> query = em.createQuery(cq);
             return query.getResultList();
         } catch (Exception e) {
@@ -79,9 +79,8 @@ public class GuestDao extends AbstractDao<Guest> implements IGuestDao {
     }
 
 
-
     @Override
-    public List<Guest> getLast3GuestInRoom(Room room) throws DaoException{
+    public List<Guest> getLast3GuestInRoom(Room room) throws DaoException {
         try {
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery<Guest> cq = cb.createQuery(Guest.class);
