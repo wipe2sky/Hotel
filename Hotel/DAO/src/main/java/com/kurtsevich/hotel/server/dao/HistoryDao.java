@@ -5,7 +5,6 @@ import com.kurtsevich.hotel.server.api.exceptions.DaoException;
 import com.kurtsevich.hotel.server.model.Guest;
 import com.kurtsevich.hotel.server.model.History;
 import com.kurtsevich.hotel.server.model.Room;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
@@ -28,7 +27,7 @@ public class HistoryDao extends AbstractDao<History> implements IHistoryDao {
     }
 
     @Override
-    public List<History> getGuestHistories(Guest guest) throws DaoException{
+    public List<History> getGuestHistories(Guest guest) throws DaoException {
         try {
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery<History> cq = cb.createQuery(History.class);
@@ -44,7 +43,23 @@ public class HistoryDao extends AbstractDao<History> implements IHistoryDao {
     }
 
     @Override
-    public List<History> getRoomHistories(Room room) throws DaoException{
+    public History getCurrentGuestHistories(Guest guest) {
+        try {
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<History> cq = cb.createQuery(History.class);
+            Root<History> root = cq.from(History.class);
+            cq.select(root)
+                    .where(cb.and(cb.equal(root.get("guest"), guest.getId()), cb.equal(root.get("isCurrent"), true)))
+                    .orderBy(cb.desc(root.get("checkOutDate")));
+            TypedQuery<History> query = em.createQuery(cq);
+            return query.getSingleResult();
+        } catch (Exception e) {
+            throw new DaoException(e);
+        }
+    }
+
+    @Override
+    public List<History> getRoomHistories(Room room) throws DaoException {
         try {
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery<History> cq = cb.createQuery(History.class);

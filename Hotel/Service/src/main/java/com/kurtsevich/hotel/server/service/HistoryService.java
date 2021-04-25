@@ -68,7 +68,7 @@ public class HistoryService implements IHistoryService {
     public void checkOut(Integer guestId) {
         try {
             Guest guest = guestDao.getById(guestId);
-            History history = historyDao.getGuestHistories(guest).get(0);
+            History history = historyDao.getCurrentGuestHistories(guest);
             Room room = history.getRoom();
 
             log.info("Check-out of the guest № {} to the room № {}", guestId, room.getId());
@@ -97,7 +97,7 @@ public class HistoryService implements IHistoryService {
     public Double getCostOfLiving(Integer guestId) {
         try {
             Guest guest = guestDao.getById(guestId);
-            History history = historyDao.getGuestHistories(guest).get(0);
+            History history = historyDao.getCurrentGuestHistories(guest);
             return history.getCostOfLiving();
         } catch (DaoException e) {
             log.warn(e.getLocalizedMessage(), e);
@@ -149,7 +149,7 @@ public class HistoryService implements IHistoryService {
     public List<ServiceWithoutHistoriesDTO> getListOfGuestService(Integer guestId) {
         try {
             Guest guest = guestDao.getById(guestId);
-            History history = historyDao.getGuestHistories(guest).get(0);
+            History history = historyDao.getCurrentGuestHistories(guest);
 
             List<Service> services = history.getServices();
             List<ServiceWithoutHistoriesDTO> servicesDTO = new ArrayList<>();

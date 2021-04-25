@@ -10,8 +10,11 @@ public interface IHistoryDao extends GenericDao<History> {
 
     List<History> getGuestHistories(Guest guest);
 
+    History getCurrentGuestHistories(Guest guest);
+
 
     List<History> getRoomHistories(Room room);
+
 
 
 }
