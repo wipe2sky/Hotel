@@ -4,13 +4,10 @@ import com.kurtsevich.hotel.server.SortStatus;
 import com.kurtsevich.hotel.server.api.service.IGuestService;
 import com.kurtsevich.hotel.server.dto.GuestDto;
 import com.kurtsevich.hotel.server.dto.GuestWithoutHistoriesDto;
-import com.kurtsevich.hotel.server.dto.SortStatusDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -21,31 +18,33 @@ public class GuestsController {
 
     @GetMapping
     public ResponseEntity<List<GuestWithoutHistoriesDto>> getAll() {
-        return new ResponseEntity<>(guestService.getAll(), HttpStatus.OK);
+        return ResponseEntity.ok(guestService.getAll());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<GuestWithoutHistoriesDto> getGuest(@PathVariable int id) {
-        return new ResponseEntity<>(guestService.getById(id), HttpStatus.OK);
+        return ResponseEntity.ok(guestService.getById(id));
     }
 
     @PutMapping
-    public void addGuest(@RequestBody GuestDto guestDTO) {
-        guestService.add(guestDTO);
+    public ResponseEntity<Void> addGuest(@RequestBody GuestDto guestDto) {
+        guestService.add(guestDto);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
-    public void deleteGuest(@PathVariable int id) {
+    public ResponseEntity<Void>  deleteGuest(@PathVariable int id) {
         guestService.deleteGuest(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/sort")
     public ResponseEntity<List<GuestWithoutHistoriesDto>> getSortBy(@RequestParam String sortStatus) {
-        return new ResponseEntity<>(guestService.getSortBy(SortStatus.valueOf(sortStatus)), HttpStatus.OK);
+        return ResponseEntity.ok(guestService.getSortBy(SortStatus.valueOf(sortStatus)));
     }
 
     @GetMapping(value = "/count")
     public ResponseEntity<Long> getCountGuestInHotel() {
-        return new ResponseEntity<>(guestService.getCountGuestInHotel(), HttpStatus.OK);
+        return ResponseEntity.ok(guestService.getCountGuestInHotel());
     }
 }

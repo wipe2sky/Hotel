@@ -3,7 +3,7 @@ package com.kurtsevich.hotel.server.api.service;
 import com.kurtsevich.hotel.server.dto.CheckInDto;
 import com.kurtsevich.hotel.server.dto.GuestWithoutHistoriesDto;
 import com.kurtsevich.hotel.server.dto.HistoryDto;
-import com.kurtsevich.hotel.server.dto.ServiceWithoutHistoriesDTO;
+import com.kurtsevich.hotel.server.dto.ServiceWithoutHistoriesDto;
 import com.kurtsevich.hotel.server.model.Guest;
 import com.kurtsevich.hotel.server.model.History;
 import com.kurtsevich.hotel.server.model.Room;
@@ -25,5 +25,5 @@ public interface IHistoryService {
 
     List<HistoryDto> getAll();
 
-    List<ServiceWithoutHistoriesDTO> getListOfGuestService(Integer guestId);
+    List<ServiceWithoutHistoriesDto> getListOfGuestService(Integer guestId);
 }

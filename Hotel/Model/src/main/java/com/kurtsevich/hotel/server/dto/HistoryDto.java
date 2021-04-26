@@ -15,5 +15,5 @@ public class HistoryDto {
     private boolean isCurrent;
     private RoomWithoutHistoriesDto room;
     private GuestWithoutHistoriesDto guest;
-    private List<ServiceWithoutHistoriesDTO> services;
+    private List<ServiceWithoutHistoriesDto> services;
 }

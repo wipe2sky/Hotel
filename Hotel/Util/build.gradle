@@ -8,6 +8,12 @@ version '0.0.1-SNAPSHOT'
 repositories {
     mavenCentral()
 }
+compileJava {
+    options.compilerArgs += [
+            '-Amapstruct.defaultComponentModel=spring',
+            '-Amapstruct.unmappedTargetPolicy=IGNORE'
+    ]
+}
 
 dependencies {
     implementation(project(':Model'))

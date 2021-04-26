@@ -1,14 +1,13 @@
 package com.kurtsevich.hotel.server.controller;
 
+import com.kurtsevich.hotel.server.SortStatus;
 import com.kurtsevich.hotel.server.api.service.IRoomService;
 import com.kurtsevich.hotel.server.dto.DateDto;
 import com.kurtsevich.hotel.server.dto.HistoryDto;
 import com.kurtsevich.hotel.server.dto.RoomDto;
 import com.kurtsevich.hotel.server.dto.RoomWithoutHistoriesDto;
 import com.kurtsevich.hotel.server.model.RoomStatus;
-import com.kurtsevich.hotel.server.SortStatus;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,61 +22,63 @@ public class RoomsController {
 
     @GetMapping
     public ResponseEntity<List<RoomWithoutHistoriesDto>> getAll() {
-        return new ResponseEntity<>(roomService.getAll(), HttpStatus.OK);
+        return ResponseEntity.ok(roomService.getAll());
     }
 
-//    @GetMapping("/{id}")
-//    public ResponseEntity<RoomWithoutHistoriesDto> getRoom(@PathVariable int id) {
-//        return new ResponseEntity<>(roomService.getById(id), HttpStatus.OK);
-//    }
     @GetMapping("/{id}")
-    public RoomWithoutHistoriesDto getRoom(@PathVariable int id) {
-        return roomService.getById(id);
+    public ResponseEntity<RoomWithoutHistoriesDto> getRoom(@PathVariable int id) {
+        return ResponseEntity.ok(roomService.getById(id));
     }
+
 
     @PutMapping
-    public void addRoom(@RequestBody RoomDto roomDTO) {
-        roomService.addRoom(roomDTO);
+    public ResponseEntity<Void> addRoom(@RequestBody RoomDto roomDto) {
+        roomService.addRoom(roomDto);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
-    public void deleteRoom(@PathVariable Integer id) {
+    public ResponseEntity<Void> deleteRoom(@PathVariable Integer id) {
         roomService.deleteRoom(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/clean")
-    public void setCleaningStatus(@RequestBody RoomDto roomDTO) {
-        roomService.setCleaningStatus(roomDTO);
+    public ResponseEntity<Void> setCleaningStatus(@RequestBody RoomDto roomDto) {
+        roomService.setCleaningStatus(roomDto);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/price")
-    public void changePrice(@RequestBody RoomDto roomDTO) {
-        roomService.changePrice(roomDTO);
+    public ResponseEntity<Void> changePrice(@RequestBody RoomDto roomDto) {
+        roomService.changePrice(roomDto);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping(value = "/sort")
     public ResponseEntity<List<RoomWithoutHistoriesDto>> getSortBy(@RequestParam String sortStatus, @RequestParam String roomStatus) {
-        return new ResponseEntity<>(roomService.getSortBy(SortStatus.valueOf(sortStatus), RoomStatus.valueOf(roomStatus)), HttpStatus.OK);
+        return ResponseEntity.ok(roomService.getSortBy(SortStatus.valueOf(sortStatus), RoomStatus.valueOf(roomStatus)));
     }
 
     @GetMapping(value = "/get")
     @Valid
     public ResponseEntity<List<RoomWithoutHistoriesDto>> getAvailableAfterDate(@RequestBody DateDto date) {
-        return new ResponseEntity<>(roomService.getAvailableAfterDate(date.getDate().atStartOfDay()), HttpStatus.OK);
+        return ResponseEntity.ok(roomService.getAvailableAfterDate(date.getDate().atStartOfDay()));
     }
 
     @GetMapping(value = "/free")
     public ResponseEntity<Integer> getNumberOfFree() {
-        return new ResponseEntity<>(roomService.getNumberOfFree(), HttpStatus.OK);
+        return ResponseEntity.ok(roomService.getNumberOfFree());
     }
 
     @GetMapping(value = "/history/{id}")
     public ResponseEntity<List<HistoryDto>> getRoomHistory(@PathVariable Integer id) {
-        return new ResponseEntity<>(roomService.getRoomHistory(id), HttpStatus.OK);
+        return ResponseEntity.ok(roomService.getRoomHistory(id));
     }
 
     @PutMapping("/repair")
-    public void setRepairStatus(@RequestBody RoomDto roomDTO) {
-        roomService.setRepairStatus(roomDTO);
+    public ResponseEntity<Void> setRepairStatus(@RequestBody RoomDto roomDto) {
+        roomService.setRepairStatus(roomDto);
+        return ResponseEntity.noContent().build();
     }
 }

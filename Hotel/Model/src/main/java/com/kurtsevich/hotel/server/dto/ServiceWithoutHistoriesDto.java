@@ -4,7 +4,7 @@ import lombok.Data;
 
 
 @Data
-public class ServiceWithoutHistoriesDTO {
+public class ServiceWithoutHistoriesDto {
     private Integer id;
     private String name;
     private Double price;
