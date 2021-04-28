@@ -5,13 +5,14 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @ToString(exclude="histories")
 @Entity
 @Table(name = "room")
 public class Room extends AEntity {
-    @Column(name = "number")
+    @Column(name = "number", unique = true)
     private Integer number;
     @Column(name = "capacity")
     private Integer capacity;

@@ -3,60 +3,51 @@ package com.kurtsevich.hotel.server.service;
 import com.kurtsevich.hotel.server.api.dao.IGuestDao;
 import com.kurtsevich.hotel.server.api.dao.IHistoryDao;
 import com.kurtsevich.hotel.server.api.dao.IServiceDao;
-import com.kurtsevich.hotel.server.api.exceptions.DaoException;
 import com.kurtsevich.hotel.server.api.exceptions.ServiceException;
 import com.kurtsevich.hotel.server.api.service.IServiceForService;
+import com.kurtsevich.hotel.server.dto.ServiceDto;
+import com.kurtsevich.hotel.server.dto.ServiceToGuestDto;
+import com.kurtsevich.hotel.server.dto.ServiceWithoutHistoriesDto;
 import com.kurtsevich.hotel.server.model.History;
 import com.kurtsevich.hotel.server.model.Service;
+import com.kurtsevich.hotel.server.util.ServiceMapper;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Service
 @Transactional
-@Log4j2
 @RequiredArgsConstructor
 public class ServiceForService implements IServiceForService {
     private final IServiceDao serviceDao;
     private final IGuestDao guestDao;
     private final IHistoryDao historyDao;
+    private final ServiceMapper mapper;
 
     @Override
-    public Service addService(String name, Double price) {
-        Service service = new Service(name, price);
+    public void addService(ServiceDto serviceDto) {
+        Service service = mapper.serviceDtoToService(serviceDto);
         serviceDao.save(service);
-
-        return service;
     }
 
     @Override
     public void deleteService(Integer serviceId) {
-        try {
             serviceDao.delete(serviceDao.getById(serviceId));
-        } catch (DaoException e) {
-            log.warn(e.getLocalizedMessage(), e);
-            throw new ServiceException("Delete service failed.");
-        }
     }
 
     @Override
-    public Service getById(Integer serviceId) {
-        try {
-            return serviceDao.getById(serviceId);
-        } catch (DaoException e) {
-            log.warn(e.getLocalizedMessage(), e);
-            throw new ServiceException("Get by id failed.");
-        }
+    public ServiceWithoutHistoriesDto getById(Integer serviceId) {
+            return mapper.serviceToServiceWithoutHistoriesDTO(serviceDao.getById(serviceId));
     }
 
     @Override
-    public void addServiceToGuest(Integer serviceId, Integer guestId) {
-        try {
-            Service service = serviceDao.getById(serviceId);
-            History history = historyDao.getGuestHistories(guestDao.getById(guestId)).get(0);
-            if(history.getGuest().isCheckIn()) {
+    public void addServiceToGuest(ServiceToGuestDto serviceToGuestDto) {
+            Service service = serviceDao.getById(serviceToGuestDto.getServiceId());
+            History history = historyDao.getCurrentGuestHistories(guestDao.getById(serviceToGuestDto.getGuestId()));
+            if (history.getGuest().isCheckIn()) {
                 history.getServices().add(service);
                 history.setCostOfService(history.getCostOfService() + service.getPrice());
                 history.setCostOfLiving(history.getCostOfLiving() + service.getPrice());
@@ -64,42 +55,26 @@ public class ServiceForService implements IServiceForService {
             } else {
                 throw new ServiceException("Add service to the guest failed. Guest doesn't stay in hotel.");
             }
-        } catch (DaoException e) {
-            log.warn(e.getLocalizedMessage(), e);
-            throw new ServiceException("Add service to the guest failed.");
-        }
     }
 
     @Override
-    public List<Service> getSortByPrice() {
-        try {
-            return serviceDao.getSortByPrice();
-        } catch (DaoException e) {
-            log.warn(e.getLocalizedMessage(), e);
-            throw new ServiceException("Sorting room failed.");
-        }
-
+    public List<ServiceWithoutHistoriesDto> getSortByPrice() {
+            return serviceDao.getSortByPrice().stream()
+                    .map(mapper::serviceToServiceWithoutHistoriesDTO)
+                    .collect(Collectors.toList());
     }
 
     @Override
-    public List<Service> getAll() {
-        try {
-            return serviceDao.getAll();
-        } catch (DaoException e) {
-            log.warn(e.getLocalizedMessage(), e);
-            throw new ServiceException("Get rooms failed.");
-        }
+    public List<ServiceWithoutHistoriesDto> getAll() {
+            return serviceDao.getAll().stream()
+                    .map(mapper::serviceToServiceWithoutHistoriesDTO)
+                    .collect(Collectors.toList());
     }
 
     @Override
-    public void changeServicePrice(Integer id, Double price) {
-        try {
-            Service service = serviceDao.getById(id);
-            service.setPrice(price);
+    public void changeServicePrice(ServiceDto serviceDto) {
+            Service service = serviceDao.getById(serviceDto.getId());
+            service.setPrice(serviceDto.getPrice());
             serviceDao.update(service);
-        } catch (DaoException e) {
-            log.warn(e.getLocalizedMessage(), e);
-            throw new ServiceException("Change service price failed.");
-        }
     }
 }

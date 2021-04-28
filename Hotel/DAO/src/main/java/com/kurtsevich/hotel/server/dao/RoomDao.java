@@ -5,7 +5,7 @@ import com.kurtsevich.hotel.server.api.exceptions.DaoException;
 import com.kurtsevich.hotel.server.model.History;
 import com.kurtsevich.hotel.server.model.Room;
 import com.kurtsevich.hotel.server.model.RoomStatus;
-import com.kurtsevich.hotel.server.util.SortStatus;
+import com.kurtsevich.hotel.server.SortStatus;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.Query;
@@ -70,9 +70,14 @@ public class RoomDao extends AbstractDao<Room> implements IRoomDao {
             Join<Room, History> roomHistoryJoin = root.join("histories", JoinType.LEFT);
             Predicate roomStatusFreePredicate = cb.equal(root.get(STATUS), RoomStatus.FREE);
             Predicate roomCheckOutDatePredicate = cb.lessThan(roomHistoryJoin.get("checkOutDate"), date);
-            Predicate finalPredicate = cb.or(roomStatusFreePredicate, roomCheckOutDatePredicate);
+            Predicate roomStatusBusyPredicate = cb.equal(root.get(STATUS), RoomStatus.BUSY);
+            Predicate currentHistoryPredicate = cb.equal(roomHistoryJoin.get("isCurrent"), true);
+            Predicate roomBusyPredicate = cb.and(roomCheckOutDatePredicate, roomStatusBusyPredicate, currentHistoryPredicate);
+            Predicate finalPredicate = cb.or(roomStatusFreePredicate, roomBusyPredicate);
+
             cq.select(root)
-                    .where(finalPredicate);
+                    .where(finalPredicate)
+            .groupBy(root.get("id"));
             TypedQuery<Room> query = em.createQuery(cq);
             return query.getResultList();
         } catch (Exception e) {

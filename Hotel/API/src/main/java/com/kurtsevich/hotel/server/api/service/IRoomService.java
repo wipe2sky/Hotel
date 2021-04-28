@@ -1,37 +1,38 @@
 package com.kurtsevich.hotel.server.api.service;
 
-import com.kurtsevich.hotel.server.model.History;
-import com.kurtsevich.hotel.server.model.Room;
+import com.kurtsevich.hotel.server.dto.HistoryDto;
+import com.kurtsevich.hotel.server.dto.RoomDto;
+import com.kurtsevich.hotel.server.dto.RoomWithoutHistoriesDto;
 import com.kurtsevich.hotel.server.model.RoomStatus;
-import com.kurtsevich.hotel.server.util.SortStatus;
+import com.kurtsevich.hotel.server.SortStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 public interface IRoomService {
 
-    Room addRoom(Integer number, Integer capacity, Integer stars, Double price);
+    void addRoom(RoomDto roomDTO);
+
+    RoomWithoutHistoriesDto getById(Integer roomId);
+
+    List<RoomWithoutHistoriesDto> getAll();
 
     void deleteRoom(Integer id);
 
-    void setCleaningStatus(Integer roomId, Boolean status);
+    void setCleaningStatus(RoomDto roomDTO);
 
-    void changePrice(Integer roomId, Double price);
+    void changePrice(RoomDto roomDTO);
 
-    List<Room> getSortBy(SortStatus sortStatus, RoomStatus roomStatus);
+    List<RoomWithoutHistoriesDto> getSortBy(SortStatus sortStatus, RoomStatus roomStatus);
 
-    List<Room> getAvailableAfterDate(LocalDateTime date);
+    List<RoomWithoutHistoriesDto> getAvailableAfterDate(LocalDateTime date);
 
 
     Integer getNumberOfFree();
 
-    Room getById(Integer roomId);
+    List<HistoryDto> getRoomHistory(Integer roomId);
 
-    List<History> getRoomHistory(Integer roomId);
-
-    void setRepairStatus(Integer roomId, boolean bol);
-
-    List<Room> getAll();
+    void setRepairStatus(RoomDto roomDTO);
 
 
 }

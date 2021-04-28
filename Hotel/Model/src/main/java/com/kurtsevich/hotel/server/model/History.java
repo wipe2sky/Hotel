@@ -18,17 +18,19 @@ public class History extends AEntity {
     private Double costOfLiving;
     @Column(name = "cost_of_service")
     private Double costOfService = 0d;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="room", nullable=false)
+    @Column(name = "is_current")
+    private boolean isCurrent = true;
+    @ManyToOne(cascade = {CascadeType.ALL},fetch = FetchType.LAZY)
+    @JoinColumn(name = "room", nullable = false)
     private Room room;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="guest", nullable=false)
+    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
+    @JoinColumn(name = "guest", nullable = false)
     private Guest guest;
-    @ManyToMany(cascade = { CascadeType.ALL }, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     @JoinTable(
             name = "history_service",
-            joinColumns = { @JoinColumn(name = "history_id") },
-            inverseJoinColumns = { @JoinColumn(name = "service_id") }
+            joinColumns = {@JoinColumn(name = "history_id")},
+            inverseJoinColumns = {@JoinColumn(name = "service_id")}
     )
     private List<Service> services;
 

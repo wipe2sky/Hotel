@@ -1,24 +1,25 @@
 package com.kurtsevich.hotel.server.api.service;
 
-import com.kurtsevich.hotel.server.model.Guest;
-import com.kurtsevich.hotel.server.util.SortStatus;
+import com.kurtsevich.hotel.server.dto.GuestDto;
+import com.kurtsevich.hotel.server.SortStatus;
+import com.kurtsevich.hotel.server.dto.GuestWithoutHistoriesDto;
 
 import java.util.List;
 
 public interface IGuestService {
-    Guest add(String firstName, String lastName);
+    void add(GuestDto guestDTO);
 
-    Guest getById(Integer id);
+    GuestWithoutHistoriesDto getById(Integer id);
 
     void deleteGuest(Integer id);
 
-    List<Guest> getSortBy(SortStatus sortStatus);
+    List<GuestWithoutHistoriesDto> getSortBy(SortStatus sortStatus);
 
     Long getCountGuestInHotel();
 
-    List<Guest> getAll();
+    List<GuestWithoutHistoriesDto> getAll();
 
 
-    List<Guest> getAllGuestInHotel();
+    List<GuestDto> getAllGuestInHotel();
 
 }
