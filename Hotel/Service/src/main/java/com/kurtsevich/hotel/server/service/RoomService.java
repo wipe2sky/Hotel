@@ -7,26 +7,24 @@ import com.kurtsevich.hotel.server.api.service.IRoomService;
 import com.kurtsevich.hotel.server.dto.HistoryDto;
 import com.kurtsevich.hotel.server.dto.RoomDto;
 import com.kurtsevich.hotel.server.dto.RoomWithoutHistoriesDto;
-import com.kurtsevich.hotel.server.model.History;
 import com.kurtsevich.hotel.server.model.Room;
 import com.kurtsevich.hotel.server.model.RoomStatus;
 import com.kurtsevich.hotel.server.util.HistoryMapper;
 import com.kurtsevich.hotel.server.util.RoomMapper;
 import com.kurtsevich.hotel.server.SortStatus;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional
-@Log4j2
+@Slf4j
 @RequiredArgsConstructor
 public class RoomService implements IRoomService {
     @Value("${roomService.allowRoomStatus}")
