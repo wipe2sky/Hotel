@@ -57,7 +57,6 @@ public class GuestService implements IGuestService {
                 .collect(Collectors.toList());
     }
 
-
     @Override
     public List<GuestDto> getAllGuestInHotel() {
         return guestDao.getAllGuestInHotel().stream()
