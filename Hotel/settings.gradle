@@ -7,12 +7,10 @@ pluginManagement {
 }
 
 rootProject.name = 'Hotel'
-include 'UI'
 include 'API'
 include 'DAO'
 include 'Model'
 include 'Service'
 include 'Util'
 include 'Controller'
-include 'DTO'
 
