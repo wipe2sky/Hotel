@@ -10,7 +10,6 @@ repositories {
 }
 
 dependencies {
-    compile(project(':Model'))
     compile(project(':Util'))
 
 }
