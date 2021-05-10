@@ -2,6 +2,8 @@ package com.kurtsevich.hotel.controller;
 
 import com.kurtsevich.hotel.api.service.IUserService;
 import com.kurtsevich.hotel.dto.AuthenticationRequestDto;
+import com.kurtsevich.hotel.dto.UserRoleDto;
+import com.kurtsevich.hotel.dto.UserTokenDto;
 import com.kurtsevich.hotel.model.security.User;
 import com.kurtsevich.hotel.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -34,10 +36,6 @@ public class AuthenticationRestController {
          }
          String token = jwtTokenProvider.createToken(username, user.getRoles());
 
-        HashMap<Object, Object> response = new HashMap<>();
-        response.put("username", username);
-        response.put("token", token);
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(new UserTokenDto().setUsername(username).setToken(token));
     }
 }

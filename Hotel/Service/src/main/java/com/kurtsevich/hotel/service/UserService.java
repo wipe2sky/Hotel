@@ -50,10 +50,6 @@ public class UserService implements IUserService {
 
     @Override
     public void delete(Integer id) {
-//        User user = userDao.getById(id);
-//        user.setActiveStatus(Status.DELETED);
-//        user.setUpdated(new Date());
-//        userDao.update(user);
         userDao.delete(userDao.getById(id));
     }
 
